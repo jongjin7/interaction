@@ -18,6 +18,12 @@ export default ({ command, mode }) => {
     return defineConfig({
         root: path.join(__dirname, "./src"),
         base: '/', // Public Base Path
+        // server: {
+        //     port: 3300,
+        // },
+        // preview: {
+        //     port: 4300,
+        // },
         plugins: [
             vanillaExtractPlugin({
                     identifiers: ({filePath, hash, packageName, debugId}) => `jongjin_${hash}`
