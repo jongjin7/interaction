@@ -1,15 +1,13 @@
 import React, {useState} from 'react';
+import { Button } from '@headlessui/react'
 
 const Count = () => {
 const [count, setCount] = useState(0)
     return (
         <div className="card">
-            <button onClick={() => setCount((count) => count + 1)}>
+            <Button  onClick={() => setCount((count) => count + 1)} className="rounded bg-sky-600 py-2 px-4 text-sm text-white data-[hover]:bg-sky-500 data-[active]:bg-sky-700">
                 count is {count}
-            </button>
-            <p>
-                Edit <code>src/App.jsx</code> and save to test HMR
-            </p>
+            </Button>
         </div>
     );
 };
