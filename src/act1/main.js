@@ -7,20 +7,23 @@ function init(){
     const TYPE = 'imgur'; //imgbb, imgur
     const isImgUr = TYPE === 'imgur';
 
-    const myHeaders = new Headers();
-    // myHeaders.append("Authorization", "Client-ID e1163bcc97c274b");
-    myHeaders.append("Authorization", "Bearer e1163bcc97c274b");
-    myHeaders.append("Content-Type", "application/json");
-    const albumToken = 'YFTbae4';
+    // imgur api 설정
+    const albumHash = '87vbR7E';
+    const getHeader = new Headers();
+    getHeader.append("Authorization", "Client-ID bc6b68c16865024");
+
+    const postHeader = new Headers();
+    postHeader.append("Authorization", "Bearer 5f1e7737e69cb62f937b52b90907f179b00a5de2");
+    postHeader.append("Content-Type", "application/json");
     // image host
     const imgur = {
-        getUrl:`https://api.imgur.com/3/album/${albumToken}/images`,
-        postUrl: `https://api.imgur.com/3/album/${albumToken}/add`,
-        headers: myHeaders
+        getUrl:`https://api.imgur.com/3/album/${albumHash}/images`,
+        postImageUrl: `https://api.imgur.com/3/image`,
+        postAlbumUrl: `https://api.imgur.com/3/album/${albumHash}`,
+        getHeader: getHeader,
+        postHeader: postHeader
     }
-    for (const pair of imgur.headers.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-    }
+
     const imgbb = {
         getUrl:'https://api.imgbb.com/1/upload',
         postUrl: 'https://api.imgbb.com/1/upload',
@@ -31,65 +34,80 @@ function init(){
     const useImgHost = isImgUr ? imgur: imgbb;
 
 
-    loadImages();
-    uploadImage();
+    loadImages(); // 리스트호출
 
-    const el1 = document.createElement('div');
-    el1.innerHTML = `<section class="${themeClass} ${container}">
-        <h1 class="${myStyle} ${container}">!!!Hello world!</h1>
-      </section>`;
-    document.body.append(el1);
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
 
+        const formdata = new FormData();
+        formdata.append('image', file);
+        formdata.append("type", "image");
+        formdata.append("title", "업로드용 파일");
+        formdata.append("description", "브라우저에서 올리는 것이다.");
+        //formdata.append("cover", file);
+        // append 메서드 이외에 필드 추가 시 사용할 수 있는 메서드로 set도 있습니다.
+        // set이 append 메서드와 다른 점은 set은 name과 동일한 이름을 가진 필드를
+        // 모두 제거하고 새로운 필드 하나를 추가한다는 데 있습니다.
+        // 따라서 set 메서드를 쓰면 name을 가진 필드가 단 한 개만 있게끔 보장할 수 있습니다.
+        // 이 외에 다른 기능은 append 메서드와 동일합니다. https://imgur.com
 
-    function uploadImage(){
-        input.onchange = async (e)=>{
-            const formData = new FormData();
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            if(!isImgUr) {
-                formData.append('key', useImgHost.key);
-                formData.append('image', file);
-            } else {
-                formData.append('ids[]', [file]);
-                // append 메서드 이외에 필드 추가 시 사용할 수 있는 메서드로 set도 있습니다.
-                // set이 append 메서드와 다른 점은 set은 name과 동일한 이름을 가진 필드를
-                // 모두 제거하고 새로운 필드 하나를 추가한다는 데 있습니다.
-                // 따라서 set 메서드를 쓰면 name을 가진 필드가 단 한 개만 있게끔 보장할 수 있습니다.
-                // 이 외에 다른 기능은 append 메서드와 동일합니다.
-                formData.append('deletehashes[]', ['xUWbW7MoruCLlZD']);
-            }
-            try {
-                const response = await fetch(useImgHost.postUrl, {
-                    method: "POST",
-                    headers:useImgHost.headers,
-                    body: formData,
-                });
-                const result = await response.json();
+        try {
+            const response = await fetch(`${useImgHost.postImageUrl}`, {
+                method: "POST",
+                headers: useImgHost.getHeader,
+                body: formdata,
+                redirect: 'follow'
+            });
+            const result = await response.json();
+            const resData = result.data;
                 console.log("업로드 성공:", result);
-                const img = document.createElement('img');
-                img.src = result.data.link;
-                resultHolder.append(img);
-            } catch (error) {
-                console.error("업로드 실패:", error);
-            }
+            await addAlbumToImages(resData.id, resData.deletehash );
+        } catch (error) {
+            console.error("업로드 실패:", error);
+        }
+    }
+
+    async function addAlbumToImages(imgHash, deletehash){
+        console.log('dddd', imgHash)
+        const formdata = new FormData();
+        formdata.append('ids[]', imgHash);
+
+        try {
+            const response = await fetch(`${useImgHost.postAlbumUrl}/add`, {
+                method: "POST",
+                headers: useImgHost.postHeader,
+                body: formdata,
+                redirect: 'follow'
+            });
+
+            const result = await response.json();
+            console.log("앨범으로 이미지 이동 =>", result);
+            //await location.reload();
+        } catch (error) {
+            console.error("업로드 실패:", error);
         }
     }
 
     async function loadImages(){
         try {
-            const formData = new FormData();
             const response = await fetch(`${useImgHost.getUrl}`, {
                 method: "GET",
-                headers: useImgHost.headers,
+                headers: useImgHost.getHeader,
                 redirect: 'follow'
             });
             const result = await response.json();
             console.log("GET 성공:", result);
-            const img = document.createElement('img');
-            //img.src = result.data.thumb.url;
-            listHolder.append(img);
+            result.data.forEach(item=>{
+                const img = document.createElement('img');
+                img.src = item.link;
+                img.style.width=`${200}px`;
+                img.style.margin=`${8}px`
+                img.style.verticalAlign=`middle`;
+                listHolder.append(img);
+            })
+
         } catch (error) {
             console.error("GET 실패:", error);
         }
