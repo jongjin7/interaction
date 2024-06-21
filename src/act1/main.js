@@ -115,7 +115,6 @@ function init(){
 
             const result = await response.json();
             console.log("앨범으로 이미지 이동 =>", result);
-            resultHolder.replaceChildren();
             await loadImages();
         } catch (error) {
             console.error("업로드 실패:", error);
@@ -131,6 +130,7 @@ function init(){
             });
             const result = await response.json();
             console.log("GET 성공:", result);
+            if(resultHolder.length) resultHolder.replaceChildren();
             result.data.forEach(item=>{
                 const img = document.createElement('img');
                 img.src = item.link;
