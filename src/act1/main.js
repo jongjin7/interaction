@@ -48,19 +48,19 @@ function init(){
 
     loadImages(); // 리스트호출
 
-    input.onchange =  (e) => {
+    input.onchange =  async (e) => {
         const file = e.target.files[0];
 
         if (file) {
             const reader = new FileReader();
-            reader.onload = async () => {
+            reader.onload =  () => {
                 console.log('created image!')
                 const img = new Image();
                 img.src = window.URL.createObjectURL(file);
                 img.style.width='200px';
                 img.style.border=`1px solid green`;
                 previewHolder.append(img);
-                await sendImages(reader.result, file)
+                sendImages(reader.result, file)
             };
             reader.onerror = (err) => {
                 console.error('Error reading file:', err);
