@@ -1,8 +1,19 @@
-import { myStyle, themeClass, container } from './styles.css.js';
+async function getVideo() {
+    try {
+        const localMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        console.log(localMediaStream);
+
+        const video = document.querySelector('video'); // 비디오 요소를 선택
+        video.srcObject = localMediaStream; // srcObject를 사용하여 미디어 스트림을 설정
+        await video.play(); // play() 호출
+    } catch (err) {
+        console.error('OH NO!', err);
+    }
+}
 
 function init(){
     const input = document.querySelector('#file-test');
-    const listHolder = document.querySelector('#img-list')
+    const previewHolder = document.querySelector('#preview');
     const resultHolder = document.querySelector('#result')
     const TYPE = 'imgur'; //imgbb, imgur
     const isImgUr = TYPE === 'imgur';
@@ -11,10 +22,11 @@ function init(){
     const albumHash = '87vbR7E';
     const getHeader = new Headers();
     getHeader.append("Authorization", "Client-ID bc6b68c16865024");
+    getHeader.append("Accept", "application/json");
 
     const postHeader = new Headers();
     postHeader.append("Authorization", "Bearer 5f1e7737e69cb62f937b52b90907f179b00a5de2");
-    postHeader.append("Content-Type", "application/json");
+    postHeader.append("Accept", "application/json");
     // image host
     const imgur = {
         getUrl:`https://api.imgur.com/3/album/${albumHash}/images`,
@@ -36,41 +48,60 @@ function init(){
 
     loadImages(); // 리스트호출
 
-    input.onchange = async (e) => {
+    input.onchange =  (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
 
-        const formdata = new FormData();
-        formdata.append('image', file);
-        formdata.append("type", "image");
-        formdata.append("title", "업로드용 파일");
-        formdata.append("description", "브라우저에서 올리는 것이다.");
-        //formdata.append("cover", file);
-        // append 메서드 이외에 필드 추가 시 사용할 수 있는 메서드로 set도 있습니다.
-        // set이 append 메서드와 다른 점은 set은 name과 동일한 이름을 가진 필드를
-        // 모두 제거하고 새로운 필드 하나를 추가한다는 데 있습니다.
-        // 따라서 set 메서드를 쓰면 name을 가진 필드가 단 한 개만 있게끔 보장할 수 있습니다.
-        // 이 외에 다른 기능은 append 메서드와 동일합니다. https://imgur.com
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = async () => {
+                console.log('created image!')
+                const img = new Image();
+                img.src = window.URL.createObjectURL(file);
+                img.style.width='200px';
+                img.style.border=`1px solid green`;
+                previewHolder.append(img);
+                await sendImages(reader.result, file)
+            };
+            reader.onerror = (err) => {
+                console.error('Error reading file:', err);
+            };
+            reader.readAsDataURL(file);
+        }
 
-        try {
-            const response = await fetch(`${useImgHost.postImageUrl}`, {
-                method: "POST",
-                headers: useImgHost.getHeader,
-                body: formdata,
-                redirect: 'follow'
-            });
-            const result = await response.json();
-            const resData = result.data;
+        async function sendImages(fileUrl, file){
+            const formdata = new FormData();
+            const base64Str = fileUrl.replace(/^data:image\/(png|jpg);base64,/, "");
+            formdata.append('image', file);
+            // formdata.append("type", "image");
+            formdata.append("title", "업로드용 파일");
+            formdata.append("description", "브라우저에서 올리는 것이다.");
+            //formdata.append("cover", file);
+            // append 메서드 이외에 필드 추가 시 사용할 수 있는 메서드로 set도 있습니다.
+            // set이 append 메서드와 다른 점은 set은 name과 동일한 이름을 가진 필드를
+            // 모두 제거하고 새로운 필드 하나를 추가한다는 데 있습니다.
+            // 따라서 set 메서드를 쓰면 name을 가진 필드가 단 한 개만 있게끔 보장할 수 있습니다.
+            // 이 외에 다른 기능은 append 메서드와 동일합니다. https://imgur.com
+
+            try {
+                const response = await fetch(`${useImgHost.postImageUrl}`, {
+                    method: "POST",
+                    headers: useImgHost.postHeader,
+                    body: formdata,
+                    redirect: 'follow'
+                });
+                const result = await response.json();
+                const resData = result.data;
                 console.log("업로드 성공:", result);
-            await addAlbumToImages(resData.id, resData.deletehash );
-        } catch (error) {
-            console.error("업로드 실패:", error);
+                await addAlbumToImages(resData.id, resData.deletehash );
+                e.target.value='';
+                previewHolder.innerHTML = '';
+            } catch (error) {
+                console.error("업로드 실패:", error);
+            }
         }
     }
 
     async function addAlbumToImages(imgHash, deletehash){
-        console.log('dddd', imgHash)
         const formdata = new FormData();
         formdata.append('ids[]', imgHash);
 
@@ -84,7 +115,8 @@ function init(){
 
             const result = await response.json();
             console.log("앨범으로 이미지 이동 =>", result);
-            //await location.reload();
+            resultHolder.replaceChildren();
+            await loadImages();
         } catch (error) {
             console.error("업로드 실패:", error);
         }
@@ -105,9 +137,8 @@ function init(){
                 img.style.width=`${200}px`;
                 img.style.margin=`${8}px`
                 img.style.verticalAlign=`middle`;
-                listHolder.append(img);
+                resultHolder.append(img);
             })
-
         } catch (error) {
             console.error("GET 실패:", error);
         }

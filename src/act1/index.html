@@ -10,14 +10,17 @@
     <title>예제#1</title>
 </head>
 <body>
-<div id="file-test">
+<!--<video style="border: 1px solid green; width: 300px;" id="player" autoplay></video>-->
+<div id="file-test" style="display:flex; flex-direction: column; gap: 8px;  padding: 8px;">
     <form action="">
-        <input type="file" name="" id="" capture="camera">
+        <input type="file" name="" id="" capture="environment" accept="image/*" >
     </form>
+    <div id="preview"></div>
+
+    <hr style="width:100%;">
+
     <div id="result"></div>
 </div>
-<!-- 이미지 목록 -->
-<div id="img-list"></div>
 
 <script type="module" src="main.js"></script>
 </body>
