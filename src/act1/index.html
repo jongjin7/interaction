@@ -13,13 +13,15 @@
 <!--<video style="border: 1px solid green; width: 300px;" id="player" autoplay></video>-->
 <div id="file-test" style="display:flex; flex-direction: column; gap: 8px;  padding: 8px;">
     <form action="">
-        <input type="file" name="" id="" capture="environment" accept="image/*" >
+        <input type="file" id="file" capture="environment"  accept=".jpg, .jpeg, .png" >
     </form>
     <div id="preview"></div>
 
     <hr style="width:100%;">
 
     <div id="result"></div>
+
+    <button id="clear-all" style="width: 100%; padding: 4px;">이미지 전체 삭제</button>
 </div>
 
 <script type="module" src="main.js"></script>

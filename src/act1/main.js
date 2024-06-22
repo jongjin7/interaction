@@ -12,9 +12,11 @@ async function getVideo() {
 }
 
 function init(){
-    const input = document.querySelector('#file-test');
+    const fileInput = document.querySelector('#file');
     const previewHolder = document.querySelector('#preview');
-    const resultHolder = document.querySelector('#result')
+    const resultHolder = document.querySelector('#result');
+
+    const btnClearAll = document.querySelector('#clear-all')
     const TYPE = 'imgur'; //imgbb, imgur
     const isImgUr = TYPE === 'imgur';
 
@@ -45,34 +47,36 @@ function init(){
 
     const useImgHost = isImgUr ? imgur: imgbb;
 
+    let imageList; // 이미지 리스트
 
     loadImages(); // 리스트호출
 
-    input.onchange =  async (e) => {
+    fileInput.onchange =  async (e) => {
         const file = e.target.files[0];
 
         if (file) {
             const reader = new FileReader();
             reader.onload =  () => {
-                console.log('created image!')
                 const img = new Image();
                 img.src = window.URL.createObjectURL(file);
                 img.style.width='200px';
                 img.style.border=`1px solid green`;
                 previewHolder.append(img);
-                sendImages(reader.result, file)
+                window.URL.revokeObjectURL(file);
+
+                sendImages(reader.result, file);
             };
+            reader.readAsDataURL(file);
             reader.onerror = (err) => {
                 console.error('Error reading file:', err);
             };
-            reader.readAsDataURL(file);
         }
 
         async function sendImages(fileUrl, file){
             const formdata = new FormData();
             const base64Str = fileUrl.replace(/^data:image\/(png|jpg);base64,/, "");
             formdata.append('image', file);
-            // formdata.append("type", "image");
+            formdata.append("type", "image");
             formdata.append("title", "업로드용 파일");
             formdata.append("description", "브라우저에서 올리는 것이다.");
             //formdata.append("cover", file);
@@ -93,8 +97,6 @@ function init(){
                 const resData = result.data;
                 console.log("업로드 성공:", result);
                 await addAlbumToImages(resData.id, resData.deletehash );
-                e.target.value='';
-                previewHolder.innerHTML = '';
             } catch (error) {
                 console.error("업로드 실패:", error);
             }
@@ -119,6 +121,9 @@ function init(){
         } catch (error) {
             console.error("업로드 실패:", error);
         }
+
+        fileInput.value='';
+        previewHolder.innerHTML = '';
     }
 
     async function loadImages(){
@@ -129,21 +134,52 @@ function init(){
                 redirect: 'follow'
             });
             const result = await response.json();
-            console.log("GET 성공:", result);
-            if(resultHolder.length) resultHolder.replaceChildren();
-            result.data.forEach(item=>{
+            imageList = result.data;
+            console.log("GET 성공:", resultHolder.childNodes);
+            if(resultHolder.childNodes.length) resultHolder.replaceChildren();
+            imageList.forEach(item=>{
                 const img = document.createElement('img');
                 img.src = item.link;
                 img.style.width=`${200}px`;
                 img.style.margin=`${8}px`
                 img.style.verticalAlign=`middle`;
+                img.dataset.id= item.id;
                 resultHolder.append(img);
             })
+
         } catch (error) {
             console.error("GET 실패:", error);
         }
     }
+
+    // 이벤트 추가
+    resultHolder.addEventListener('click', (e)=>{
+        if(e.target.hasAttribute('data-id') && confirm('이미지를 제거할까요?')) deleteImage(e.target.dataset.id)
+        setTimeout(()=> loadImages(), 1000)
+    })
+
+    // 이미지 삭제
+    function deleteImage(imghash){
+        const formdata = new FormData();
+
+        const requestOptions = {
+            method: 'DELETE',
+            headers: useImgHost.postHeader,
+            body: formdata,
+            redirect: 'follow'
+        };
+
+        fetch(`${useImgHost.postImageUrl}/${imghash}`, requestOptions)
+            .then(() => console.info(`DELETE 성공 - 이미지 ID: ${imghash}`))
+            .catch(error => console.log('error', error));
+    }
+
+    btnClearAll.onclick = ()=>{
+        const ids = imageList.map(item=>item.id);
+        ids.forEach(hash => deleteImage(hash))
+    }
 }
+
 
 
 
