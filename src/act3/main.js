@@ -1,7 +1,7 @@
-import { myStyle, themeClass, container } from './styles.css.js';
+import { myStyle, themeClass, container, backgroundImg } from './styles.css.js';
 function init(){
         const el1 = document.createElement('div');
-        el1.innerHTML = `<section class="${themeClass} ${container}">
+        el1.innerHTML = `<section class="${themeClass} ${container} ${backgroundImg}">
             <h1 class="${myStyle} ${container}">3번째 파일</h1>
           </section>`;
         document.body.append(el1);

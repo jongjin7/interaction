@@ -9,20 +9,19 @@ const manifest = require('./public/webmanifest.json');
 const excludeWorkDirs = ['act2','jong']; //번들링 제외
 
 export default ({ command, mode }) => {
-    const inputFiles = [
+    const tempDirArr = [
         ...fastGlob.sync('src/**/index.html').filter(file => {
             const isMatch = excludeWorkDirs.some(dir => file.includes(dir));
             return !isMatch;
         }).map(file => path.resolve(__dirname, file))
     ]
 
-    const newMap = {}
-        inputFiles.forEach(item=>{
+    const useDirArr = {}
+    tempDirArr.forEach(item=>{
         const regex = /\/src\/([^\/]+)/;
         const match = item.match(regex);
-        newMap[match[1]]= item
+        useDirArr[match[1]] = item
     })
-    console.log('aaaa', newMap)
     return defineConfig({
         root: path.join(__dirname, "./src"),
         base: '/', // Public Base Path
@@ -32,6 +31,9 @@ export default ({ command, mode }) => {
         },
         preview: {
             port: 4100,
+        },
+        css: {
+            devSourcemap: true
         },
         plugins: [
             vanillaExtractPlugin({
@@ -52,10 +54,11 @@ export default ({ command, mode }) => {
             // }),
         ],
         build: {
+            Sourcemap: true,
             emptyOutDir: true,
             outDir: path.join(__dirname, '/build'),
             rollupOptions: {
-                input: newMap,
+                input: useDirArr,
                 output: (()=>{
                     return {
                         chunkFileNames: "assets/[name].[hash].js",
