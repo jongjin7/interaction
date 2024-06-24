@@ -1,3 +1,19 @@
+import { registerSW } from 'virtual:pwa-register';
+
+const updateSW = registerSW({
+    onNeedRefresh() {
+        // Show a prompt to the user to refresh the page
+        const userConfirmed = confirm('New content is available. Click OK to refresh.');
+        if (userConfirmed) {
+            updateSW();
+        }
+    },
+    onOfflineReady() {
+        // Show a prompt that the app is ready to work offline
+        console.log('App is ready to work offline');
+    },
+});
+
 async function getVideo() {
     try {
         const localMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
@@ -63,6 +79,7 @@ function init(){
                 img.style.border=`1px solid green`;
                 previewHolder.append(img);
                 window.URL.revokeObjectURL(file);
+
 
                 sendImages(reader.result, file);
             };

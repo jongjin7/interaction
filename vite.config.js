@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite'
+import { VitePWA } from "vite-plugin-pwa";
 import path from "node:path";
 import fastGlob from 'fast-glob';
 import { resolve } from 'path'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 const isProduction = process.env.NODE_ENV === 'production';
-
+const manifest = require('./public/webmanifest.json');
 const excludeWorkDirs = ['act2']; //번들링 제외
+
 export default ({ command, mode }) => {
     const inputFiles = [
         path.resolve(__dirname, 'src/index.html'),
@@ -18,6 +20,7 @@ export default ({ command, mode }) => {
     return defineConfig({
         root: path.join(__dirname, "./src"),
         base: '/', // Public Base Path
+        publicDir: path.resolve(__dirname, "./public"),
         // server: {
         //     port: 3300,
         // },
@@ -27,7 +30,18 @@ export default ({ command, mode }) => {
         plugins: [
             vanillaExtractPlugin({
                     identifiers: ({filePath, hash, packageName, debugId}) => `jongjin_${hash}`
-            })
+            }),
+            VitePWA({
+                registerType: 'autoUpdate',
+                devOptions: {
+                    enabled: true,
+                },
+                includeAssets: ['favico n.ico', 'apple-touch-icon.png'],
+                manifest: manifest,
+                workbox: {
+                    // Workbox options for more control over caching, precaching, etc.
+                },
+            }),
         ],
         build: {
             emptyOutDir: true,
@@ -36,10 +50,10 @@ export default ({ command, mode }) => {
                 input: inputFiles,
                 output: (()=>{
                     return {
+                        //chunkFileNames: "assets/js/[name].js",
                         entryFileNames: ({ facadeModuleId }) => {
                             const filePath = facadeModuleId.replace(__dirname, '');
                             const relativeDir = path.dirname(filePath).replace(/\\/g, '/').replace('/src/', '').replace('/', '');
-                            console.log('filePath', filePath)
                             return `${relativeDir}/assets/[name].[hash].js`;
                         },
                         assetFileNames: ( {name}) => {
@@ -56,7 +70,6 @@ export default ({ command, mode }) => {
                             // }
                             const regex = /src\/(.*?)\/style/;
                             const match = id.match(regex);
-                            console.log('match', match)
                             if(match && id.includes(match[1])) return match[1]
                         },
                     }
