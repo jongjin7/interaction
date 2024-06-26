@@ -1,17 +1,3 @@
-// import { registerSW } from 'virtual:pwa-register';
-//
-// const updateSW = registerSW({
-//     onNeedRefresh() {
-//         const userConfirmed = confirm('New content is available. Click OK to refresh.');
-//         if (userConfirmed) {
-//             updateSW();
-//         }
-//     },
-//     onOfflineReady() {
-//         console.log('App is ready to work offline');
-//     },
-// });
-
 async function getVideo() {
     try {
         const localMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });

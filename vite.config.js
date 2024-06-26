@@ -4,6 +4,7 @@ import path from "node:path";
 import fastGlob from 'fast-glob';
 import { resolve } from 'path'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import tailwindcss from "tailwindcss";
 const isProduction = process.env.NODE_ENV === 'production';
 const manifest = require('./public/webmanifest.json');
 const excludeWorkDirs = ['act2','jong']; //번들링 제외
@@ -36,6 +37,7 @@ export default ({ command, mode }) => {
             devSourcemap: true
         },
         plugins: [
+            tailwindcss(),
             vanillaExtractPlugin({
                     identifiers: ({filePath, hash, packageName, debugId}) => `jongjin_${hash}`
             }),
