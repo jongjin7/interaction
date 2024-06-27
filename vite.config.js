@@ -7,7 +7,7 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import tailwindcss from "tailwindcss";
 const isProduction = process.env.NODE_ENV === 'production';
 const manifest = require('./public/webmanifest.json');
-const excludeWorkDirs = ['act2','jong']; //번들링 제외
+const excludeWorkDirs = ['act2']; //번들링 제외
 
 export default ({ command, mode }) => {
     const tempDirArr = [
@@ -39,7 +39,7 @@ export default ({ command, mode }) => {
         plugins: [
             tailwindcss(),
             vanillaExtractPlugin({
-                    identifiers: ({filePath, hash, packageName, debugId}) => `jongjin_${hash}`
+                    identifiers: ({filePath, hash, packageName, debugId}) => `jjlim_2024-${hash}`
             }),
             // VitePWA({
             //     registerType: 'autoUpdate',
