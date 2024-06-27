@@ -1,9 +1,20 @@
-import { myStyle, themeClass, container, backgroundImg } from './styles.css.js';
+import { myStyle, themeClass, container, backgroundImg, bodyBg} from './styles.css.js';
+
 function init(){
-        const el1 = document.createElement('div');
-        el1.innerHTML = `<section class="${themeClass} ${container} ${backgroundImg}">
-            <h1 class="${myStyle} ${container}">3번째 파일</h1>
-          </section>`;
-        document.body.append(el1);
+    const mainEl = document.createElement('div');
+    mainEl.id='wrapper';
+    mainEl.classList.add(bodyBg);
+    mainEl.innerHTML = `
+    <div class="side-content">
+        <div class="text-holder">
+            <h1>GO!</h1>
+            <div class="">
+                <strong class="${themeClass.brand}">색깔별로 찍어보기</strong>
+                <p class="subject">TAKE ON</p>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.append(mainEl);
 }
 document.addEventListener('DOMContentLoaded', init)

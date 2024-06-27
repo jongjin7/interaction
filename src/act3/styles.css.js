@@ -23,7 +23,10 @@ export const myStyle = style({
         content: ''
     }
 });
-
+export const bodyBg = style({
+    height: '100vh',
+    backgroundImage: 'radial-gradient(red, blue)'
+})
 export const container = style({
     padding: 10,
     margin: 0,
