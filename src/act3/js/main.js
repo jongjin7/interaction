@@ -1,4 +1,4 @@
-import { sideContent, vars, themeClass, container, iconLink, mainBox} from '../css/styles.css.js';
+import { sideContent, vars, backgroundImg, container, iconLink, mainBox} from '../css/styles.css.js';
 
 // router
 // https://velog.io/@sjoleee_/VanillaJS-%EB%B0%94%EB%8B%90%EB%9D%BCJS%EB%A1%9C-SPA-%EC%BB%A4%EB%A8%B8%EC%8A%A4-%EB%A7%8C%EB%93%A4%EA%B8%B0-%EB%9D%BC%EC%9A%B0%ED%84%B0
@@ -33,6 +33,12 @@ function init(){
                 <a href="./mypage">내 페이지로</a>
             </div>
         </div>
+    </div>
+    <div class="${backgroundImg}">
+        <div class="mask">
+            <div class="img"><img src="./img/img_wide.png" alt=""></div>
+        </div>
+        <img src="./img/img_wide.png" alt="">
     </div>
     `;
     document.body.append(mainEl);
