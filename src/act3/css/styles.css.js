@@ -38,6 +38,19 @@ globalStyle('[data-current-page=list]', {
     '#home':{
         transform: 'translateY(90vh)',
         margin: '10px',
+        '.btn-toggle':{
+            transform:'rotate(-270deg)',
+            // left: '4px',
+            'span:nth-of-type(1), span:nth-of-type(3)':{
+                width: '10px',
+            },
+            'span:nth-of-type(1)':{
+                transform: 'translate(-2px, 7px) rotate(-45deg)'
+            },
+            'span:nth-of-type(3)':{
+                transform: 'translate(-2px, -7px) rotate(45deg)'
+            }
+        }
     },
     '#list':{
         opacity: 1
@@ -65,17 +78,34 @@ const button = style({
 export const pageToggleArea = style({
     position:'fixed', right: '1rem', top:'1rem', zIndex:1000,
     'button':{
-        padding: '0.5em',
-        background:'pink',
-        svg:{
-            width:'24px',
-            height: '24px',
-            background:'silver',
+        display:'block',
+        position: 'relative',
+        width: '24px',
+        height: '22px',
+        span:{
+            position: 'absolute',
+            left: 0,
+            width: '100%',
+            height: '2px',
+            backgroundColor: '#fff',
+            borderRadius: '1px',
+            '&:nth-of-type(1)':{
+                top:0,
+            },
+            '&:nth-of-type(2)':{
+                top: '10px'
+            },
+            '&:nth-of-type(3)':{
+                bottom:0,
+            }
         },
         opacity:0.8,
-        transition:'all 0.15s',
+
         '&:hover':{
             opacity: 1
+        },
+        '&, span':{
+            transition:'all 0.5s ease-in-out',
         }
     }
 })
@@ -119,7 +149,7 @@ export const previewCircle = style({
     justifyContent:'center',
     border:'1px solid red',
 
-    '.ui-circle': {
+    '.btn-circle': {
         position:'relative',
         width: circleSize, height: circleSize,
         maxWidth: '300px',
@@ -136,7 +166,7 @@ export const previewCircle = style({
             boxShadow: `inset 0 0 0 6vw rgba(0,0,0, 0.1), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`,
         },
 
-        '.img':{
+        '.img-circle':{
             width: '100%', height:'100%',
             borderRadius:'50%',
             padding:'12vw',
@@ -195,8 +225,6 @@ export const bodyContent = style({
         flexFlow:'column wrap',
         position:'absolute', left:0, top:0, bottom:0, right:0,
         paddingTop: '24vw'
-
-
     },
 
     '& img':{
@@ -222,7 +250,7 @@ export const mainController = style({
         color: 'rgba(255,255,255,0.8)',
         borderColor: 'rgba(255,255,255,0.3)',
         backgroundColor:'rgba(255,255,255,0.1)',
-        '&:focusin':{
+        '&:focus':{
             borderColor:'white'
         }
     },
@@ -240,15 +268,16 @@ export const mainController = style({
 
 // 페이지 컨테이너 정의
 // 메인
-export const mainPage = style({
+export const pageTypeMain = style({
+    display:'none',
     position:'fixed', zIndex: 100,
     transition: 'transform 0.5s ease-in-out, margin 0.3s ease-in'
 })
 
 // 서브
-export const galleryList = style({
-    display:'none',
-    opacity:0,
+export const pageTypeList = style({
+    // display:'none',
+    // opacity:0,
     position: 'relative',
     backgroundColor:'#f9f9f9',
     transition: 'opacity 0.3s ease-in-out',
@@ -258,13 +287,54 @@ export const galleryList = style({
     '& > .container':{
         height: '100%',
         padding: '32px',
-
-        '& > div':{
-            height: 'inherit',
-            backgroundColor:'#ccc'
+    },
+    '.tab-nav':{
+        display:'flex',
+        gap: '12px',
+        overflowY:'auto',
+        a:{
+            display:'inline-flex',
+            padding: '8px 12px',
+            minWidth:'100px',
+            background:'pink'
         }
     }
-})
+});
+
+export const galleryList = style({
+    border:'1px solid red',
+    '&:not(:first-of-type)':{
+        marginTop: '24px'
+    },
+    '.list-header':{
+        display:'flex',
+        justifyContent:'space-between',
+        alignItems:'center',
+        marginBottom: '8px',
+        lineHeight:1,
+    },
+
+    '.title':{
+
+    },
+    '.list':{
+        display:'flex',
+        gap: '12px',
+        width: '100%',
+        overflowY:'auto',
+    },
+    '.list-item':{
+        height: '10vh',
+        flexShrink:0,
+        borderRadius:'8px',
+        overflow:'hidden',
+        img:{
+            width:'100%',
+            height: '100%',
+            objectFit:'cover'
+        }
+    }
+});
 
 export const container = style({
     padding: 10,
