@@ -38,9 +38,15 @@ let previousPage = '';
 
 const buttonIconClass = ``;
 const labelClass = `mb-3 block text-sm font-medium text-black dark:text-white`;
-const buttonBasicClass = `inline-flex rounded-md px-3.5 py-2.5 text-md`;
+const buttonBasicClass = `inline-flex rounded-md shadow-sm transition`;
+const buttonSizeLarge = `px-4 py-2 text-base`;
+const buttonSizeMedium = `px-4 py-1.5 text-base`;
+const buttonSizeSmall = `px-2 py-1.5 font-light text-sm`;
+const buttonOutlineClass = `${buttonBasicClass} border-solid border hover:bg-orange-100 hover:border-orange-500`;
+const buttonOutlinePrimaryClass = `${buttonBasicClass} border-solid border border-orange-600 hover:bg-orange-50`;
 const buttonPrimaryClass = `${buttonBasicClass} bg-orange-500 text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700`
-const linkText = `font-semibold leading-6 text-gray-900`;
+const buttonDangerClass = `${buttonBasicClass} bg-red-500 text-white hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700`
+const linkText = `font-semibold  text-gray-900`;
 const inputFieldClass = `relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 pl-5 pr-12 outline-none transition focus:border-orange-500 active:border-orange dark:border-form-strokedark dark:bg-form-input`
 const main= (params)=>{
     const htmlData = `
@@ -82,7 +88,7 @@ const main= (params)=>{
                         <option value="">옵션1</option>
                         <option value="">옵션2</option>
                     </select>
-                    <button type="button" class="${buttonPrimaryClass} py-3 w-full justify-center">
+                    <button type="button" class="${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center">
                         <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
                         </svg>
@@ -102,7 +108,7 @@ const main= (params)=>{
 
 const pageGallery= (params)=>{
 
-    const temp  = `<div className="${galleryList}">
+    const listData  = `<div className="${galleryList}">
         <h4>갤러리 제목입니다.</h4>
         <ul className="list">
             <li className="list-item"><a href=""><img
@@ -122,7 +128,7 @@ const pageGallery= (params)=>{
     </div>`;
 
     const htmlData = `<div class="container">
-<div class="tags">
+<div class="tabs">
 <div class="tab-nav">
 <a href="">탭1</a><a href="">탭2</a><a href="">탭3</a><a href="">탭4</a>
 <a href="">탭5</a><a href="">탭6</a><a href="">탭7</a><a href="">탭8</a>
@@ -130,32 +136,54 @@ const pageGallery= (params)=>{
 </div>
 
 <div class="${galleryList}">
-<div class="list-header">
-<h4 class="title">1 갤러리 제목입니다.</h4>
-<button type="button">펼쳐보기</button>
-</div>
-<ul class="list">
-<li class="list-item"><a href=""><img src="https://media.istockphoto.com/id/1333977253/ko/%EC%82%AC%EC%A7%84/%EB%B0%94%EC%9C%84-%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%84%B1-%EC%82%AC%EC%9E%90.webp?b=1&s=170667a&w=0&k=20&c=MRGJuh2fNkPxiDnv0zv45jmOruLDOAc3-Yym9AXJNT0=" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://cdn.pixabay.com/photo/2012/02/27/15/35/lion-17335_640.jpg" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://images.unsplash.com/photo-1601625463687-25541fb72f62?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://img.freepik.com/premium-photo/lion-image_811396-3531.jpg" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://t3.ftcdn.net/jpg/07/59/30/58/360_F_759305850_5mhndrh9wVMCWaNXuPmxcbFlPBSW65cO.jpg" alt=""></a></li>
-</ul>
+    <div class="list-header">
+        <h4 class="text-sm font-semibold">인테리어</h4>
+        <button type="button" class="${linkText} ${buttonSizeSmall} hover:bg-gray-200 btn-toggle" title="펼쳐보기">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10"/>
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8m7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0m-.5 11.707-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0z"/>
+            </svg>
+        </button>
+    </div>
+    <ul class="list">
+    <li class="list-item"><a href=""><img src="https://media.istockphoto.com/id/1333977253/ko/%EC%82%AC%EC%A7%84/%EB%B0%94%EC%9C%84-%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%84%B1-%EC%82%AC%EC%9E%90.webp?b=1&s=170667a&w=0&k=20&c=MRGJuh2fNkPxiDnv0zv45jmOruLDOAc3-Yym9AXJNT0=" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://cdn.pixabay.com/photo/2012/02/27/15/35/lion-17335_640.jpg" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://images.unsplash.com/photo-1601625463687-25541fb72f62?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://img.freepik.com/premium-photo/lion-image_811396-3531.jpg" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/1730E/production/_116709949_thumbnail-3.jpg.webp" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://t3.ftcdn.net/jpg/07/59/30/58/360_F_759305850_5mhndrh9wVMCWaNXuPmxcbFlPBSW65cO.jpg" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://img.sbs.co.kr/newimg/news/20221202/201726672_1280.jpg" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://www.ntoyshop.com/shopimages/fstr07/mobile/9/1065379_2" alt=""></a></li>
+    </ul>
+    <div class="btn-group">
+    <button type="button" class="${buttonDangerClass} ${buttonSizeSmall}">전체 삭제</button>
+    <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall}">선택</button>
+    </div>
 </div>
 
-<div class="${galleryList}">
-<div class="list-header">
-<h4 class="title">2 갤러리 제목입니다.</h4>
-<button type="button">펼쳐보기</button>
-</div>
-<ul class="list">
-<li class="list-item"><a href=""><img src="https://media.istockphoto.com/id/1333977253/ko/%EC%82%AC%EC%A7%84/%EB%B0%94%EC%9C%84-%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%84%B1-%EC%82%AC%EC%9E%90.webp?b=1&s=170667a&w=0&k=20&c=MRGJuh2fNkPxiDnv0zv45jmOruLDOAc3-Yym9AXJNT0=" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://cdn.pixabay.com/photo/2012/02/27/15/35/lion-17335_640.jpg" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://images.unsplash.com/photo-1601625463687-25541fb72f62?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://img.freepik.com/premium-photo/lion-image_811396-3531.jpg" alt=""></a></li>
-<li class="list-item"><a href=""><img src="https://t3.ftcdn.net/jpg/07/59/30/58/360_F_759305850_5mhndrh9wVMCWaNXuPmxcbFlPBSW65cO.jpg" alt=""></a></li>
-</ul>
-</div>
+<div class="${galleryList}  ly-grid">
+    <div class="list-header">
+        <h4 class="text-sm font-semibold">인테리어</h4>
+        <button type="button" class="${linkText} ${buttonSizeSmall} hover:bg-gray-200 btn-toggle" title="펼쳐보기">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8M7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10"/>
+              <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8m7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0m-.5 11.707-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0z"/>
+            </svg>
+        </button>
+    </div>
+
+    <ul class="list">
+    <li class="list-item"><a href=""><img src="https://media.istockphoto.com/id/1333977253/ko/%EC%82%AC%EC%A7%84/%EB%B0%94%EC%9C%84-%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%84%B1-%EC%82%AC%EC%9E%90.webp?b=1&s=170667a&w=0&k=20&c=MRGJuh2fNkPxiDnv0zv45jmOruLDOAc3-Yym9AXJNT0=" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://cdn.pixabay.com/photo/2012/02/27/15/35/lion-17335_640.jpg" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://images.unsplash.com/photo-1601625463687-25541fb72f62?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://img.freepik.com/premium-photo/lion-image_811396-3531.jpg" alt=""></a></li>
+    <li class="list-item"><a href=""><img src="https://t3.ftcdn.net/jpg/07/59/30/58/360_F_759305850_5mhndrh9wVMCWaNXuPmxcbFlPBSW65cO.jpg" alt=""></a></li>
+    </ul>
+    <div>
+        <button type="button" class="${buttonPrimaryClass} ${buttonSizeLarge}">큰것</button>
+        <button type="button" class="${buttonPrimaryClass} ${buttonSizeMedium}">펼쳐보기기본</button>
+        <button type="button" class="${buttonPrimaryClass} ${buttonSizeSmall}">펼쳐보기 작은것</button></div>
+    </div>
 </div> `;
     return createFrame({...params, data: htmlData});
 }

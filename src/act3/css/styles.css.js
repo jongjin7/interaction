@@ -147,7 +147,6 @@ export const headerContent = style({
 export const previewCircle = style({
     display:'flex',
     justifyContent:'center',
-    border:'1px solid red',
 
     '.btn-circle': {
         position:'relative',
@@ -286,53 +285,128 @@ export const pageTypeList = style({
     },
     '& > .container':{
         height: '100%',
-        padding: '32px',
+        padding:'12px 0',
+    },
+    '.tabs':{
+        position:'sticky', top:'0',
+        padding:'12px 0 8px',
+        backgroundColor:'rgba(255,255,255, 0.8)',
+        backdropFilter: 'blur(6px)',
     },
     '.tab-nav':{
         display:'flex',
         gap: '12px',
         overflowY:'auto',
+        paddingLeft:'16px',
         a:{
             display:'inline-flex',
             padding: '8px 12px',
             minWidth:'100px',
             background:'pink'
         }
+    },
+    '.btn-group':{
+        display:'flex',
+        gap: '8px',
     }
 });
 
 export const galleryList = style({
-    border:'1px solid red',
-    '&:not(:first-of-type)':{
-        marginTop: '24px'
+    // border:'1px solid red',
+    marginBottom:'24px',
+
+    '&.ly-grid':{
+        '.btn-toggle':{
+            'path':{
+                '&:first-child':{
+                    opacity:0
+                },
+                '&:last-child':{
+                    opacity:'1 !important'
+                }
+            },
+            '&:hover':{
+                'path':{
+                    '&:first-child':{
+                        opacity:'1 !important'
+                    },
+                    '&:last-child':{
+                        opacity:'0 !important'
+                    }
+                }
+            }
+        },
+      '.list':{
+          display: 'block',
+          overflow: 'visible',
+          columnCount:2,
+          '.list-item':{
+              height:'auto',
+              minHeight:'auto',
+              maxHeight:'none',
+              marginBottom: '12px',
+              img:{
+                  objectFit:'contain'
+              }
+          }
+      }
     },
+
     '.list-header':{
+        position:'sticky', top:'60px',
         display:'flex',
         justifyContent:'space-between',
         alignItems:'center',
-        marginBottom: '8px',
+        padding:'8px 16px 0',
+        marginBottom: '4px',
         lineHeight:1,
-    },
-
-    '.title':{
-
+        backgroundColor:'rgba(255,255,255, 0.8)',
+        backdropFilter: 'blur(6px)',
+        boxShadow:'0 2px 6px rgba(255,255,255, 0.7)',
+        '.btn-toggle':{
+            path:{
+                '&:last-child':{
+                    position:'absolute', left:0, top:0,
+                    opacity:0,
+                }
+            },
+             '&:hover':{
+                'path':{
+                    '&:first-child':{
+                        opacity:0
+                    },
+                    '&:last-child':{
+                        opacity:1
+                    }
+                }
+             }
+        }
     },
     '.list':{
         display:'flex',
         gap: '12px',
         width: '100%',
+        padding:'0 16px',
         overflowY:'auto',
     },
     '.list-item':{
-        height: '10vh',
+        height: '10vw',
+        minHeight:'70px',
+        maxHeight: '100px',
         flexShrink:0,
         borderRadius:'8px',
+        boxShadow:"0 0 6px rgba(0,0,0, 0.05)",
         overflow:'hidden',
         img:{
             width:'100%',
             height: '100%',
             objectFit:'cover'
         }
+    },
+    '.btn-group':{
+        justifyContent:'flex-end',
+        marginTop:'8px',
+        padding:'0 16px 8px',
     }
 });
 
