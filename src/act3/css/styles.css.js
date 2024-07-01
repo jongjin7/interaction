@@ -1,14 +1,29 @@
 import {assignVars, globalStyle,  createTheme, createVar, style } from '@vanilla-extract/css';
 
+export const bodyMinWidth = createVar();
+export const bodyMaxWidth = createVar();
+export const circleSize = createVar();
+export const bodyBgColorStart = createVar();
+export const bodyBgColorEnd = createVar();
+
 globalStyle('body', {
+    vars: {
+        [bodyMinWidth]: '360px',
+        [bodyMaxWidth]: '767px',
+        [circleSize]: '60vw',
+        [bodyBgColorStart]: '237, 99, 7',
+        [bodyBgColorEnd]: '0, 16, 34'
+    },
     backgroundColor:'#000',
     color:'#393939',
-    minWidth: 360,
+    minWidth: bodyMinWidth,
+    maxWidth: bodyMaxWidth,
+    margin:'0 auto',
     'h1, h2, h3, h4, h5, h6': {
         margin:0
     },
     '#app':{
-        height: 'inherit',
+        // height: 'inherit',
         backgroundColor:'#fff'
     },
     '.route-frame':{
@@ -68,15 +83,26 @@ export const [themeClass, vars] = createTheme({
     }
 });
 
-export const circleSize = createVar();
-export const bodyBgColorStart = createVar();
-export const bodyBgColorEnd = createVar();
 const button = style({
 
 })
 
+
+export const pseudoCircle = style({
+    selectors: {
+        '&:before, &:after': {
+            display: 'block',
+            position: 'absolute', left: '50%', top:'50%',
+            width: '100%', height:'100%',
+            borderRadius:'50%',
+            transform: 'translate(-50%, -50%)',
+            content: '""',
+        }
+    },
+});
+
 export const pageToggleArea = style({
-    position:'fixed', right: '1rem', top:'1rem', zIndex:1000,
+    position:'absolute', right: '1.5rem', top:'1.5rem',
     'button':{
         display:'block',
         position: 'relative',
@@ -110,24 +136,18 @@ export const pageToggleArea = style({
     }
 })
 
-export const pseudoCircle = style({
-    selectors: {
-        '&:before, &:after': {
-            display: 'block',
-            position: 'absolute', left: '50%', top:'50%',
-            width: '100%', height:'100%',
-            borderRadius:'50%',
-            transform: 'translate(-50%, -50%)',
-            content: '""',
-        }
-    },
-});
-
 export const headerContent = style({
     position:'fixed', top:0, left:0, right:0,
-    padding: '8vw 0',
-    textAlign:'center',
-    color:'white',
+    zIndex:10,
+    '.inner':{
+        position:'relative',
+        minWidth: bodyMinWidth,
+        maxWidth: bodyMaxWidth,
+        padding: '8vw 0',
+        margin: '0 auto',
+        textAlign:'center',
+        color:'white',
+    },
     '.text-holder':{
         opacity:0.3,
         '.title':{
@@ -200,11 +220,6 @@ export const previewCircle = style({
 });
 
 export const bodyContent = style({
-    vars: {
-        [circleSize]: '60vw',
-        [bodyBgColorStart]: '237, 99, 7',
-        [bodyBgColorEnd]: '0, 16, 34'
-    },
     height: '100%',
     color: '#1a1a1a',
     selectors:{
@@ -245,13 +260,20 @@ export const mainController = style({
         height: '50px'
     },
 
-    'select':{
+    'input, select':{
         color: 'rgba(255,255,255,0.8)',
         borderColor: 'rgba(255,255,255,0.3)',
         backgroundColor:'rgba(255,255,255,0.1)',
         '&:focus':{
             borderColor:'white'
         }
+    },
+    '.row':{
+      display:'flex',
+
+    },
+    '.divide-box':{
+        border:'1px solid red'
     },
 
     '.copyright':{
@@ -278,8 +300,8 @@ export const pageTypeList = style({
     // display:'none',
     // opacity:0,
     position: 'relative',
-    backgroundColor:'#f9f9f9',
     transition: 'opacity 0.3s ease-in-out',
+
     '&.show': {
        display:'block',
     },
@@ -287,9 +309,16 @@ export const pageTypeList = style({
         height: '100%',
         padding:'12px 0',
     },
+    '.page-header':{
+        display:'flex',
+        justifyContent:'space-between',
+        alignItems:'center',
+        padding: '0 16px',
+        lineHeight:1,
+    },
     '.tabs':{
         position:'sticky', top:'0',
-        padding:'12px 0 8px',
+        padding:'0 0 8px',
         backgroundColor:'rgba(255,255,255, 0.8)',
         backdropFilter: 'blur(6px)',
     },
@@ -298,11 +327,13 @@ export const pageTypeList = style({
         gap: '12px',
         overflowY:'auto',
         paddingLeft:'16px',
+        borderBottom:'1px solid #eaeaea',
         a:{
             display:'inline-flex',
-            padding: '8px 12px',
-            minWidth:'100px',
-            background:'pink'
+            padding: '8px 0',
+            minWidth:'60px',
+            fontSize:'0.875rem',
+            // backgroundColor:'pink'
         }
     },
     '.btn-group':{
@@ -353,11 +384,11 @@ export const galleryList = style({
     },
 
     '.list-header':{
-        position:'sticky', top:'60px',
+        position:'sticky', top:'45px',
         display:'flex',
         justifyContent:'space-between',
         alignItems:'center',
-        padding:'8px 16px 0',
+        padding:'0 16px 0',
         marginBottom: '4px',
         lineHeight:1,
         backgroundColor:'rgba(255,255,255, 0.8)',

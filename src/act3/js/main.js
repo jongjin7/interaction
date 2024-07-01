@@ -52,19 +52,21 @@ const main= (params)=>{
     const htmlData = `
         <div class="${bodyContent}">
             <header class="${headerContent}">
-                <div class="text-holder">
-                    <h1 class="title">종진의 이미지 아카이브</h1>
-                    <p class="sub-title">핸드폰 카메라로 담는 컬러</p>
+                <div class="inner">
+                    <div class="text-holder">
+                        <h1 class="title">종진의 이미지 아카이브</h1>
+                        <p class="sub-title">핸드폰 카메라로 담는 컬러</p>
+                    </div>
+                    
+                    <div class="${pageToggleArea}">
+                        <button id="site-toggle" type="button" class="btn-toggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    </div>
                 </div>
             </header>
-            
-            <div class="${pageToggleArea}">
-                <button id="site-toggle" type="button" class="btn-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
             
             <main>
                 <div class="${previewCircle}">
@@ -77,19 +79,22 @@ const main= (params)=>{
                     </button>
                 </div>
                 
-                <div>
-                    <a href="./" class="${buttonPrimaryClass}">메인으로</a>
-                        <a href="./list" class="${linkText}">갤러리 목록으로</a>
-                </div>
                 
                 <div class="${mainController} is-ready">
-                    <select class="${inputFieldClass}" name="" id="">
-                        <option value="">선택하세요</option>
-                        <option value="">옵션1</option>
-                        <option value="">옵션2</option>
-                    </select>
+                    <div class="flex w-full gap-2">
+                        <select class="${inputFieldClass}" name="" id="">
+                            <option value="">선택하세요</option>
+                            <option value="">옵션1</option>
+                            <option value="">옵션2</option>
+                        </select>
+                        
+                    </div> 
+                    <div class="flex w-full">
+                        <label for="add-category" class="shrink-0 pr-2 text-white/50" style="line-height:3;">신규 카테고리</label>
+                        <input type="text"id="add-category" class="${inputFieldClass} w-full" placeholder="입력하세요">
+                    </div>
                     <button type="button" class="${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center">
-                        <svg class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
                         </svg>
                         <span>이미지 업로드</span>
@@ -128,14 +133,17 @@ const pageGallery= (params)=>{
     </div>`;
 
     const htmlData = `<div class="container">
+<div class="page-header">
+    <h1 class="text-2xl text-gray-900">갤러리 상세</h1>
+</div>
 <div class="tabs">
-<div class="tab-nav">
-<a href="">탭1</a><a href="">탭2</a><a href="">탭3</a><a href="">탭4</a>
-<a href="">탭5</a><a href="">탭6</a><a href="">탭7</a><a href="">탭8</a>
+<div class="tab-nav text-gray-300">
+<a href="" class="text-orange-500">정물</a><a href="">배경</a><a href="">건물</a><a href="">인테리어</a>
+<a href="">그래픽</a><a href="">탭6</a><a href="">탭7</a><a href="">탭8</a>
 </div>
 </div>
 
-<div class="${galleryList}">
+<div class="${galleryList} ly-grid">
     <div class="list-header">
         <h4 class="text-sm font-semibold">인테리어</h4>
         <button type="button" class="${linkText} ${buttonSizeSmall} hover:bg-gray-200 btn-toggle" title="펼쳐보기">
