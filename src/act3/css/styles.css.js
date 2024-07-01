@@ -30,7 +30,6 @@ globalStyle('body', {
         height: '100%',
         maxWidth:'767px',
         margin:'0 auto',
-        color: '#1a1a1a',
     },
 
     button:{

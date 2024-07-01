@@ -134,7 +134,7 @@ const pageGallery= (params)=>{
 
     const htmlData = `<div class="container">
 <div class="page-header">
-    <h1 class="text-2xl text-gray-900">갤러리 상세</h1>
+    <h1 class="text-2xl text-neutral-900">갤러리 상세</h1>
 </div>
 <div class="tabs">
 <div class="tab-nav text-gray-300">
