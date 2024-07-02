@@ -1,16 +1,26 @@
-import {assignVars, globalStyle,  createTheme, createVar, style } from '@vanilla-extract/css';
+import {assignVars, globalStyle,  createTheme, createVar, style, createContainer } from '@vanilla-extract/css';
 
 export const bodyMinWidth = createVar();
 export const bodyMaxWidth = createVar();
 export const circleSize = createVar();
+export const maxCircleSize = createVar();
 export const bodyBgColorStart = createVar();
 export const bodyBgColorEnd = createVar();
+export const previewCircleName = createContainer();
+
+const responsiveStyle = ({ tablet, desktop }) => ({
+    '@media': {
+        'screen and (min-width: 768px)': tablet,
+        'screen and (min-width: 1024px)': desktop
+    }
+});
 
 globalStyle('body', {
     vars: {
         [bodyMinWidth]: '360px',
         [bodyMaxWidth]: '767px',
         [circleSize]: '60vw',
+        [maxCircleSize]: '300px',
         [bodyBgColorStart]: '237, 99, 7',
         [bodyBgColorEnd]: '0, 16, 34'
     },
@@ -52,6 +62,16 @@ globalStyle('[data-current-page=list]', {
     '#home':{
         transform: 'translateY(80vh)',
         margin: '10px',
+        borderTopLeftRadius:'12px',
+        borderTopRightRadius:'12px',
+        overflow:'hidden',
+        boxShadow:'0 -1vw 4vw 2vw rgba(255,255,255, 0.8)',
+
+        '& > div':{
+            '&:before':{
+                backgroundPositionY:'-60vh',
+            }
+        },
         '.btn-toggle':{
             transform:'rotate(-270deg)',
             // left: '4px',
@@ -82,10 +102,77 @@ export const [themeClass, vars] = createTheme({
     }
 });
 
-const button = style({
 
-})
+export const mainBodyContent = style([
+    {
+        height: '100%',
+        color: '#1a1a1a',
+        selectors:{
+            '&:before':{
+                display: 'block',
+                position:'absolute', left:0,  top:0, right:0, bottom:0,
+                // zIndex:2,
+                // backgroundImage: 'conic-gradient(from 180deg at 50% 40%, #f69d3c, #3f87a6)',
+                background:'no-repeat center center / contain',
+                // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+                backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+                content:'',
+            },
+        },
 
+        main:{
+            containerType: 'inline-size',
+            containerName: previewCircleName,
+            display:'flex', alignItems:'center',
+            flexFlow:'column wrap',
+            position:'absolute', left:0, top:0, bottom:0, right:0,
+            paddingTop: '20vh',
+
+        },
+
+        '& img':{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
+        },
+        '@container':{
+            '(min-width: 600px)': {
+                paddingTop:'128px',
+            },
+        }
+    },
+    // responsiveStyle({
+    //     tablet: { flex: 1, content: 'I will be overridden' },
+    //     desktop: { flexDirection: 'row' }
+    // }),
+    {
+        '@media': {
+            'screen and (min-width: 600px)': {
+                main:{
+                    paddingTop:'150px'
+                }
+            },
+            'screen and (max-height: 600px)': {
+                minHeight: '600px',
+            },
+            '(orientation: landscape)':{
+                header:{
+                    '.inner':{
+                        padding: '32px 0'
+                    }
+                },
+                main:{
+                    paddingTop: '32px'
+                },
+                '.copyright':{
+                    marginTop: '0',
+                }
+            }
+
+        },
+
+    },
+])
 
 export const pseudoCircle = style({
     selectors: {
@@ -142,7 +229,7 @@ export const headerContent = style({
         position:'relative',
         minWidth: bodyMinWidth,
         maxWidth: bodyMaxWidth,
-        padding: '8vw 0',
+        padding: '15vw 0',
         margin: '0 auto',
         textAlign:'center',
         // color:'white',
@@ -163,99 +250,82 @@ export const headerContent = style({
 
 })
 
-export const previewCircle = style({
-    display:'flex',
-    justifyContent:'center',
-
-
-    '.btn-circle': {
-        position:'relative',
-        width: circleSize, height: circleSize,
-        maxWidth: '300px',
-        maxHeight: '300px',
-        borderRadius:'50%',
-        overflow:'hidden',
-
-        '&:before': {
+export const previewCircle = style([
+    {
+        display:'flex',
+        justifyContent:'center',
+        '.btn-circle': {
             '--track-width': `calc(${circleSize} * 0.2)`,
-            width:`calc(100% - var(--track-width))`,
-            height: `calc(100% - var(--track-width))`,
-            boxShadow: `inset 0 0 0 calc(var(--track-width) * 0.5) rgba(0,0,0, 0.2), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`
-        },
-
-        '&:after':{
-            boxShadow: `inset 0 0 0 6vw rgba(0,0,0, 0.1), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`,
-        },
-
-        '.img-circle':{
-            width: '100%', height:'100%',
+            '--track-outer-width':`calc(${circleSize} * 0.1)`,
+            position:'relative',
+            width: circleSize, height: circleSize,
+            maxWidth: maxCircleSize,
+            maxHeight: maxCircleSize,
             borderRadius:'50%',
-            padding:'12vw',
             overflow:'hidden',
 
             '&:before': {
-                '--img-track-width': `calc(${circleSize} * 0.4)`,
-                width:`calc(100% - var(--img-track-width))`,
-                height: `calc(100% - var(--img-track-width))`,
-                backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
-                boxShadow: `inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.5)`,
+                width:`calc(100% - var(--track-width))`,
+                height: `calc(100% - var(--track-width))`,
+                boxShadow: `inset 0 0 0 calc(var(--track-width) * 0.5) rgba(0,0,0, 0.2), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`
             },
+
             '&:after':{
-                display: 'none'
+                boxShadow: `inset 0 0 0 var(--track-outer-width) rgba(0,0,0, 0.1), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`,
             },
 
-            img:{
+            '.img-circle':{
+                width: '100%', height:'100%',
                 borderRadius:'50%',
-            }
-        },
-        '.icon-camera':{
-            position: 'absolute', left: `calc(50% - (100% * 0.3 / 2))`, top: 'calc(50% - (100% * 0.3 /2))',
-            width: `calc(100% * 0.3)`,
-            height: `calc(100% * 0.3)`,
-            opacity:0.5,
-            path:{
-                // filter: 'drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5))'
-                filter: 'drop-shadow(0 0 0.5px rgba(255, 255, 255, 0.7))'
-            }
-        }
-    }
-});
+                padding: `calc(${circleSize} * 0.2)`,
+                overflow:'hidden',
 
-export const bodyContent = style({
-    height: '100%',
-    color: '#1a1a1a',
-    selectors:{
-        '&:before':{
-            display: 'block',
-            position:'absolute', left:0,  top:0, right:0, bottom:0,
-            // zIndex:2,
-            // backgroundImage: 'conic-gradient(from 180deg at 50% 40%, #f69d3c, #3f87a6)',
-            background:'no-repeat center center / contain',
-            // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
-            backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
-            content:'',
+                '&:before': {
+                    '--img-track-width': `calc(${circleSize} * 0.4)`,
+                    width:`calc(100% - var(--img-track-width))`,
+                    height: `calc(100% - var(--img-track-width))`,
+                    backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
+                    boxShadow: `inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.5)`,
+                },
+                '&:after':{
+                    display: 'none'
+                },
+
+                img:{
+                    borderRadius:'50%',
+                }
+            },
+            '.icon-camera':{
+                position: 'absolute', left: `calc(50% - (100% * 0.3 / 2))`, top: 'calc(50% - (100% * 0.3 /2))',
+                width: `calc(100% * 0.3)`,
+                height: `calc(100% * 0.3)`,
+                opacity:0.5,
+                path:{
+                    // filter: 'drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5))'
+                    filter: 'drop-shadow(0 0 0.5px rgba(255, 255, 255, 0.7))'
+                }
+            },
         },
     },
+    {
+        '@container': {
+            [`${previewCircleName} (min-width: 600px)`]: {
+                vars: {
+                    [circleSize]: maxCircleSize,
+                },
 
-    main:{
-        display:'flex', alignItems:'center',
-        flexFlow:'column wrap',
-        position:'absolute', left:0, top:0, bottom:0, right:0,
-        paddingTop: '24vw'
-    },
-
-    '& img':{
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover'
+            },
+        },
     }
-})
+]);
+
+
 
 export const mainController = style({
     position:'absolute', bottom: 0, left:0, right:0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexDirection: 'column',
-    padding: '0 8vw 4vw',
+    padding: '0 8vw 2vh',
     gap:'8px',
     transition:'padding 0.3s ease-in',
 
@@ -280,6 +350,7 @@ export const mainController = style({
     },
 
     '.copyright':{
+        marginTop: '4vw',
         color: 'rgba(255,255,255,0.2)',
         fontSize: '0.75rem',
     },

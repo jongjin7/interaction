@@ -2,7 +2,7 @@ import {
     headerContent,
     pseudoCircle,
     vars,
-    bodyContent,
+    mainBodyContent,
     previewCircle,
     mainController,
     pageTypeList,
@@ -50,7 +50,7 @@ const linkText = `font-semibold  text-gray-900`;
 const inputFieldClass = `relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 pl-5 pr-12 outline-none transition focus:border-orange-500 active:border-orange dark:border-form-strokedark dark:bg-form-input`
 const main= (params)=>{
     const htmlData = `
-        <div class="${bodyContent}">
+        <div class="${mainBodyContent}">
             <header class="${headerContent}">
                 <div class="inner">
                     <div class="text-holder">
@@ -67,9 +67,8 @@ const main= (params)=>{
                     </div>
                 </div>
             </header>
-            
             <main>
-                <div class="${previewCircle}">
+                <div class="myCircle ${previewCircle}">
                     <button type="button" class="btn-circle ${pseudoCircle}">
                         <div class="img-circle ${pseudoCircle}"><img src="./img/img_wide.png" alt=""></div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-camera" viewBox="0 0 16 16">
