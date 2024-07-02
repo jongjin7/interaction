@@ -50,7 +50,7 @@ globalStyle('[data-current-page=home]', {
 
 globalStyle('[data-current-page=list]', {
     '#home':{
-        transform: 'translateY(90vh)',
+        transform: 'translateY(80vh)',
         margin: '10px',
         '.btn-toggle':{
             transform:'rotate(-270deg)',
@@ -112,7 +112,7 @@ export const pageToggleArea = style({
             left: 0,
             width: '100%',
             height: '2px',
-            backgroundColor: '#fff',
+            backgroundColor: '#1a1a1a',
             borderRadius: '1px',
             '&:nth-of-type(1)':{
                 top:0,
@@ -145,10 +145,10 @@ export const headerContent = style({
         padding: '8vw 0',
         margin: '0 auto',
         textAlign:'center',
-        color:'white',
+        // color:'white',
     },
     '.text-holder':{
-        opacity:0.3,
+        //opacity:0.3,
         '.title':{
             fontSize:'1.5rem',
             fontWeight: '600',
@@ -167,11 +167,14 @@ export const previewCircle = style({
     display:'flex',
     justifyContent:'center',
 
+
     '.btn-circle': {
         position:'relative',
         width: circleSize, height: circleSize,
         maxWidth: '300px',
         maxHeight: '300px',
+        borderRadius:'50%',
+        overflow:'hidden',
 
         '&:before': {
             '--track-width': `calc(${circleSize} * 0.2)`,
@@ -228,7 +231,8 @@ export const bodyContent = style({
             // zIndex:2,
             // backgroundImage: 'conic-gradient(from 180deg at 50% 40%, #f69d3c, #3f87a6)',
             background:'no-repeat center center / contain',
-            backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+            // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+            backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
             content:'',
         },
     },
@@ -289,15 +293,15 @@ export const mainController = style({
 // 페이지 컨테이너 정의
 // 메인
 export const pageTypeMain = style({
-    display:'none',
+    // display:'none',
     position:'fixed', zIndex: 100,
     transition: 'transform 0.5s ease-in-out, margin 0.3s ease-in'
 })
 
 // 서브
 export const pageTypeList = style({
-    // display:'none',
-    // opacity:0,
+    display:'none',
+    opacity:0,
     position: 'relative',
     transition: 'opacity 0.3s ease-in-out',
 
@@ -306,7 +310,7 @@ export const pageTypeList = style({
     },
     '& > .container':{
         height: '100%',
-        padding:'12px 0',
+        padding:'16px 0 12px',
     },
     '.page-header':{
         display:'flex',
@@ -316,23 +320,50 @@ export const pageTypeList = style({
         lineHeight:1,
     },
     '.tabs':{
-        position:'sticky', top:'0',
-        padding:'0 0 8px',
-        backgroundColor:'rgba(255,255,255, 0.8)',
+        position:'sticky', top:'0', zIndex:10,
+        padding:'8px 0 0',
+        backgroundColor:'rgba(255,255,255, 0.9)',
         backdropFilter: 'blur(6px)',
     },
     '.tab-nav':{
         display:'flex',
-        gap: '12px',
+        gap: '8px',
+        scrollbarWidth: 'none',
         overflowY:'auto',
-        paddingLeft:'16px',
+        // padding:'0 8px 8px 16px',
+        padding: '0 16px 8px',
         borderBottom:'1px solid #eaeaea',
+        boxShadow:'0 2px 6px rgba(255,255,255, 0.7)',
+        // scrollSnapType:'x mandatory',
         a:{
-            display:'inline-flex',
-            padding: '8px 0',
-            minWidth:'60px',
+            display:'inline-block',
+            padding: '6px 8px 0',
+            // marginLeft:'-8px',
+            height:'32px',
             fontSize:'0.875rem',
-            // backgroundColor:'pink'
+            borderRadius: '8px',
+            textAlign: 'center',
+            whiteSpace:'nowrap',
+            // scrollSnapAlign:'center'
+        }
+    },
+    '.tab-contents':{
+        display:'flex',
+        flexWrap:'nowrap',
+        // gap: '16px',
+        scrollbarWidth: 'none',
+        overflowX:'auto',
+        scrollSnapType:'x mandatory',
+        scrollBehavior: 'smooth',
+        '.tab-panel':{
+            flexShrink: 0,
+            width:'100%',
+            border:'1px dotted green',
+            scrollSnapAlign:'start',
+            '& > div':{
+                transition: 'all 0.35s ease',
+                // transform: 'translateX(-50%) scale(0.7)',
+            },
         }
     },
     '.btn-group':{
@@ -343,7 +374,8 @@ export const pageTypeList = style({
 
 export const galleryList = style({
     // border:'1px solid red',
-    marginBottom:'24px',
+    paddingTop:'16px',
+    marginBottom:'8px',
 
     '&.ly-grid':{
         '.btn-toggle':{
@@ -366,33 +398,16 @@ export const galleryList = style({
                 }
             }
         },
-      '.list':{
-          display: 'block',
-          overflow: 'visible',
-          columnCount:2,
-          '.list-item':{
-              height:'auto',
-              minHeight:'auto',
-              maxHeight:'none',
-              marginBottom: '12px',
-              img:{
-                  objectFit:'contain'
-              }
-          }
-      }
     },
 
     '.list-header':{
-        position:'sticky', top:'45px',
         display:'flex',
         justifyContent:'space-between',
         alignItems:'center',
-        padding:'0 16px 0',
-        marginBottom: '4px',
+        padding:'0 24px 0',
+        marginBottom: '8px',
         lineHeight:1,
-        backgroundColor:'rgba(255,255,255, 0.8)',
-        backdropFilter: 'blur(6px)',
-        boxShadow:'0 2px 6px rgba(255,255,255, 0.7)',
+
         '.btn-toggle':{
             path:{
                 '&:last-child':{
@@ -413,24 +428,22 @@ export const galleryList = style({
         }
     },
     '.list':{
-        display:'flex',
+        display: 'block',
         gap: '12px',
         width: '100%',
         padding:'0 16px',
-        overflowY:'auto',
+        columnCount:2,
     },
     '.list-item':{
-        height: '10vw',
-        minHeight:'70px',
-        maxHeight: '100px',
         flexShrink:0,
         borderRadius:'8px',
         boxShadow:"0 0 6px rgba(0,0,0, 0.05)",
         overflow:'hidden',
+        marginBottom: '12px',
         img:{
             width:'100%',
             height: '100%',
-            objectFit:'cover'
+            objectFit:'contain'
         }
     },
     '.btn-group':{
