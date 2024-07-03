@@ -25,16 +25,21 @@ const createFrame = (params) =>{
 }
 
 // 컴포넌트 정의
-const toggleIconDefault = `
+const iconToggleDefault = `
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
       <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
     </svg>`;
-const toggleIconHome = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  viewBox="0 0 16 16">
+const iconToggleHome = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"  viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
 </svg>`;
 
+const iconDeleteFile = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>`;
+
 let currentPage = '';
-let previousPage = '';
+let useCustomField = false;
 
 const buttonIconClass = ``;
 const labelClass = `mb-3 block text-sm font-medium text-black dark:text-white`;
@@ -81,18 +86,22 @@ const main= (params)=>{
                 
                 <div class="${mainController} --is-ready">
                     <div class="flex w-full gap-2">
-                        <select class="${inputFieldClass}" name="" id="" disabled>
+                        <select class="${inputFieldClass}" id="pic-category" >
                             <option value="">선택하세요</option>
-                            <option value="">옵션1</option>
-                            <option value="">옵션2</option>
+                            <option value="1">옵션1</option>
+                            <option value="2">옵션2</option>
                             <option value="user_add">직접 입력</option>
                         </select>
                         
-                    </div> 
-                    <div class="flex w-full">
-                        <label for="add-category" class="shrink-0 pr-2 text-white/50" style="line-height:3;">신규 카테고리</label>
-                        <input type="text"id="add-category" class="${inputFieldClass} w-full" placeholder="입력하세요">
                     </div>
+                     
+                    <div id="el-custom-filed" class="custom-field w-full none">
+                        <div class="flex">
+                            <label for="add-category" class="shrink-0 pr-2 text-white/50" style="line-height:3;">신규 카테고리</label>
+                            <input type="text" id="add-category" class="${inputFieldClass} w-full" placeholder="입력하세요">
+                        </div>
+                    </div>
+                    
                     <button type="button" class="${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center disabled:bg-gray-500 disabled:text-gray-700" disabled>
                         <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
@@ -134,7 +143,7 @@ const pageGallery= (params)=>{
         </ul>
     </div>`;
 
-    const htmlData = `<div class="container">
+    const htmlData = `<div class="page-container">
 <!--<div class="page-header">-->
 <!--    <h1 class="text-2xl text-neutral-900">갤러리 상세</h1>-->
 <!--</div>-->
@@ -154,7 +163,10 @@ const pageGallery= (params)=>{
                 <h4 class="font-semibold">#전체</h4>
             </div>
             <ul class="list">
-            <li class="list-item"><a href=""><img src="https://media.istockphoto.com/id/1333977253/ko/%EC%82%AC%EC%A7%84/%EB%B0%94%EC%9C%84-%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%84%B1-%EC%82%AC%EC%9E%90.webp?b=1&s=170667a&w=0&k=20&c=MRGJuh2fNkPxiDnv0zv45jmOruLDOAc3-Yym9AXJNT0=" alt=""></a></li>
+            <li class="list-item">
+                <button type="button" title="삭제" class="btn-delete">${iconDeleteFile}</button>
+                <a href=""><img src="https://media.istockphoto.com/id/1333977253/ko/%EC%82%AC%EC%A7%84/%EB%B0%94%EC%9C%84-%EC%97%90-%EB%88%84%EC%9B%8C-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%84%B1-%EC%82%AC%EC%9E%90.webp?b=1&s=170667a&w=0&k=20&c=MRGJuh2fNkPxiDnv0zv45jmOruLDOAc3-Yym9AXJNT0=" alt=""></a>
+            </li>
             <li class="list-item"><a href=""><img src="https://cdn.pixabay.com/photo/2012/02/27/15/35/lion-17335_640.jpg" alt=""></a></li>
             <li class="list-item"><a href=""><img src="https://images.unsplash.com/photo-1601625463687-25541fb72f62?fm=jpg&w=3000&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D" alt=""></a></li>
             <li class="list-item"><a href=""><img src="https://img.freepik.com/premium-photo/lion-image_811396-3531.jpg" alt=""></a></li>
@@ -231,16 +243,18 @@ const pageGallery= (params)=>{
 const toggleUploadPage = ()=>{
     const list = document.querySelector(`#list`);
     currentPage = currentPage === 'home' ? 'list' : 'home';
-    if(currentPage === 'list') list.classList.add('show');
-    setTimeout(()=>{
-        document.body.dataset.currentPage = currentPage;
-        const listHandler = ()=>{
-            if(currentPage === 'home') list.classList.remove('show');
-            list.removeEventListener('transitionend', listHandler)
-        }
-
-        list.addEventListener('transitionend', listHandler)
-    },0)
+    document.body.dataset.currentPage = currentPage;
+    document.body.classList.toggle('overflow-visible')
+    // if(currentPage === 'list') list.classList.add('show');
+    // setTimeout(()=>{
+    //
+    //     const listHandler = ()=>{
+    //         if(currentPage === 'home') list.classList.remove('show');
+    //         list.removeEventListener('transitionend', listHandler)
+    //     }
+    //
+    //     list.addEventListener('transitionend', listHandler)
+    // },0)
 }
 
 // router
@@ -314,8 +328,18 @@ function init(){
         }
     });
 
-    const panelWidth = [];
-
+    // 카테고리 선택
+    const categorySelect = document.querySelector('#pic-category');
+    categorySelect.addEventListener('change', (e)=>{
+        console.log('현재 선택된 카테고리', e.target.value)
+        const customField = document.querySelector('#el-custom-filed');
+        if(e.target.value === 'user_add' && customField.classList.contains('none')){
+            customField.classList.remove('none');
+            customField.querySelector('input').focus();
+        }else{
+            if(!customField.classList.contains('none')) customField.classList.add('none');
+        }
+    })
 
     // carousel
     const carousel = document.querySelector('#el-tab-contents');
@@ -333,50 +357,45 @@ function init(){
     window.addEventListener('resize', ()=>{
         getItemOffsetInfo();
     })
-        console.log('position ==>', carouselItemStartPoints)
+    console.log('position ==>', carouselItemStartPoints)
 
     let isScrolling;
     const tabNav = document.querySelectorAll('.tab-nav > a')
     tabNav.forEach((nav, idx) =>{
         nav.onclick = (e)=>{
             e.preventDefault();
-            console.log('현재 클릭된 메뉴 =>', idx, carouselItemStartPoints[idx])
             carousel.scrollTo(carouselItemStartPoints[idx], 0)
         }
     })
 
     const scrollHandler = (param) => {
-        const endDelayTime = typeof param === 'number'? param : 1000;
-        // Clear our timeout throughout the scroll
+        const endDelayTime = typeof param === 'number' ? param : 60;
+        // Clear the existing timeout throughout the scroll
         window.clearTimeout(isScrolling);
-        console.log('------ Scrolling started!.');
+
         // Set a timeout to run after scrolling ends
         isScrolling = setTimeout(() => {
-            // Run the callback
             console.log('------ Scrolling has stopped.');
 
-            setTimeout(() => {
-                console.log('------ Scrolling has completed!.', carousel.scrollLeft);
-                carouselItemStartPoints.forEach((position, index)=>{
-                    if(carousel.scrollLeft === position){
-                        console.log('@@현재 선택된 아이템 패널 index -->', index)
-                        tabNav.forEach((nav, idx)=>{
-                            if(nav.classList.contains('bg-gray-700')){
-                                nav.classList.remove('bg-gray-700')
-                                nav.classList.remove('text-white')
-                            }
-                            if(idx === index){
-                                nav.classList.add('bg-gray-700')
-                                nav.classList.add('text-white')
-                            }
-                        })
-                    }
-                })
-            }, endDelayTime);
-            isScrolling = null;
+            carouselItemStartPoints.forEach((position, index) => {
+                if (carousel.scrollLeft === position) {
+                    console.log('@@현재 선택된 아이템 패널 index -->', index);
 
-        }, 300); // The timeout duration in milliseconds (200ms)
-    }
+                    tabNav.forEach((nav, idx) => {
+                        if (nav.classList.contains('bg-gray-700')) {
+                            nav.classList.remove('bg-gray-700', 'text-white');
+                        }
+                        if (idx === index) {
+                            nav.classList.add('bg-gray-700', 'text-white', 'jongjin');
+                        }
+                    });
+                }
+            });
+
+            isScrolling = null;
+        }, endDelayTime ); // Combine the delays to a single timeout
+    };
+
     carousel.addEventListener('scroll', scrollHandler, false);
     scrollHandler(0);
 

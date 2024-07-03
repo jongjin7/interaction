@@ -18,7 +18,7 @@ const responsiveStyle = ({ tablet, desktop }) => ({
 globalStyle('body', {
     vars: {
         [bodyMinWidth]: '360px',
-        [bodyMaxWidth]: '767px',
+        [bodyMaxWidth]: '900px',
         [circleSize]: '60vw',
         [maxCircleSize]: '300px',
         [bodyBgColorStart]: '237, 99, 7',
@@ -29,6 +29,7 @@ globalStyle('body', {
     minWidth: bodyMinWidth,
     maxWidth: bodyMaxWidth,
     margin:'0 auto',
+    overflow:'hidden',
     'h1, h2, h3, h4, h5, h6': {
         margin:0
     },
@@ -37,9 +38,11 @@ globalStyle('body', {
         backgroundColor:'#fff'
     },
     '.route-frame':{
+        width: '100%',
         height: '100%',
-        maxWidth:'767px',
+        maxWidth: bodyMaxWidth,
         margin:'0 auto',
+        //overflow:'hidden',
     },
 
     button:{
@@ -54,22 +57,47 @@ globalStyle('[data-current-page=home]', {
         margin: '0',
     },
     '#list':{
-        opacity: 0
+        opacity: 0,
     }
 });
 
 globalStyle('[data-current-page=list]', {
     '#home':{
-        transform: 'translateY(80vh)',
-        margin: '10px',
+        transform: 'translateY(88svh)',
+        margin: '8px',
         borderTopLeftRadius:'12px',
         borderTopRightRadius:'12px',
-        overflow:'hidden',
         boxShadow:'0 -1vw 4vw 2vw rgba(255,255,255, 0.8)',
+        width: `calc( 100% - 16px)`,
+        maxWidth: `calc( ${bodyMaxWidth} - 16px)`,
+        overflow:'hidden',
+
+        '@media screen and (orientation: landscape)':{
+            transform: 'translateY(83svh)',
+            header:{
+                '.inner':{
+                    '.btn-toggle':{
+                        marginTop: '-2svh !important'
+                    }
+                }
+            }
+        },
 
         '& > div':{
             '&:before':{
                 backgroundPositionY:'-60vh',
+                transitionDelay:'background-position 0s',
+            }
+        },
+        'header':{
+            '.inner':{
+                padding: '4svh 0',
+                '.sub-title':{
+                    display:'none'
+                },
+                '.btn-toggle':{
+                    marginTop: '1svh'
+                }
             }
         },
         '.btn-toggle':{
@@ -84,10 +112,10 @@ globalStyle('[data-current-page=list]', {
             'span:nth-of-type(3)':{
                 transform: 'translate(-2px, -7px) rotate(45deg)'
             }
-        }
+        },
     },
     '#list':{
-        opacity: 1
+        opacity: 1,
     }
 });
 
@@ -116,6 +144,7 @@ export const mainBodyContent = style([
                 background:'no-repeat center center / contain',
                 // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
                 backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+                transition:'background-image 0.5s ease, background-position 0.1s ease 0.4s',
                 content:'',
             },
         },
@@ -147,30 +176,42 @@ export const mainBodyContent = style([
     // }),
     {
         '@media': {
-            'screen and (min-width: 600px)': {
+            'screen and (min-width: 600px) and (min-height: 300px)': {
+                header:{
+                    '.inner':{
+                        padding: '60px 0',
+                    }
+                },
                 main:{
                     paddingTop:'150px'
                 }
             },
-            'screen and (max-height: 600px)': {
-                minHeight: '600px',
-            },
-            '(orientation: landscape)':{
-                header:{
-                    '.inner':{
-                        padding: '32px 0'
-                    }
-                },
-                main:{
-                    paddingTop: '32px'
-                },
-                '.copyright':{
-                    marginTop: '0',
-                }
-            }
+            // 'screen and (max-height: 600px)': {
+            //     minHeight: '600px',
+            // },
+            // [`(orientation: landscape) and (min-width: 900px) and (max-height: 600px)`]: {
+            //     header:{
+            //         '.inner':{
+            //             padding: '32px 0'
+            //         }
+            //     },
+            //     main:{
+            //         paddingTop: '32px'
+            //     },
+            //     '.copyright':{
+            //         marginTop: '0',
+            //     }
+            // },
+            // '(orientation: portrait) and (min-width: 600px)':{
+            //     header:{
+            //         '.inner':{
+            //             padding: '60px 0',
+            //         }
+            //     },
+            // },
+
 
         },
-
     },
 ])
 
@@ -319,8 +360,6 @@ export const previewCircle = style([
     }
 ]);
 
-
-
 export const mainController = style({
     position:'absolute', bottom: 0, left:0, right:0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -341,12 +380,14 @@ export const mainController = style({
             borderColor:'white'
         }
     },
-    '.row':{
-      display:'flex',
-
-    },
     '.divide-box':{
         border:'1px solid red'
+    },
+
+    '.custom-field':{
+        '&.none':{
+            display:'none'
+        }
     },
 
     '.copyright':{
@@ -354,11 +395,6 @@ export const mainController = style({
         color: 'rgba(255,255,255,0.2)',
         fontSize: '0.75rem',
     },
-
-    '&.is-ready':{
-        paddingBottom: '40vh'
-    }
-
 });
 
 // 페이지 컨테이너 정의
@@ -366,20 +402,16 @@ export const mainController = style({
 export const pageTypeMain = style({
     // display:'none',
     position:'fixed', zIndex: 100,
-    transition: 'transform 0.5s ease-in-out, margin 0.3s ease-in'
+    transition: 'transform 0.5s ease-in-out'
 })
 
 // 서브
 export const pageTypeList = style({
-    display:'none',
     opacity:0,
+    // opacity:1,
     position: 'relative',
     transition: 'opacity 0.3s ease-in-out',
-
-    '&.show': {
-       display:'block',
-    },
-    '& > .container':{
+    '& > .page-container':{
         height: '100%',
         padding:'16px 0 12px',
     },
@@ -444,7 +476,6 @@ export const pageTypeList = style({
 });
 
 export const galleryList = style({
-    // border:'1px solid red',
     paddingTop:'16px',
     marginBottom:'8px',
 
@@ -506,11 +537,38 @@ export const galleryList = style({
         columnCount:2,
     },
     '.list-item':{
+        position:'relative',
         flexShrink:0,
         borderRadius:'8px',
         boxShadow:"0 0 6px rgba(0,0,0, 0.05)",
         overflow:'hidden',
         marginBottom: '12px',
+        '.btn-delete':{
+            display:'flex',
+            justifyContent:'center',
+            alignItems:'center',
+            position:'absolute',
+            left:0, top:0, bottom:0, right:0,
+            zIndex:1,
+            overflow:'hidden',
+            color: 'white',
+
+            'svg':{
+                position:"relative", zIndex: 1,
+                width: '24px', height:'24px',
+                'path':{
+                    filter: 'drop-shadow(0 0 1px rgba(0, 0, 0, 0.1))'
+                }
+            },
+            '&:before':{
+                display:'block',
+                position:'absolute',
+                left:0, top:0, bottom:0, right:0,
+                backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                backdropFilter: 'blur(1px)',
+                content:'""'
+            }
+        },
         img:{
             width:'100%',
             height: '100%',
