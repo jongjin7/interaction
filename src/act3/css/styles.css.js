@@ -1,5 +1,4 @@
 import {assignVars, globalStyle,  createTheme, createVar, style, createContainer } from '@vanilla-extract/css';
-
 export const bodyMinWidth = createVar();
 export const bodyMaxWidth = createVar();
 export const circleSize = createVar();
@@ -293,6 +292,7 @@ export const headerContent = style({
 
 export const previewCircle = style([
     {
+        position:'relative',
         display:'flex',
         justifyContent:'center',
         '.btn-circle': {
@@ -411,6 +411,7 @@ export const pageTypeList = style({
     // opacity:1,
     position: 'relative',
     transition: 'opacity 0.3s ease-in-out',
+    paddingBottom: '10vh',
     '& > .page-container':{
         height: '100%',
         padding:'16px 0 12px',
@@ -463,6 +464,9 @@ export const pageTypeList = style({
             width:'100%',
             border:'1px dotted green',
             scrollSnapAlign:'start',
+            height: 'calc(100vh - 170px)',
+            overflowY:'auto',
+            outline:'2px dotted red',
             '& > div':{
                 transition: 'all 0.35s ease',
                 // transform: 'translateX(-50%) scale(0.7)',
@@ -544,6 +548,7 @@ export const galleryList = style({
         overflow:'hidden',
         marginBottom: '12px',
         '.btn-delete':{
+            '--del-color': '#f43f5e',
             display:'flex',
             justifyContent:'center',
             alignItems:'center',
@@ -551,32 +556,39 @@ export const galleryList = style({
             left:0, top:0, bottom:0, right:0,
             zIndex:1,
             overflow:'hidden',
-            color: 'white',
-
+            opacity: 0.5,
+            color: 'var(--del-color)',
+            border:'2px solid transparent',
+            borderRadius:'8px',
             'svg':{
                 position:"relative", zIndex: 1,
-                width: '24px', height:'24px',
+                width: '40px', height:'40px',
                 'path':{
                     filter: 'drop-shadow(0 0 1px rgba(0, 0, 0, 0.1))'
                 }
             },
-            '&:before':{
-                display:'block',
-                position:'absolute',
-                left:0, top:0, bottom:0, right:0,
-                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                backdropFilter: 'blur(1px)',
-                content:'""'
+            '&.selected':{
+                opacity:1,
+                borderColor:'var(--del-color)',
+                '&:before':{
+                    display:'block',
+                    position:'absolute',
+                    left:0, top:0, bottom:0, right:0,
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    backdropFilter: 'blur(1px)',
+                    content:'""'
+                }
             }
         },
         img:{
             width:'100%',
             height: '100%',
             objectFit:'contain'
-        }
+        },
+
     },
     '.btn-group':{
-        justifyContent:'flex-end',
+        justifyContent:'space-between',
         marginTop:'8px',
         padding:'0 16px 8px',
     }
