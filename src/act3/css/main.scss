@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
+html{
+    overflow: hidden;
+}
 @import '/assets/scss/common.scss';
 

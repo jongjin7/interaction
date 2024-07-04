@@ -33,8 +33,9 @@ globalStyle('body', {
         margin:0
     },
     '#app':{
-        // height: 'inherit',
-        backgroundColor:'#fff'
+        height: 'inherit',
+        backgroundColor:'#fff',
+        transition: 'opacity .5s ease-in-out',
     },
     '.route-frame':{
         width: '100%',
@@ -42,11 +43,30 @@ globalStyle('body', {
         maxWidth: bodyMaxWidth,
         margin:'0 auto',
         //overflow:'hidden',
+
     },
 
     button:{
         alignItems:'center',
         gap:'12px'
+    },
+    '.app-loading':{
+        background: 'rgba(0,0,0, 0.95)',
+        position:'fixed', left:0, top:0, right:0, bottom:0,
+        zIndex:1000,
+        transition: 'opacity .5s ease-in-out',
+        '.ripple':{
+            width: '30vw',
+            height: '30vw',
+            maxWidth: '200px',
+            maxHeight: '200px',
+        }
+    },
+    '.fadein':{
+        opacity:1
+    },
+    '.fadeout':{
+        opacity:0
     }
 });
 
@@ -57,6 +77,8 @@ globalStyle('[data-current-page=home]', {
     },
     '#list':{
         opacity: 0,
+        '.tab-contents':{
+        }
     }
 });
 
@@ -135,17 +157,27 @@ export const mainBodyContent = style([
         height: '100%',
         color: '#1a1a1a',
         selectors:{
+            '&:before, &:after':{
+                display:'none',
+                position:'absolute', left:0,  top:0, right:0, bottom:0,
+                content:'',
+            },
             '&:before':{
                 display: 'block',
-                position:'absolute', left:0,  top:0, right:0, bottom:0,
                 // zIndex:2,
                 // backgroundImage: 'conic-gradient(from 180deg at 50% 40%, #f69d3c, #3f87a6)',
                 background:'no-repeat center center / contain',
                 // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
                 backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
                 transition:'background-image 0.5s ease, background-position 0.1s ease 0.4s',
-                content:'',
             },
+        },
+        '&.is-loading':{
+            '&:after':{
+                display: 'block',
+                backgroundColor:'transparent',
+                // backgroundColor:'rgba(255,255,255,0.5)',
+            }
         },
 
         main:{
@@ -175,7 +207,20 @@ export const mainBodyContent = style([
     // }),
     {
         '@media': {
-            'screen and (min-width: 600px) and (min-height: 300px)': {
+            'screen and (min-width: 600px) and (max-height: 400px)': {
+                header:{
+                    '.inner':{
+                        padding:'16px 0',
+                    }
+                },
+                main:{
+                    paddingTop: '1vh'
+                },
+                '.copyright':{
+                    marginTop: '0'
+                }
+            },
+            'screen and (min-width: 600px) and (min-height: 400px)': {
                 header:{
                     '.inner':{
                         padding: '60px 0',
@@ -229,6 +274,7 @@ export const pseudoCircle = style({
 
 export const pageToggleArea = style({
     position:'absolute', right: '1.5rem', top:'1.5rem',
+    zIndex: 20,
     'button':{
         display:'block',
         position: 'relative',
@@ -292,12 +338,13 @@ export const headerContent = style({
 
 export const previewCircle = style([
     {
+        '--track-width': `calc(${circleSize} * 0.2)`,
+        '--track-outer-width':`calc(${circleSize} * 0.1)`,
+        '--img-track-width': `calc(${circleSize} * 0.4)`,
         position:'relative',
         display:'flex',
         justifyContent:'center',
         '.btn-circle': {
-            '--track-width': `calc(${circleSize} * 0.2)`,
-            '--track-outer-width':`calc(${circleSize} * 0.1)`,
             position:'relative',
             width: circleSize, height: circleSize,
             maxWidth: maxCircleSize,
@@ -322,7 +369,6 @@ export const previewCircle = style([
                 overflow:'hidden',
 
                 '&:before': {
-                    '--img-track-width': `calc(${circleSize} * 0.4)`,
                     width:`calc(100% - var(--img-track-width))`,
                     height: `calc(100% - var(--img-track-width))`,
                     backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
@@ -482,29 +528,6 @@ export const pageTypeList = style({
 export const galleryList = style({
     paddingTop:'16px',
     marginBottom:'8px',
-
-    '&.ly-grid':{
-        '.btn-toggle':{
-            'path':{
-                '&:first-child':{
-                    opacity:0
-                },
-                '&:last-child':{
-                    opacity:'1 !important'
-                }
-            },
-            '&:hover':{
-                'path':{
-                    '&:first-child':{
-                        opacity:'1 !important'
-                    },
-                    '&:last-child':{
-                        opacity:'0 !important'
-                    }
-                }
-            }
-        },
-    },
 
     '.list-header':{
         display:'flex',

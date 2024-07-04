@@ -15,6 +15,11 @@ import {
 } from '../css/styles.css.js';
 import {LoadingBasic} from "../css/loading.css";
 
+// 페이지 랜더
+const loading = (className)=> `<div id="el-${className}" class="${LoadingBasic} ${className}">
+                        <div class="ripple"></div>
+                    </div>`
+
 const createFrame = (params) =>{
     const {id, className, data} = params;
     const content = document.createElement('div');
@@ -57,12 +62,12 @@ const linkText = `font-semibold  text-gray-900`;
 const inputFieldClass = `relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 pl-5 pr-12 outline-none transition focus:border-orange-500 active:border-orange dark:border-form-strokedark dark:bg-form-input`
 const main= (params)=>{
     const htmlData = `
-        <div class="${mainBodyContent}">
+        <div class="${mainBodyContent} -is-loading">
             <header class="${headerContent}">
                 <div class="inner">
                     <div class="text-holder">
                         <h1 class="title">종진의 이미지 아카이브</h1>
-                        <p class="sub-title">핸드폰 카메라로 담는 컬러</p>
+                        <p class="sub-title">나의 폰으로 담는 컬러 세상</p>
                     </div>
                     
                     <div class="${pageToggleArea}">
@@ -77,9 +82,8 @@ const main= (params)=>{
             <main>
                 <div class="${previewCircle}">
                     <!-- Loading -->
-                    <div class="${LoadingBasic}">
-                        <div class="ripple"></div>
-                    </div>
+                   <!-- loading('uploading') -->
+                    
                     <button type="button" class="btn-circle ${pseudoCircle}">
                         <div class="img-circle ${pseudoCircle}"><img src="./img/img_wide.png" alt=""></div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="icon-camera" viewBox="0 0 16 16">
@@ -314,102 +318,135 @@ const route = async (app) => {
     match.route.view();
 }
 
-function generatePage(){
-    const appContainer = document.querySelector('#app');
-    appContainer.append(main({id:'home', className: pageTypeMain}));
-    appContainer.append(pageGallery({id:'list', className: pageTypeList}));
-
+function generatePage(app){
+    app.append(main({id:'home', className: pageTypeMain}));
+    app.append(pageGallery({id:'list', className: pageTypeList}));
 }
 function init(){
-    generatePage();
+    // app Loading
+    const parser = new DOMParser();
+    const appContainer = document.querySelector('#app');
+    const doc = parser.parseFromString(loading('app-loading'), "text/html");
+    const element = doc.body.firstChild;
+    document.body.append(element);
+    setTimeout(()=>{
+        const appLoading = document.querySelector('#el-app-loading');
+        generatePage(appContainer);
+        appStart();
 
-    document.body.addEventListener("click", e => {
-        const target = e.target.closest("a") || e.target.closest("button");
-        if (!target || !(target instanceof HTMLAnchorElement || target instanceof HTMLButtonElement)) return;
-        e.preventDefault();
-        if(target.tagName.toLowerCase() === 'a') navigateTo(target.href);
-        if(target.tagName.toLowerCase() === 'button') {
-            if(target.classList.contains('btn-toggle')){
-                toggleUploadPage();
-            }else if(target.classList.contains('btn-circle')) {
-                console.log('카메라 버튼')
-            }
-        }
-    });
-
-    // 카테고리 선택
-    const categorySelect = document.querySelector('#pic-category');
-    categorySelect.addEventListener('change', (e)=>{
-        console.log('현재 선택된 카테고리', e.target.value)
-        const customField = document.querySelector('#el-custom-filed');
-        if(e.target.value === 'user_add' && customField.classList.contains('none')){
-            customField.classList.remove('none');
-            customField.querySelector('input').focus();
-        }else{
-            if(!customField.classList.contains('none')) customField.classList.add('none');
-        }
-    })
-
-    // carousel
-    const carousel = document.querySelector('#el-tab-contents');
-    const carouselItems = carousel.querySelectorAll('.tab-panel');
-    let carouselItemStartPoints = null;
-
-    // 아이템의 좌표 등록
-    function getItemOffsetInfo(){
-        carouselItemStartPoints = Array.from(carouselItems).map((item, index)=>{
-            return item.offsetLeft;
+        appLoading.classList.add('fadeout')
+        appContainer.classList.remove('fadeout')
+        appLoading.addEventListener('transitionend', ()=> {
+            appLoading.remove();
+            document.body.dataset.currentPage = 'home';
         })
-    }
-    getItemOffsetInfo()
 
-    window.addEventListener('resize', ()=>{
-        getItemOffsetInfo();
-    })
-    console.log('position ==>', carouselItemStartPoints)
+    }, 1000)
 
-    let isScrolling;
-    const tabNav = document.querySelectorAll('.tab-nav > a')
-    tabNav.forEach((nav, idx) =>{
-        nav.onclick = (e)=>{
+    function appStart(){
+
+        document.body.addEventListener("click", e => {
+            const target = e.target.closest("a") || e.target.closest("button");
+            if (!target || !(target instanceof HTMLAnchorElement || target instanceof HTMLButtonElement)) return;
+
             e.preventDefault();
-            carousel.scrollTo(carouselItemStartPoints[idx], 0)
-        }
-    })
-
-    const scrollHandler = (param) => {
-        const endDelayTime = typeof param === 'number' ? param : 60;
-        // Clear the existing timeout throughout the scroll
-        window.clearTimeout(isScrolling);
-
-        // Set a timeout to run after scrolling ends
-        isScrolling = setTimeout(() => {
-            console.log('------ Scrolling has stopped.');
-
-            carouselItemStartPoints.forEach((position, index) => {
-                if (carousel.scrollLeft === position) {
-                    console.log('@@현재 선택된 아이템 패널 index -->', index);
-
-                    tabNav.forEach((nav, idx) => {
-                        if (nav.classList.contains('bg-gray-700')) {
-                            nav.classList.remove('bg-gray-700', 'text-white');
-                        }
-                        if (idx === index) {
-                            nav.classList.add('bg-gray-700', 'text-white', 'jongjin');
-                        }
-                    });
+            if(target.tagName.toLowerCase() === 'a') navigateTo(target.href);
+            if(target.tagName.toLowerCase() === 'button') {
+                if(target.classList.contains('btn-toggle')){
+                    toggleUploadPage();
+                }else if(target.classList.contains('btn-circle')) {
+                    console.log('카메라 버튼')
                 }
-            });
+            }
+        });
 
-            isScrolling = null;
-        }, endDelayTime ); // Combine the delays to a single timeout
-    };
+        // 카테고리 선택
+        const categorySelect = document.querySelector('#pic-category');
+        categorySelect.addEventListener('change', (e)=>{
+            console.log('현재 선택된 카테고리', e.target.value)
+            const customField = document.querySelector('#el-custom-filed');
+            if(e.target.value === 'user_add' && customField.classList.contains('none')){
+                customField.classList.remove('none');
+                customField.querySelector('input').focus();
+            }else{
+                if(!customField.classList.contains('none')) customField.classList.add('none');
+            }
+        })
 
-    carousel.addEventListener('scroll', scrollHandler, false);
-    scrollHandler(0);
+        // carousel
+        const carousel = document.querySelector('#el-tab-contents');
+        const carouselItems = carousel.querySelectorAll('.tab-panel');
+        let carouselItemStartPoints = null;
+
+        // 아이템의 좌표 등록
+        function getItemOffsetInfo(){
+            carouselItemStartPoints = Array.from(carouselItems).map((item, index)=>{
+                return item.offsetLeft;
+            })
+        }
+        getItemOffsetInfo()
+
+        window.addEventListener('resize', ()=>{
+            getItemOffsetInfo();
+        })
+        console.log('position ==>', carouselItemStartPoints)
+
+        let isScrolling;
+        const tabNav = document.querySelectorAll('.tab-nav > a')
+        tabNav.forEach((nav, idx) =>{
+            nav.onclick = (e)=>{
+                e.preventDefault();
+                carousel.scrollTo(carouselItemStartPoints[idx], 0)
+            }
+        })
+
+        const scrollHandler = (param) => {
+            const endDelayTime = typeof param === 'number' ? param : 60;
+            // Clear the existing timeout throughout the scroll
+            window.clearTimeout(isScrolling);
+
+            // Set a timeout to run after scrolling ends
+            isScrolling = setTimeout(() => {
+                console.log('------ Scrolling has stopped.');
+
+                carouselItemStartPoints.forEach((position, index) => {
+                    if (carousel.scrollLeft === position) {
+                        console.log('@@현재 선택된 아이템 패널 index -->', index);
+
+                        tabNav.forEach((nav, idx) => {
+                            if (nav.classList.contains('bg-gray-700')) {
+                                nav.classList.remove('bg-gray-700', 'text-white');
+                            }
+                            if (idx === index) {
+                                nav.classList.add('bg-gray-700', 'text-white', 'jongjin');
+                            }
+                        });
+                    }
+                });
+
+                isScrolling = null;
+            }, endDelayTime ); // Combine the delays to a single timeout
+        };
+
+        carousel.addEventListener('scroll', scrollHandler, false);
+        scrollHandler(0);
+    }
 
     //window.addEventListener("popstate", route);
 
     //route();
+    /*
+    const okSubmit = lottie.loadAnimation({
+        container: document.getElementById('loading'), // the dom element that will contain the animation
+        renderer: 'canvas',
+        loop: true,
+        autoplay: true,
+        path: '/act3/js/lottie.submit.json', // the path to the animation json
+        name: "Hello World",
+    });
+    setTimeout(()=>{
+        okSubmit.destroy()
+    },3000)
+    */
 }
 document.addEventListener('DOMContentLoaded', init)
