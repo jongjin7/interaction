@@ -2,7 +2,7 @@ import { API_BASE_URL, API_ALBUM_URL } from "../config/api.config";
 
 export async function fetchData() {
     try {
-        const response = await fetch('https://example.com/api/images');
+        const response = await fetch(`${API_BASE_URL}`);
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
     } catch (error) {
