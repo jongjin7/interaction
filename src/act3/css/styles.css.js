@@ -508,14 +508,11 @@ export const pageTypeList = style({
         '.tab-panel':{
             flexShrink: 0,
             width:'100%',
-            border:'1px dotted green',
             scrollSnapAlign:'start',
             height: 'calc(100vh - 170px)',
             overflowY:'auto',
-            outline:'2px dotted red',
             '& > div':{
                 transition: 'all 0.35s ease',
-                // transform: 'translateX(-50%) scale(0.7)',
             },
         }
     },

@@ -47,6 +47,11 @@ const iconDeleteFile = `<svg xmlns="http://www.w3.org/2000/svg" width="16" heigh
 
 let currentPage = 'home';
 let useCustomField = false;
+let carousel;
+let carouselItems ;
+let carouselItemStartPoints;
+let currentTabIndex = 0;
+let prevTabIndex = 0;
 
 const buttonIconClass = ``;
 const labelClass = `mb-3 block text-sm font-medium text-black dark:text-white`;
@@ -253,21 +258,10 @@ const pageGallery= (params)=>{
     return createFrame({...params, data: htmlData});
 }
 
-const toggleUploadPage = ()=>{
-    const list = document.querySelector(`#list`);
+const setCurrentPage = ()=>{
     currentPage = currentPage === 'home' ? 'list' : 'home';
     document.body.dataset.currentPage = currentPage;
-    //document.body.classList.toggle('overflow-visible')
-    // if(currentPage === 'list') list.classList.add('show');
-    // setTimeout(()=>{
-    //
-    //     const listHandler = ()=>{
-    //         if(currentPage === 'home') list.classList.remove('show');
-    //         list.removeEventListener('transitionend', listHandler)
-    //     }
-    //
-    //     list.addEventListener('transitionend', listHandler)
-    // },0)
+    if(currentPage === 'home') initCarousel();
 }
 
 // router
@@ -322,6 +316,12 @@ function generatePage(app){
     app.append(main({id:'home', className: pageTypeMain}));
     app.append(pageGallery({id:'list', className: pageTypeList}));
 }
+
+function initCarousel(){
+    console.log('캐러셀 초기화')
+    carousel.scrollTo(carouselItemStartPoints[0], 0);
+    carouselItems[currentTabIndex].scrollTo(0,0);
+}
 function init(){
     // app Loading
     const parser = new DOMParser();
@@ -353,7 +353,7 @@ function init(){
             if(target.tagName.toLowerCase() === 'a') navigateTo(target.href);
             if(target.tagName.toLowerCase() === 'button') {
                 if(target.classList.contains('btn-toggle')){
-                    toggleUploadPage();
+                    setCurrentPage();
                 }else if(target.classList.contains('btn-circle')) {
                     console.log('카메라 버튼')
                 }
@@ -374,9 +374,8 @@ function init(){
         })
 
         // carousel
-        const carousel = document.querySelector('#el-tab-contents');
-        const carouselItems = carousel.querySelectorAll('.tab-panel');
-        let carouselItemStartPoints = null;
+        carousel = document.querySelector('#el-tab-contents');
+        carouselItems = carousel.querySelectorAll('.tab-panel');
 
         // 아이템의 좌표 등록
         function getItemOffsetInfo(){
@@ -401,19 +400,24 @@ function init(){
         })
 
         const scrollHandler = (param) => {
-            const endDelayTime = typeof param === 'number' ? param : 60;
+            console.log('!!!! scrollHandler')
+            const endDelayTime = 60;
             // Clear the existing timeout throughout the scroll
             window.clearTimeout(isScrolling);
 
             // Set a timeout to run after scrolling ends
             isScrolling = setTimeout(() => {
-                console.log('------ Scrolling has stopped.');
-
+                console.log('------ Scrolling has stopped.', endDelayTime);
+                prevTabIndex = currentTabIndex;
                 carouselItemStartPoints.forEach((position, index) => {
                     if (carousel.scrollLeft === position) {
-                        console.log('@@현재 선택된 아이템 패널 index -->', index);
+                        currentTabIndex = index;
+                        console.log('@@현재 선택된 아이템 패널 index -->', index, currentTabIndex, prevTabIndex);
+                        if(prevTabIndex === currentTabIndex) return false;
 
+                        carouselItems[prevTabIndex].scrollTo(0,0);
                         tabNav.forEach((nav, idx) => {
+                            console.log('tabNav')
                             if (nav.classList.contains('bg-gray-700')) {
                                 nav.classList.remove('bg-gray-700', 'text-white');
                             }
@@ -429,7 +433,9 @@ function init(){
         };
 
         carousel.addEventListener('scroll', scrollHandler, false);
-        scrollHandler(0);
+
+        initCarousel();
+        tabNav[0].classList.add('bg-gray-700', 'text-white');
     }
 
     //window.addEventListener("popstate", route);
