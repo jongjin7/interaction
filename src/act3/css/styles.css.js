@@ -151,13 +151,13 @@ export const [themeClass, vars] = createTheme({
 });
 
 
-//export const mainBodyContent = style([
+export const mainBodyContent = style([
 
     // responsiveStyle({
     //     tablet: { flex: 1, content: 'I will be overridden' },
     //     desktop: { flexDirection: 'row' }
     // }),
-//])
+])
 
 export const pseudoCircle = style({
     selectors: {
