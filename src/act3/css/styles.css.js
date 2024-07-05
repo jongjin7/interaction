@@ -37,13 +37,11 @@ globalStyle('body', {
         backgroundColor:'#fff',
         transition: 'opacity .5s ease-in-out',
     },
-    '.route-frame':{
+    '.page-panel':{
         width: '100%',
         height: '100%',
         maxWidth: bodyMaxWidth,
         margin:'0 auto',
-        //overflow:'hidden',
-
     },
 
     button:{
@@ -62,6 +60,7 @@ globalStyle('body', {
             maxHeight: '200px',
         }
     },
+
     '.fadein':{
         opacity:1
     },
@@ -152,112 +151,13 @@ export const [themeClass, vars] = createTheme({
 });
 
 
-export const mainBodyContent = style([
-    {
-        height: '100%',
-        color: '#1a1a1a',
-        selectors:{
-            '&:before, &:after':{
-                display:'none',
-                position:'absolute', left:0,  top:0, right:0, bottom:0,
-                content:'',
-            },
-            '&:before':{
-                display: 'block',
-                // zIndex:2,
-                // backgroundImage: 'conic-gradient(from 180deg at 50% 40%, #f69d3c, #3f87a6)',
-                background:'no-repeat center center / contain',
-                // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
-                backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
-                transition:'background-image 0.5s ease, background-position 0.1s ease 0.4s',
-            },
-        },
-        '&.is-loading':{
-            '&:after':{
-                display: 'block',
-                backgroundColor:'transparent',
-                // backgroundColor:'rgba(255,255,255,0.5)',
-            }
-        },
+//export const mainBodyContent = style([
 
-        main:{
-            containerType: 'inline-size',
-            containerName: previewCircleName,
-            display:'flex', alignItems:'center',
-            flexFlow:'column wrap',
-            position:'absolute', left:0, top:0, bottom:0, right:0,
-            paddingTop: '20vh',
-
-        },
-
-        '& img':{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-        },
-        '@container':{
-            '(min-width: 600px)': {
-                paddingTop:'128px',
-            },
-        }
-    },
     // responsiveStyle({
     //     tablet: { flex: 1, content: 'I will be overridden' },
     //     desktop: { flexDirection: 'row' }
     // }),
-    {
-        '@media': {
-            'screen and (min-width: 600px) and (max-height: 400px)': {
-                header:{
-                    '.inner':{
-                        padding:'16px 0',
-                    }
-                },
-                main:{
-                    paddingTop: '1vh'
-                },
-                '.copyright':{
-                    marginTop: '0'
-                }
-            },
-            'screen and (min-width: 600px) and (min-height: 400px)': {
-                header:{
-                    '.inner':{
-                        padding: '60px 0',
-                    }
-                },
-                main:{
-                    paddingTop:'150px'
-                }
-            },
-            // 'screen and (max-height: 600px)': {
-            //     minHeight: '600px',
-            // },
-            // [`(orientation: landscape) and (min-width: 900px) and (max-height: 600px)`]: {
-            //     header:{
-            //         '.inner':{
-            //             padding: '32px 0'
-            //         }
-            //     },
-            //     main:{
-            //         paddingTop: '32px'
-            //     },
-            //     '.copyright':{
-            //         marginTop: '0',
-            //     }
-            // },
-            // '(orientation: portrait) and (min-width: 600px)':{
-            //     header:{
-            //         '.inner':{
-            //             padding: '60px 0',
-            //         }
-            //     },
-            // },
-
-
-        },
-    },
-])
+//])
 
 export const pseudoCircle = style({
     selectors: {
@@ -445,11 +345,111 @@ export const mainController = style({
 
 // 페이지 컨테이너 정의
 // 메인
-export const pageTypeMain = style({
-    // display:'none',
-    position:'fixed', zIndex: 100,
-    transition: 'transform 0.5s ease-in-out'
-})
+export const pageTypeMain = style([
+    {
+        // display:'none',
+        position:'fixed', zIndex: 100,
+        transition: 'transform 0.5s ease-in-out',
+        '.page-container':{
+            height: '100%',
+            color: '#1a1a1a',
+            '&:before, &:after':{
+                display:'none',
+                position:'absolute', left:0,  top:0, right:0, bottom:0,
+                content:'""',
+            },
+            '&:before':{
+                display: 'block',
+                // zIndex:2,
+                // backgroundImage: 'conic-gradient(from 180deg at 50% 40%, #f69d3c, #3f87a6)',
+                background:'no-repeat center center / contain',
+                // backgroundImage: `linear-gradient(180deg, rgba(${bodyBgColorStart}, 0.85) 20%, rgba(${bodyBgColorEnd}, 0.85) 80%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+                backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
+                transition:'background-image 0.5s ease, background-position 0.1s ease 0.4s',
+            },
+            '&.is-loading':{
+                '&:after':{
+                    display: 'block',
+                    backgroundColor:'transparent',
+                    // backgroundColor:'rgba(255,255,255,0.5)',
+                }
+            },
+
+            main:{
+                containerType: 'inline-size',
+                containerName: previewCircleName,
+                display:'flex', alignItems:'center',
+                flexFlow:'column wrap',
+                position:'absolute', left:0, top:0, bottom:0, right:0,
+                paddingTop: '20vh',
+
+            },
+
+            '& img':{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+            },
+            '@container':{
+                '(min-width: 600px)': {
+                    paddingTop:'128px',
+                },
+            },
+        },
+    },
+    {
+        '@media': {
+            'screen and (min-width: 600px) and (max-height: 400px)': {
+                header:{
+                    '.inner':{
+                        padding:'16px 0',
+                    }
+                },
+                main:{
+                    paddingTop: '1vh'
+                },
+                '.copyright':{
+                    marginTop: '0'
+                }
+            },
+            'screen and (min-width: 600px) and (min-height: 400px)': {
+                header:{
+                    '.inner':{
+                        padding: '60px 0',
+                    }
+                },
+                main:{
+                    paddingTop:'150px'
+                }
+            },
+            // 'screen and (max-height: 600px)': {
+            //     minHeight: '600px',
+            // },
+            // [`(orientation: landscape) and (min-width: 900px) and (max-height: 600px)`]: {
+            //     header:{
+            //         '.inner':{
+            //             padding: '32px 0'
+            //         }
+            //     },
+            //     main:{
+            //         paddingTop: '32px'
+            //     },
+            //     '.copyright':{
+            //         marginTop: '0',
+            //     }
+            // },
+            // '(orientation: portrait) and (min-width: 600px)':{
+            //     header:{
+            //         '.inner':{
+            //             padding: '60px 0',
+            //         }
+            //     },
+            // },
+
+
+        },
+    }
+]);
 
 // 서브
 export const pageTypeList = style({
@@ -500,16 +500,18 @@ export const pageTypeList = style({
     '.tab-contents':{
         display:'flex',
         flexWrap:'nowrap',
-        // gap: '16px',
-        scrollbarWidth: 'none',
+        // scrollbarHeight: 'none',
         overflowX:'auto',
         scrollSnapType:'x mandatory',
         scrollBehavior: 'smooth',
+        '&::-webkit-scrollbar':{
+            display:'none'
+        },
         '.tab-panel':{
             flexShrink: 0,
             width:'100%',
             scrollSnapAlign:'start',
-            height: 'calc(100vh - 170px)',
+            height: 'calc(88svh - 56px)',
             overflowY:'auto',
             '& > div':{
                 transition: 'all 0.35s ease',

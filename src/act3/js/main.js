@@ -25,7 +25,7 @@ const createFrame = (params) =>{
     const content = document.createElement('div');
     content.id= id;
     content.classList.add(className);
-    content.classList.add('route-frame');
+    content.classList.add('page-panel');
     content.innerHTML = data;
 
     return content;
@@ -66,8 +66,10 @@ const buttonDangerClass = `${buttonBasicClass} bg-rose-500 text-white hover:bg-r
 const linkText = `font-semibold  text-gray-900`;
 const inputFieldClass = `relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 pl-5 pr-12 outline-none transition focus:border-orange-500 active:border-orange dark:border-form-strokedark dark:bg-form-input`
 const main= (params)=>{
+    // 파일 업로드 진행시 클래스 추가: is-loading
+    // Target: page-container
     const htmlData = `
-        <div class="${mainBodyContent} -is-loading">
+        <div class="page-container">
             <header class="${headerContent}">
                 <div class="inner">
                     <div class="text-holder">
@@ -170,7 +172,6 @@ const pageGallery= (params)=>{
 </div>
 
 <div id="el-tab-contents" class="tab-contents">
-<!--<div class="inner-box">-->
     <!-- tab1 -->
     <div class="tab-panel" id="tab-panel-1">
         <div class="${galleryList}">
@@ -196,7 +197,7 @@ const pageGallery= (params)=>{
             
             <div class="btn-group">
                 <button type="button" class="${buttonDangerClass} ${buttonSizeSmall}">카테고리 전체 삭제</button>
-                <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall}">삭제 대상 선택</button>
+                <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall}">선택 삭제</button>
             </div>
         </div>
         <div class="${galleryList} ">
@@ -253,7 +254,6 @@ const pageGallery= (params)=>{
                 </ul>
         </div>
     </div>
-<!--</div>-->
 </div> `;
     return createFrame({...params, data: htmlData});
 }
@@ -399,30 +399,27 @@ function init(){
             }
         })
 
-        const scrollHandler = (param) => {
-            console.log('!!!! scrollHandler')
+        const scrollHandler = () => {
             const endDelayTime = 60;
             // Clear the existing timeout throughout the scroll
             window.clearTimeout(isScrolling);
 
             // Set a timeout to run after scrolling ends
             isScrolling = setTimeout(() => {
-                console.log('------ Scrolling has stopped.', endDelayTime);
+                console.log('------ Scrolling has stopped.');
                 prevTabIndex = currentTabIndex;
                 carouselItemStartPoints.forEach((position, index) => {
                     if (carousel.scrollLeft === position) {
                         currentTabIndex = index;
-                        console.log('@@현재 선택된 아이템 패널 index -->', index, currentTabIndex, prevTabIndex);
                         if(prevTabIndex === currentTabIndex) return false;
 
                         carouselItems[prevTabIndex].scrollTo(0,0);
                         tabNav.forEach((nav, idx) => {
-                            console.log('tabNav')
                             if (nav.classList.contains('bg-gray-700')) {
                                 nav.classList.remove('bg-gray-700', 'text-white');
                             }
                             if (idx === index) {
-                                nav.classList.add('bg-gray-700', 'text-white', 'jongjin');
+                                nav.classList.add('bg-gray-700', 'text-white');
                             }
                         });
                     }

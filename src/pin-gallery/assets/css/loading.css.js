@@ -1,4 +1,4 @@
-import { style, globalKeyframes } from '@vanilla-extract/css';
+import {style, globalKeyframes} from '@vanilla-extract/css';
 
 const ripple = 'globalRotate';
 const bounce = 'myBounce';
@@ -39,36 +39,6 @@ globalKeyframes(spin, {
     }
 })
 
-const rippleLoop = style([
-    {
-        position:'absolute', left:0, top:0,
-        zIndex: 2,
-        display: 'flex',
-        justifyContent: 'center',
-        width: '100%',
-        height: '100%',
-        alignItems: 'center',
-        '.ripple': {
-            position: 'relative',
-            width: '50px',
-            height: '50px',
-
-            '&:before, &:after': {
-                content: '""',
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                borderRadius: '50%',
-                border: '4px solid #FF5C35',
-                opacity: '0',
-                animation: `${ripple} 3s infinite`,
-            },
-            '&:after': {
-                animationDelay: '1.5s'
-            }
-        },
-    }
-])
 const defLoading = style({
     position:'absolute', left:0, top:0,
     zIndex: 20,
@@ -87,7 +57,21 @@ const defLoading = style({
         borderTopColor: 'rgb(249 115 22)',
         borderRadius: '50%',
         animation: `${spin} 1s ease-in-out infinite`
-    }
+    },
+
+    // 앱 로딩
+    '&.app-loading':{
+        background: 'rgba(0,0,0, 0.95)',
+        position:'fixed', left:0, top:0, right:0, bottom:0,
+        zIndex:1000,
+        transition: 'opacity .5s ease-in-out',
+        '.ripple':{
+            width: '30vw',
+            height: '30vw',
+            maxWidth: '200px',
+            maxHeight: '200px',
+        }
+    },
 })
 
 export const LoadingBasic = defLoading;
