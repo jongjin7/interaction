@@ -11,14 +11,12 @@ globalStyle('body', {
         [bodyBgColorEnd]: '0, 16, 34'
     },
     backgroundColor:'#000',
-    color:'#393939',
+    color:'#374151', //gray-700
     minWidth: bodyMinWidth,
     maxWidth: bodyMaxWidth,
     margin:'0 auto',
     overflow:'hidden',
-    'h1, h2, h3, h4, h5, h6': {
-        margin:0
-    },
+
     '#app':{
         height: 'inherit',
         backgroundColor:'#fff',
@@ -33,7 +31,8 @@ globalStyle('body', {
 
     button:{
         alignItems:'center',
-        gap:'12px'
+        gap:'12px',
+        userSelect:'none',
     },
 
     '.fadein':{
