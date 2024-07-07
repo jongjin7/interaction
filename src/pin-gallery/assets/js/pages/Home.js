@@ -11,17 +11,18 @@ import {
     buttonPrimaryClass,
     buttonDisabledClass,
     inputFieldClass,
-    Loading,
-} from '../components/CommonTemplate';
-import Layout from "../components/Layout";
-import ListFrame from "./List";
-import {DomParser} from "../utils/dom";
-import EventManager from "../components/EventManager";
+} from '../utils/tailwind.component';
+
+import {
+    initializeIconShot,
+    setRandomImage,
+    handleCircleButtonClick,
+    handleCategoryChange
+} from './HomeEventHandler';
 
 export default class HomeFrame {
     constructor(containerId) {
-        this.eventManager = new EventManager();
-        //this.currentPage = 'home';
+        this.iconShot = null;
         this.container = document.querySelector(containerId).querySelector('.page-container');
     }
 
@@ -102,87 +103,19 @@ export default class HomeFrame {
 
     bindEvents(){
         const root = document.querySelector('#home');
+
         // 아이콘 등록
-        const iconShot = lottie.loadAnimation({
-            container: document.getElementById('el-icon-shot'), // the dom element that will contain the animation
-            renderer: 'canvas',
-            loop: true,
-            autoplay: true,
-            path: '/pin-gallery/assets/data/lottie.smile.json', // the path to the animation json
-            name: "Hello World",
-        });
+        this.iconShot = initializeIconShot();
 
-        //이미지 교체
-        const containerImg = root.querySelector('.bg-container')
-        const thumbImg = root.querySelector('.img-circle img');
-        const pic = ['./assets/img/@random_1.png', './assets/img/@random_2.png', './assets/img/@random_3.png', './assets/img/@random_4.png', './assets/img/@random_5.jpg']
-        const randomIndex = ()=> Math.floor(Math.random() * pic.length);
-        containerImg.src = thumbImg.src = pic[randomIndex()];
+        // 이미지 교체
+        setRandomImage(root);
 
-        //하단 폼 영역
-        const toggleFormDisabled = ()=>{
-            const forms = document.querySelector(`.${mainFormGroup}`);
-            const formItems =  forms.querySelectorAll('select, button');
-            formItems.forEach(item => {
-                if(item.getAttribute('disabled')){
-                    item.removeAttribute('disabled')
-                }else{
-                    item.setAttribute('disabled', 'disabled')
-                }
-            })
-        }
-
+        // 미리보기 영역
         const circleBtn = document.querySelector('.btn-circle');
-
-        let isClicked = false;
-        circleBtn.onclick = (e)=>{
-            const target = e.target;
-            if(!isClicked){
-                root.classList.add('is-loading')
-                target.before(DomParser(Loading('uploading')))
-                iconShot.stop();
-                //이미지 등록후 교체
-                containerImg.src = thumbImg.src = pic[randomIndex()];
-                toggleFormDisabled();
-            }else{
-                const loading = document.querySelector('#el-uploading');
-                loading.remove();
-
-                const iconSubmit = lottie.loadAnimation({
-                    container: document.getElementById('el-icon-submit'), // the dom element that will contain the animation
-                    renderer: 'canvas',
-                    loop: false,
-                    autoplay: false,
-                    path: '/pin-gallery/assets/data/lottie.submit.json', // the path to the animation json
-                });
-
-                iconSubmit.play();
-
-                iconSubmit.addEventListener("complete", () => {
-                    console.log('콜백')
-                    root.classList.remove('is-loading')
-                    iconShot.play();
-                    iconSubmit.destroy();
-                    toggleFormDisabled();
-                });
-            }
-
-            isClicked = !isClicked;
-        }
+        circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
 
         // 카테고리 선택
         const categorySelect = document.querySelector('#pic-category');
-        categorySelect.addEventListener('change', (e)=>{
-            console.log('---- 현재 선택된 카테고리', e.target.value)
-            const customField = document.querySelector('#el-custom-filed');
-            if(e.target.value === 'user_add' && customField.classList.contains('none')){
-                customField.classList.remove('none');
-                customField.querySelector('input').focus();
-            }else{
-                if(!customField.classList.contains('none')) customField.classList.add('none');
-            }
-        })
-
-
+        categorySelect.addEventListener('change', handleCategoryChange);
     }
 }

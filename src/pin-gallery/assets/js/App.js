@@ -1,7 +1,4 @@
 import Layout from './components/Layout.js';
-import HomeFrame from "./pages/Home";
-import ListFrame from './pages/List';
-import EventManager from './components/EventManager.js';
 
 // vanilla extract
 import '../css/main.css.js'

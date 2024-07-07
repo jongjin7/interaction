@@ -77,6 +77,14 @@ globalStyle('[data-current-page=list]', {
             }
         },
 
+        '.page-container':{
+            '&:before':{
+                borderTopLeftRadius:'12px',
+                borderTopRightRadius:'12px',
+                border:'1px solid rgba(0,0,0, 0.3)',
+            },
+        },
+
         'header':{
             '.inner':{
                 padding: '4svh 0',

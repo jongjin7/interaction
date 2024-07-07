@@ -51,11 +51,6 @@ export const pageTypeMain = style([
         },
 
         '&.is-loading':{
-            // '&:after':{
-            //     display: 'block',
-            //     backgroundColor:'rgba(255,255,200,0.5)',
-            // },
-
             '.btn-circle':{
                 '.icon-shot':{
                     transform:'scale(0.95)',

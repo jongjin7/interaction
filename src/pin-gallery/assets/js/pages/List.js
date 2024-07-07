@@ -1,6 +1,12 @@
 import EventManager from "../components/EventManager";
 import {galleryList,} from "../../css/pages.css";
-import {buttonDangerClass, buttonOutlineClass, buttonSizeSmall, buttonDisabledClass, buttonDelete} from '../components/CommonTemplate';
+import {
+    buttonDangerClass,
+    buttonOutlineClass,
+    buttonSizeSmall,
+    buttonDisabledClass
+} from '../utils/tailwind.component';
+import {buttonDelete} from '../components/CommonTemplate';
 
 export default class ListFrame {
     constructor(containerId) {
@@ -14,65 +20,66 @@ export default class ListFrame {
         this.eventManager = new EventManager();
         this.htmlData = '';
         this.galleryData = [
-            {category:'배경', lists:[... new Array(20)]},
-            {category:'건축물', lists:[... new Array(7)]},
-            {category:'자연', lists:[... new Array(11)]},
+            {category: '배경', lists: [...new Array(20)]},
+            {category: '건축물', lists: [...new Array(7)]},
+            {category: '자연', lists: [...new Array(11)]},
         ]
         this.container = document.querySelector(containerId).querySelector('.page-container');
     }
 
-    async loadData(){
+    async loadData() {
         //const listData = await fetchData);
         this.createContentHTML();
         this.render();
     }
 
-    generateListItem(num){
-        let list =''
+    generateListItem(num) {
+        let list = ''
 
-        const html = ()=>{
+        const html = () => {
             function getRandomInt(min, max) {
                 min = Math.ceil(min);
                 max = Math.floor(max);
-                return (Math.random() * (max - min + 1)+min).toFixed(2); // min (포함) 과 max (포함) 사이의 정수 반환
+                return (Math.random() * (max - min + 1) + min).toFixed(2); // min (포함) 과 max (포함) 사이의 정수 반환
             }
+
             const randomRatio = getRandomInt(1, 1.5);
 
             const w = 100;
             const h = Math.ceil(w * randomRatio);
             return `<li class="list-item">
-                ${ buttonDelete }
+                ${buttonDelete}
                 <a href="" target="_blank" title="이미지"><img src="https://picsum.photos/${w}/${h}" alt=""></a>
             </li>`
         };
 
-        [...new Array(num)].forEach(()=>{
+        [...new Array(num)].forEach(() => {
             list += html()
         })
 
         return list;
     }
 
-    generateTabMenu(){
-        const menu = this.galleryData.map(item=> `<a href="">${item.category}</a>`).join('')
+    generateTabMenu() {
+        const menu = this.galleryData.map(item => `<a href="">${item.category}</a>`).join('')
         const html = `<div class="tabs">
                 <div class="tab-nav text-gray-400">
                     <a href="">전체</a>
-                    ${ menu }
+                    ${menu}
                 </div>
             </div>`;
 
         return html;
     }
 
-    generateTabContent(){
-        const panelTitle = (info) =>`
+    generateTabContent() {
+        const panelTitle = (info) => `
             <div class="title">
-                <h2 class="font-semibold">${info.title} ${!info.subtitle && info.itemLength ? `(${info.itemLength})` :''}</h2>
-                ${info.subtitle ? `<small class="text-gray-500">${info.subtitle}(${info.itemLength})</small>`: ''}
+                <h2 class="font-semibold">${info.title} ${!info.subtitle && info.itemLength ? `(${info.itemLength})` : ''}</h2>
+                ${info.subtitle ? `<small class="text-gray-500">${info.subtitle}(${info.itemLength})</small>` : ''}
             </div>
         `
-        const allContentPanel = ()=>{
+        const allContentPanel = () => {
             const html = `
                 <div class="gallery-list ${galleryList}">
                     <div class="btn-group">
@@ -80,33 +87,33 @@ export default class ListFrame {
                         <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel">선택 삭제</button>
                     </div>
                     <div class="list-header">
-                        ${panelTitle({title:'전체'})}
+                        ${panelTitle({title: '전체'})}
                     </div>
                     <ul class="list">
-                       ${ this.generateListItem(14) }
+                       ${this.generateListItem(14)}
                     </ul>
                         
                 </div>
                     
                 <div class="gallery-list ${galleryList}">
                     <div class="list-header">
-                        ${panelTitle({title:'인기 카테고리', subtitle:'건물', itemLength: 99})}
+                        ${panelTitle({title: '인기 카테고리', subtitle: '건물', itemLength: 99})}
                     </div>
                     <ul class="list">
-                       ${ this.generateListItem(8) }
+                       ${this.generateListItem(8)}
                     </ul>
                 </div>`;
             return html;
         }
 
-        const contentPanel = ()=>{
+        const contentPanel = () => {
             const listTemplate = (item) => `
                 <div class="gallery-list ${galleryList}"> 
                     <div class="list-header">
-                        ${panelTitle({title:item.category, itemLength: item.lists.length})}
+                        ${panelTitle({title: item.category, itemLength: item.lists.length})}
                     </div>
                     <ul class="list">
-                       ${ this.generateListItem(item.lists.length) }
+                       ${this.generateListItem(item.lists.length)}
                     </ul>
                     <div class="btn-group">
                         <button type="button" class="${buttonDangerClass} ${buttonSizeSmall} ${buttonDisabledClass} btn-del-all" disabled="disabled">카테고리 전체 삭제</button>
@@ -114,9 +121,9 @@ export default class ListFrame {
                     </div>
                 </div>`;
 
-            const tabPanel = (item, index)=>`
+            const tabPanel = (item, index) => `
                 <div class="tab-panel" id="tab-panel-${index + 1}">
-                    ${ listTemplate(item) }
+                    ${listTemplate(item)}
                 </div>`;
 
             return this.galleryData.map((item, index) => {
@@ -131,14 +138,14 @@ export default class ListFrame {
                     ${allContentPanel()}
                 </div>
                 <!-- 카테고리와 매핑된 리스트 패널 -->
-                ${ contentPanel() }
+                ${contentPanel()}
             </div>
         `;
 
         return html;
     }
 
-    createContentHTML(data){
+    createContentHTML(data) {
         this.htmlData = `
             <!--<div class="page-header">-->
             <!--    <h1 class="text-2xl text-neutral-900">갤러리 상세</h1>-->
@@ -148,20 +155,18 @@ export default class ListFrame {
             ${this.generateTabContent()}`;
     }
 
-    render(){
+    render() {
         this.container.innerHTML = this.htmlData;
-
         this.bindEvents();
     }
 
-    initGalleryPanel(){
+    initGalleryPanel() {
         // 닫기 할때 초기화
-        console.log('this', this.galleryPanel)
         this.galleryPanel.scrollTo(this.galleryPanelPositions[0], 0);
-        this.galleryPanelItems[this.currentTabIndex].scrollTo(0,0);
+        this.galleryPanelItems[this.currentTabIndex].scrollTo(0, 0);
     }
 
-    bindEvents(){
+    bindEvents() {
         this.galleryPanel = document.querySelector('#el-tab-contents');
         this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
 
@@ -169,50 +174,50 @@ export default class ListFrame {
             const targetBtn = e.target;
             const currentPanel = targetBtn.closest('.tab-panel');
             const btnDeleteAll = currentPanel.querySelector('.btn-del-all');
-            if(targetBtn.classList.contains('btn-del-sel')) {
-                if(!currentPanel.classList.contains('is-removable')) currentPanel.classList.add('is-removable');
-                else if(currentPanel.classList.contains('is-removable')) currentPanel.classList.remove('is-removable');
+            if (targetBtn.classList.contains('btn-del-sel')) {
+                if (!currentPanel.classList.contains('is-removable')) currentPanel.classList.add('is-removable');
+                else if (currentPanel.classList.contains('is-removable')) currentPanel.classList.remove('is-removable');
 
-                if(btnDeleteAll.getAttribute('disabled')) btnDeleteAll.removeAttribute('disabled');
+                if (btnDeleteAll.getAttribute('disabled')) btnDeleteAll.removeAttribute('disabled');
                 else btnDeleteAll.setAttribute('disabled', 'disabled');
             }
-            if(targetBtn.classList.contains('btn-del-all')) {
+            if (targetBtn.classList.contains('btn-del-all')) {
                 console.log('전체 삭제 버튼',)
             }
         });
 
         // 아이템 삭제버튼
         this.eventManager.delegateEvent('.gallery-list .btn-delete', 'click', (e) => {
-            const targetBtn = e.target.classList.contains('.btn-delete')? e.target : e.target.closest('button');
+            const targetBtn = e.target.classList.contains('.btn-delete') ? e.target : e.target.closest('button');
             targetBtn.classList.add('selected')
-            setTimeout(()=>{
+            setTimeout(() => {
                 const isYes = window.confirm('현재 선택된 아이템을 삭제할가요?');
-                if(isYes){
+                if (isYes) {
                     console.log('삭제로직 수행중입니다.', targetBtn)
                 }
                 targetBtn.classList.remove('selected')
-            },30)
+            }, 30)
         });
 
         // 슬라이드 액션
 
         // 아이템의 좌표 등록
-        const getItemOffsetInfo = ()=>{
-            this.galleryPanelPositions = Array.from(this.galleryPanelItems).map((item, index)=>{
+        const getItemOffsetInfo = () => {
+            this.galleryPanelPositions = Array.from(this.galleryPanelItems).map((item, index) => {
                 return item.offsetLeft;
             })
         }
         getItemOffsetInfo();
 
-        window.addEventListener('resize', ()=>{
+        window.addEventListener('resize', () => {
             getItemOffsetInfo();
         })
         console.log('position ==>', this.galleryPanelPositions)
 
         let isScrolling;
         const tabNav = document.querySelectorAll('.tab-nav > a')
-        tabNav.forEach((nav, idx) =>{
-            nav.onclick = (e)=>{
+        tabNav.forEach((nav, idx) => {
+            nav.onclick = (e) => {
                 e.preventDefault();
                 this.galleryPanel.scrollTo(this.galleryPanelPositions[idx], 0)
             }
@@ -230,9 +235,9 @@ export default class ListFrame {
                 this.galleryPanelPositions.forEach((position, index) => {
                     if (this.galleryPanel.scrollLeft === position) {
                         this.currentTabIndex = index;
-                        if(this.prevTabIndex === this.currentTabIndex) return false;
+                        if (this.prevTabIndex === this.currentTabIndex) return false;
 
-                        this.galleryPanelItems[this.prevTabIndex].scrollTo(0,0);
+                        this.galleryPanelItems[this.prevTabIndex].scrollTo(0, 0);
                         tabNav.forEach((nav, idx) => {
                             if (nav.classList.contains('bg-gray-700')) {
                                 nav.classList.remove('bg-gray-700', 'text-white');
@@ -245,7 +250,7 @@ export default class ListFrame {
                 });
 
                 isScrolling = null;
-            }, endDelayTime ); // Combine the delays to a single timeout
+            }, endDelayTime); // Combine the delays to a single timeout
         };
 
         this.galleryPanel.addEventListener('scroll', scrollHandler, false);
