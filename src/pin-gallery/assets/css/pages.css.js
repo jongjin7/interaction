@@ -7,9 +7,11 @@ export const pageTypeMain = style([
         // display:'none',
         position:'fixed', zIndex: 100,
         transition: 'transform 0.5s ease-in-out',
+
         '.page-container':{
             height: '100%',
             color: '#1a1a1a',
+
             '&:before, &:after':{
                 display:'none',
                 position:'absolute', left:0,  top:0, right:0, bottom:0,
@@ -21,20 +23,13 @@ export const pageTypeMain = style([
                 backgroundImage:`linear-gradient(180deg, rgba(255,255,255, 0.1) 0%, rgba(${bodyBgColorEnd}, 0.95) 100%)`,
                 transition:'background-image 0.5s ease, background-position 0.1s ease 0.4s',
             },
-            '&.is-loading':{
-                '&:after':{
-                    display: 'block',
-                    backgroundColor:'transparent',
-                    // backgroundColor:'rgba(255,255,255,0.5)',
-                }
-            },
 
             main:{
                 containerType: 'inline-size',
                 containerName: previewCircleName,
                 display:'flex', alignItems:'center',
                 flexFlow:'column wrap',
-                position:'absolute', left:0, top:0, bottom:0, right:0,
+                position:'absolute', left:0, top:0, bottom:0, right:0, zIndex:1,
                 paddingTop: '20vh',
 
             },
@@ -44,11 +39,30 @@ export const pageTypeMain = style([
                 height: '100%',
                 objectFit: 'cover'
             },
+            '& > img':{
+                //filter:'grayscale(1) brightness(1.2)',
+                opacity: 0.85
+            },
             '@container':{
                 '(min-width: 600px)': {
                     paddingTop:'128px',
                 },
             },
+        },
+
+        '&.is-loading':{
+            // '&:after':{
+            //     display: 'block',
+            //     backgroundColor:'rgba(255,255,200,0.5)',
+            // },
+
+            '.btn-circle':{
+                '.icon-shot':{
+                    transform:'scale(0.95)',
+                    filter:'grayscale(1)',
+                    opacity: 0.2,
+                }
+            }
         },
     },
     {
@@ -192,7 +206,8 @@ export const mainPreviewCircleButton = style([
                 '&:before': {
                     width:`calc(100% - var(--img-track-width))`,
                     height: `calc(100% - var(--img-track-width))`,
-                    backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
+                    //backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
+                    backgroundColor:'rgba(255,255,255,0.6)',
                     boxShadow: `inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.5)`,
                 },
                 '&:after':{
@@ -203,17 +218,18 @@ export const mainPreviewCircleButton = style([
                     borderRadius:'50%',
                 }
             },
-            '.icon-camera':{
-                position: 'absolute', left: `calc(50% - (100% * 0.3 / 2))`, top: 'calc(50% - (100% * 0.3 /2))',
-                width: `calc(100% * 0.3)`,
-                height: `calc(100% * 0.3)`,
-                opacity:0.5,
-                path:{
-                    // filter: 'drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5))'
-                    filter: 'drop-shadow(0 0 0.5px rgba(255, 255, 255, 0.7))'
+            '.icon':{
+                '--icon-width':'100% * 0.5',
+                position: 'absolute', left: `calc(50% - (var(--icon-width) / 2))`, top: 'calc(50% - (var(--icon-width) /2))',
+                width: `calc(var(--icon-width))`,
+                height: `calc(var(--icon-width))`,
+                transition: 'all 0.3s ease-out',
+                '&.icon-submit':{
+                    '--icon-width':'100% * 0.8',
                 }
             },
         },
+
     },
     {
         '@container': {

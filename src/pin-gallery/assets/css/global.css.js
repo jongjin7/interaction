@@ -77,12 +77,6 @@ globalStyle('[data-current-page=list]', {
             }
         },
 
-        '& > div':{
-            '&:before':{
-                backgroundPositionY:'-60vh',
-                transitionDelay:'background-position 0s',
-            }
-        },
         'header':{
             '.inner':{
                 padding: '4svh 0',

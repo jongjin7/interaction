@@ -48,6 +48,7 @@ const defLoading = style({
     justifyContent: 'center',
     alignItems:'center',
     transition: 'opacity 0.3s ease-in-out',
+    pointerEvents:'none',
 
     '.ripple': {
         flexShrink: 0,
@@ -66,10 +67,11 @@ const defLoading = style({
         zIndex:1000,
         transition: 'opacity .5s ease-in-out',
         '.ripple':{
-            width: '30vw',
-            height: '30vw',
+            width: '15vw',
+            height: '15vw',
             maxWidth: '200px',
             maxHeight: '200px',
+            borderWidth:'2px'
         }
     },
 })

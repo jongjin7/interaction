@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id:'home', className: pageTypeMain},
         { id:'list', className: pageTypeList,}
     ];
+
     const appLayout = new Layout('#app');
     appLayout.createBaseLayout(pageList);
 

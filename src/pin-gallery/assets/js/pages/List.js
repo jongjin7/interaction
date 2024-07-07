@@ -150,16 +150,21 @@ export default class ListFrame {
 
     render(){
         this.container.innerHTML = this.htmlData;
+
         this.bindEvents();
     }
 
     initGalleryPanel(){
         // 닫기 할때 초기화
+        console.log('this', this.galleryPanel)
         this.galleryPanel.scrollTo(this.galleryPanelPositions[0], 0);
         this.galleryPanelItems[this.currentTabIndex].scrollTo(0,0);
     }
 
     bindEvents(){
+        this.galleryPanel = document.querySelector('#el-tab-contents');
+        this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
+
         this.eventManager.delegateEvent('.gallery-list .btn-group > button', 'click', (e) => {
             const targetBtn = e.target;
             const currentPanel = targetBtn.closest('.tab-panel');
@@ -190,8 +195,6 @@ export default class ListFrame {
         });
 
         // 슬라이드 액션
-        this.galleryPanel = document.querySelector('#el-tab-contents');
-        this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
 
         // 아이템의 좌표 등록
         const getItemOffsetInfo = ()=>{
