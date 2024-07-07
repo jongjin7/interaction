@@ -29,7 +29,9 @@ export function initializeIconShot() {
 export function setRandomImage(root) {
     const containerImg = root.querySelector('.bg-container');
     const thumbImg = root.querySelector('.img-circle img');
-    const pic = ['./assets/img/@random_1.png', './assets/img/@random_2.png', './assets/img/@random_3.png', './assets/img/@random_4.png', './assets/img/@random_5.jpg'];
+    const pic = ['./assets/img/@random_1.png', './assets/img/@random_2.png',
+        './assets/img/@random_3.png', './assets/img/@random_4.png',
+        './assets/img/@random_5.jpg', './assets/img/@random_6.jpg', './assets/img/@random_7.jpg'];
     const randomIndex = () => Math.floor(Math.random() * pic.length);
     containerImg.src = thumbImg.src = pic[randomIndex()];
 }

@@ -280,7 +280,8 @@ export const pageTypeList = style({
     opacity:0 ,
     // opacity:'1 !important',
     position: 'relative',
-    transition: 'opacity 0.3s ease-in-out',
+    transform: 'translateY(1.5vh) scale(0.98)',
+    transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
     paddingBottom: '10vh',
     '& > .page-container':{
         height: '100%',

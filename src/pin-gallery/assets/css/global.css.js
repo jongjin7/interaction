@@ -26,6 +26,7 @@ globalStyle('body', {
         width: '100%',
         height: '100%',
         maxWidth: bodyMaxWidth,
+        backgroundColor:'#fff',
         margin:'0 auto',
     },
 
@@ -112,5 +113,6 @@ globalStyle('[data-current-page=list]', {
     },
     '#list':{
         opacity: 1,
+        transform: 'translateY(0) scale(1)',
     }
 });
