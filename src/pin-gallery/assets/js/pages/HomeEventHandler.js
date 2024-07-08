@@ -57,7 +57,7 @@ export function handleCircleButtonClick(root, iconShot) {
                 autoplay: false,
                 path: '/pin-gallery/assets/lotties/lottie.submit.json',
             });
-
+            iconSubmit.setSpeed(1.5);
             iconSubmit.play();
 
             iconSubmit.addEventListener("complete", () => {

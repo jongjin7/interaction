@@ -9,6 +9,9 @@ import {
     primaryColor
 } from "./variables.css";
 
+globalStyle('html, body', {
+    overflow: 'hidden'
+})
 globalStyle('body', {
     vars: {
         [bodyMinWidth]: '360px',
