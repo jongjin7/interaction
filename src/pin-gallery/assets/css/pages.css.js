@@ -159,10 +159,10 @@ export const mainHeader = style({
             small:{
                 display: 'block',
                 // position:'absolute', left:0, top:'-1.125em',
-                fontSize: '0.875rem',
+                fontSize: '0.625rem',
                 textTransform:'capitalize',
                 letterSpacing:'0.2em',
-                marginBottom: '0.25em',
+                marginBottom: '0.5em',
             },
             '.design':{
                 fontFamily:'MangoByeolbyeol',
@@ -175,7 +175,8 @@ export const mainHeader = style({
         '.sub-title':{
             marginTop: '0.2em',
             padding:0,
-            fontSize: '0.875rem'
+            fontSize: '0.875rem',
+            letterSpacing: '0.25em'
         }
     },
 
@@ -189,6 +190,9 @@ export const mainPreviewCircleButton = style([
         position:'relative',
         display:'flex',
         justifyContent:'center',
+        '*:before, *:after':{
+            pointerEvents:'none',
+        },
         '.btn-circle': {
             position:'relative',
             width: circleSize, height: circleSize,
@@ -200,7 +204,8 @@ export const mainPreviewCircleButton = style([
             '&:before': {
                 width:`calc(100% - var(--track-width))`,
                 height: `calc(100% - var(--track-width))`,
-                boxShadow: `inset 0 0 0 calc(var(--track-width) * 0.5) rgba(0,0,0, 0.2), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`
+                boxShadow: `inset 0 0 0 calc(var(--track-width) * 0.5) rgba(0,0,0, 0.2), inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.3)`,
+                pointerEvents:'none',
             },
 
             '&:after':{
@@ -224,6 +229,18 @@ export const mainPreviewCircleButton = style([
                     display: 'none'
                 },
 
+                label:{
+                    display:'block',
+                    width: '100%',
+                    height: '100%'
+                },
+
+                input:{
+                    position:'absolute', left:'-100%', top:'-10%',
+                    width: '1px',
+                    height:1,
+                },
+
                 img:{
                     borderRadius:'50%',
                 }
@@ -234,6 +251,7 @@ export const mainPreviewCircleButton = style([
                 width: `calc(var(--icon-width))`,
                 height: `calc(var(--icon-width))`,
                 transition: 'all 0.3s ease-out',
+                pointerEvents:'none',
                 '&.icon-submit':{
                     '--icon-width':'100% * 0.8',
                 }
@@ -284,7 +302,7 @@ export const mainFormGroup = style({
     },
 
     '.copyright':{
-        marginTop: '4vw',
+        marginTop: '0.25rem',
         color: 'rgba(255,255,255,0.2)',
         fontSize: '0.75rem',
     },

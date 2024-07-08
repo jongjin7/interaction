@@ -36,6 +36,12 @@ export function setRandomImage(root) {
     containerImg.src = thumbImg.src = pic[randomIndex()];
 }
 
+export function setImage(root, imgsrc) {
+    const containerImg = root.querySelector('.bg-container');
+    const thumbImg = root.querySelector('.img-circle img');
+    containerImg.src = thumbImg.src = imgsrc;
+}
+
 export function handleCircleButtonClick(root, iconShot) {
     let isClicked = false;
     return (e) => {
@@ -80,4 +86,24 @@ export function handleCategoryChange(e) {
     } else {
         if (!customField.classList.contains('none')) customField.classList.add('none');
     }
+}
+
+export function handleCaptureCamera(e,root, icon){
+    console.log('handleCaptureCamera')
+    const file = e.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload =  () => {
+            const imgUrl = window.URL.createObjectURL(file);
+            window.URL.revokeObjectURL(file);
+            setImage(root, imgUrl);
+        };
+        reader.readAsDataURL(file);
+        reader.onerror = (err) => {
+            console.error('Error reading file:', err);
+        };
+    }
+
+
 }

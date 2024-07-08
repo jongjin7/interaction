@@ -16,7 +16,7 @@ import {
 import {
     initializeIconShot,
     setRandomImage,
-    handleCircleButtonClick,
+    handleCaptureCamera,
     handleCategoryChange
 } from './HomeEventHandler';
 
@@ -36,7 +36,7 @@ export default class HomeFrame {
             <header class="${mainHeader}">
                 <div class="inner">
                     <div class="text-holder">
-                        <h1 class="title"><small>ㅈ ㅗ ㅇ ㅈ ㅣ ㄴ</small> <span class="design">이미지 아카이브</span></h1>
+                        <h1 class="title"><small>JONGJIN'S</small> <span class="design">이미지 아카이브</span></h1>
                         <p class="sub-title">나의 폰으로 담는 컬러 세상</p>
                     </div>
                     
@@ -53,11 +53,14 @@ export default class HomeFrame {
                 <div class="${mainPreviewCircleButton}">
                     <!-- Loading -->
                     
-                    <button type="button" class="btn-circle ${mainPseudoCircle}">
-                        <div class="img-circle ${mainPseudoCircle}"><img src="" alt=""></div>
+                    <div class="btn-circle ${mainPseudoCircle}">
+                        <div class="img-circle ${mainPseudoCircle}">
+                            <label for="input-camera"><img src="" alt=""></label>
+                            <input type="file" id="input-camera" capture="environment"  accept=".jpg, .jpeg, .png" >
+                        </div>
                         <div id="el-icon-shot" class="icon icon-shot"></div>
                         <div id="el-icon-submit" class="icon icon-submit"></div>
-                    </button>
+                    </div>
                 </div>
                 
                 
@@ -111,8 +114,11 @@ export default class HomeFrame {
         setRandomImage(root);
 
         // 미리보기 영역
-        const circleBtn = document.querySelector('.btn-circle');
-        circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
+        const circleInput = document.querySelector('#input-camera');
+        circleInput.addEventListener('change', (e)=>{
+            handleCaptureCamera(e, root, this.iconShot)
+        })
+        //circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
 
         // 카테고리 선택
         const categorySelect = document.querySelector('#pic-category');
