@@ -36,7 +36,7 @@ export default class HomeFrame {
             <header class="${mainHeader}">
                 <div class="inner">
                     <div class="text-holder">
-                        <h1 class="title">종진의 이미지 아카이브</h1>
+                        <h1 class="title"><small>ㅈ ㅗ ㅇ ㅈ ㅣ ㄴ</small> <span class="design">이미지 아카이브</span></h1>
                         <p class="sub-title">나의 폰으로 담는 컬러 세상</p>
                     </div>
                     

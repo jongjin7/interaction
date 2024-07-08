@@ -151,14 +151,29 @@ export const mainHeader = style({
         // color:'white',
     },
     '.text-holder':{
-        //opacity:0.3,
+        textShadow:'0.05em 0.05em 0.1em rgba(255,255,255, 0.1)',
         '.title':{
-            fontSize:'1.5rem',
-            fontWeight: '600',
+            display: 'inline-block',
+            position:'relative',
             lineHeight:1,
+            small:{
+                display: 'block',
+                // position:'absolute', left:0, top:'-1.125em',
+                fontSize: '0.875rem',
+                textTransform:'capitalize',
+                letterSpacing:'0.2em',
+                marginBottom: '0.25em',
+            },
+            '.design':{
+                fontFamily:'MangoByeolbyeol',
+                fontSize:'42px',
+                fontWeight: '600',
+                letterSpacing:'0.15em',
+                wordSpacing: '-0.3em',
+            }
         },
         '.sub-title':{
-            marginTop: '0.25em',
+            marginTop: '0.2em',
             padding:0,
             fontSize: '0.875rem'
         }

@@ -1,4 +1,5 @@
 import {style, globalKeyframes} from '@vanilla-extract/css';
+import {primaryColor} from "./variables.css";
 
 const ripple = 'globalRotate';
 const bounce = 'myBounce';
@@ -55,7 +56,7 @@ const defLoading = style({
         width: 'calc(100% - var(--img-track-width))',
         height: 'calc(100% - var(--img-track-width))',
         border: '6px solid rgba(255, 255, 255, 0.3)',
-        borderTopColor: 'rgb(249 115 22)',
+        borderTopColor: primaryColor,
         borderRadius: '50%',
         animation: `${spin} 1s ease-in-out infinite`
     },

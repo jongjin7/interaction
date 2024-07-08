@@ -1,5 +1,13 @@
 import {globalStyle} from "@vanilla-extract/css";
-import {bodyBgColorEnd, bodyBgColorStart, bodyMaxWidth, bodyMinWidth, circleSize, maxCircleSize} from "./variables.css";
+import {
+    bodyBgColorEnd,
+    bodyBgColorStart,
+    bodyMaxWidth,
+    bodyMinWidth,
+    circleSize,
+    maxCircleSize,
+    primaryColor
+} from "./variables.css";
 
 globalStyle('body', {
     vars: {
@@ -8,7 +16,8 @@ globalStyle('body', {
         [circleSize]: '60vw',
         [maxCircleSize]: '300px',
         [bodyBgColorStart]: '237, 99, 7',
-        [bodyBgColorEnd]: '0, 16, 34'
+        [bodyBgColorEnd]: '0, 16, 34',
+        [primaryColor]: '#F97316'
     },
     backgroundColor:'#000',
     color:'#374151', //gray-700
