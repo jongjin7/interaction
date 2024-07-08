@@ -7,17 +7,24 @@ import {
     buttonDisabledClass
 } from '../utils/tailwind.component';
 import {buttonDelete} from '../components/CommonTemplate';
+import {
+    handleButtonGroupClick,
+    handleDeleteButtonClick,
+    handleResize,
+    handleScroll,
+    handleTabNavClick
+} from './ListEventHandler';
 
 export default class ListFrame {
     constructor(containerId) {
+        this.eventManager = new EventManager();
         this.prevTabIndex = 0;
         this.currentTabIndex = 0;
-        this.galleryPanelPositions = '';
-        this.galleryPanel = '';
-        this.galleryPanelItems = '';
+        this.galleryPanelPositions = [];
+        this.galleryPanel = null;
+        this.galleryPanelItems = null;
 
 
-        this.eventManager = new EventManager();
         this.htmlData = '';
         this.galleryData = [
             {category: '배경', lists: [...new Array(20)]},
@@ -163,7 +170,7 @@ export default class ListFrame {
     initGalleryPanel() {
         // 닫기 할때 초기화
         this.galleryPanel.scrollTo(this.galleryPanelPositions[0], 0);
-        this.galleryPanelItems[this.currentTabIndex].scrollTo(0, 0);
+        this.galleryPanelItems[0].scrollTo(0, 0);
     }
 
     bindEvents() {
@@ -171,89 +178,25 @@ export default class ListFrame {
         this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
 
         this.eventManager.delegateEvent('.gallery-list .btn-group > button', 'click', (e) => {
-            const targetBtn = e.target;
-            const currentPanel = targetBtn.closest('.tab-panel');
-            const btnDeleteAll = currentPanel.querySelector('.btn-del-all');
-            if (targetBtn.classList.contains('btn-del-sel')) {
-                if (!currentPanel.classList.contains('is-removable')) currentPanel.classList.add('is-removable');
-                else if (currentPanel.classList.contains('is-removable')) currentPanel.classList.remove('is-removable');
-
-                if (btnDeleteAll.getAttribute('disabled')) btnDeleteAll.removeAttribute('disabled');
-                else btnDeleteAll.setAttribute('disabled', 'disabled');
-            }
-            if (targetBtn.classList.contains('btn-del-all')) {
-                console.log('전체 삭제 버튼',)
-            }
+            handleButtonGroupClick(e);
         });
 
-        // 아이템 삭제버튼
         this.eventManager.delegateEvent('.gallery-list .btn-delete', 'click', (e) => {
-            const targetBtn = e.target.classList.contains('.btn-delete') ? e.target : e.target.closest('button');
-            targetBtn.classList.add('selected')
-            setTimeout(() => {
-                const isYes = window.confirm('현재 선택된 아이템을 삭제할가요?');
-                if (isYes) {
-                    console.log('삭제로직 수행중입니다.', targetBtn)
-                }
-                targetBtn.classList.remove('selected')
-            }, 30)
+            handleDeleteButtonClick(e);
         });
 
-        // 슬라이드 액션
-
-        // 아이템의 좌표 등록
-        const getItemOffsetInfo = () => {
-            this.galleryPanelPositions = Array.from(this.galleryPanelItems).map((item, index) => {
-                return item.offsetLeft;
-            })
-        }
-        getItemOffsetInfo();
-
+        const getItemOffsetInfo = handleResize(this.galleryPanelItems);
+        this.galleryPanelPositions = getItemOffsetInfo();
         window.addEventListener('resize', () => {
-            getItemOffsetInfo();
-        })
-        console.log('position ==>', this.galleryPanelPositions)
+            this.galleryPanelPositions = getItemOffsetInfo();
+        });
 
-        let isScrolling;
-        const tabNav = document.querySelectorAll('.tab-nav > a')
+        const tabNav = document.querySelectorAll('.tab-nav > a');
         tabNav.forEach((nav, idx) => {
-            nav.onclick = (e) => {
-                e.preventDefault();
-                this.galleryPanel.scrollTo(this.galleryPanelPositions[idx], 0)
-            }
-        })
+            nav.onclick = (e) => handleTabNavClick(e, this.galleryPanel, this.galleryPanelPositions, idx);
+        });
 
-        const scrollHandler = () => {
-            const endDelayTime = 60;
-            // Clear the existing timeout throughout the scroll
-            window.clearTimeout(isScrolling);
-
-            // Set a timeout to run after scrolling ends
-            isScrolling = setTimeout(() => {
-                console.log('------ Scrolling has stopped.');
-                this.prevTabIndex = this.currentTabIndex;
-                this.galleryPanelPositions.forEach((position, index) => {
-                    if (this.galleryPanel.scrollLeft === position) {
-                        this.currentTabIndex = index;
-                        if (this.prevTabIndex === this.currentTabIndex) return false;
-
-                        this.galleryPanelItems[this.prevTabIndex].scrollTo(0, 0);
-                        tabNav.forEach((nav, idx) => {
-                            if (nav.classList.contains('bg-gray-700')) {
-                                nav.classList.remove('bg-gray-700', 'text-white');
-                            }
-                            if (idx === index) {
-                                nav.classList.add('bg-gray-700', 'text-white');
-                            }
-                        });
-                    }
-                });
-
-                isScrolling = null;
-            }, endDelayTime); // Combine the delays to a single timeout
-        };
-
-        this.galleryPanel.addEventListener('scroll', scrollHandler, false);
+        this.galleryPanel.addEventListener('scroll', handleScroll(this.galleryPanel, this.galleryPanelPositions, this.galleryPanelItems, tabNav, this.prevTabIndex));
 
         this.initGalleryPanel();
         tabNav[0].classList.add('bg-gray-700', 'text-white');

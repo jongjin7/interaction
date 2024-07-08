@@ -4,7 +4,7 @@ import {bodyBgColorEnd, previewCircleName, bodyMaxWidth, bodyMinWidth, circleSiz
 // 메인
 export const pageTypeMain = style([
     {
-        // display:'none',
+        //display:'none',
         position:'fixed', zIndex: 100,
         transition: 'transform 0.5s ease-in-out',
 
@@ -278,7 +278,7 @@ export const mainFormGroup = style({
 // 서브
 export const pageTypeList = style({
     opacity:0 ,
-    // opacity:'1 !important',
+    //opacity:'1 !important',
     position: 'relative',
     transform: 'translateY(1.5vh) scale(0.98)',
     transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
