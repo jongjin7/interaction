@@ -21,7 +21,7 @@ export function initializeIconShot() {
         renderer: 'canvas',
         loop: true,
         autoplay: true,
-        path: '/pin-gallery/assets/data/lottie.smile.json',
+        path: '/pin-gallery/assets/lotties/lottie.smile.json',
         name: "Hello World",
     });
 }
@@ -55,7 +55,7 @@ export function handleCircleButtonClick(root, iconShot) {
                 renderer: 'canvas',
                 loop: false,
                 autoplay: false,
-                path: '/pin-gallery/assets/data/lottie.submit.json',
+                path: '/pin-gallery/assets/lotties/lottie.submit.json',
             });
 
             iconSubmit.play();
