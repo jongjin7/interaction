@@ -9,11 +9,15 @@ import {
 import {
     buttonSizeLarge,
     buttonPrimaryClass,
+    buttonDangerClass,
     buttonDisabledClass,
     inputFieldClass,
 } from '../utils/tailwind.component';
 
+import {fetchAPI, postAPI} from '../utils/api'
+
 import {
+    getElements,
     initializeIconShot,
     setRandomImage,
     handleCaptureCamera,
@@ -23,7 +27,8 @@ import {
 export default class HomeFrame {
     constructor(containerId) {
         this.iconShot = null;
-        this.container = document.querySelector(containerId).querySelector('.page-container');
+        this.root = document.querySelector(containerId);
+        this.container = this.root.querySelector('.page-container');
     }
 
     loadData(){
@@ -66,16 +71,14 @@ export default class HomeFrame {
                 
                 <div class="${mainFormGroup}">
                     <div class="flex w-full gap-2">
-                        <select class="${inputFieldClass}" id="pic-category" disabled="disabled">
+                        <select class="${inputFieldClass}" id="category-select" disabled="disabled">
                             <option value="">선택하세요</option>
-                            <option value="1">옵션1</option>
-                            <option value="2">옵션2</option>
                             <option value="user_add">신규 카테고리 직접 입력</option>
                         </select>
                         
                     </div>
                      
-                    <div id="el-custom-filed" class="custom-field w-full none">
+                    <div id="el-custom-filed" class="custom-field w-full">
                         <div class="flex">
                             <label for="add-category" class="shrink-0 pr-2 text-white/50" style="line-height:3;">신규 카테고리</label>
                             <input type="text" id="add-category" class="${inputFieldClass} w-full" placeholder="입력하세요">
@@ -101,27 +104,53 @@ export default class HomeFrame {
     }
 
     render(){
+        //this.setCategory();
+        getElements(this.root);
         this.bindEvents();
     }
 
-    bindEvents(){
-        const root = document.querySelector('#home');
+    setCategory(){
 
+    }
+
+    bindEvents(){
         // 아이콘 등록
         this.iconShot = initializeIconShot();
 
-        // 이미지 교체
-        setRandomImage(root);
+        // 앱 로딩 후 랜덤 이미지 세팅
+        setRandomImage();
 
         // 미리보기 영역
         const circleInput = document.querySelector('#input-camera');
         circleInput.addEventListener('change', (e)=>{
-            handleCaptureCamera(e, root, this.iconShot)
+            handleCaptureCamera(e, this.iconShot)
         })
         //circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
 
-        // 카테고리 선택
-        const categorySelect = document.querySelector('#pic-category');
+        // 카테고리 설정 및 선택
+        const categorySelect = document.querySelector('#category-select');
+        this.fetchData();
         categorySelect.addEventListener('change', handleCategoryChange);
+
+        //직접 입력
+        const customField = this.root.querySelector('#add-category')
+        customField.onchange = this.createAlbum;
+
+
+
+    }
+
+    async fetchData(){
+        const resData = await fetchAPI();
+        console.log('카테고리:', resData)
+    }
+
+    async createAlbum (e){
+        const formdata = new FormData();
+        formdata.append("title", "종진폴더");
+        formdata.append("description", "This albums contains a lot of dank memes. Be prepared.");
+
+        const resData = await postAPI(formdata);
+        console.log('사용자 필드:', resData)
     }
 }

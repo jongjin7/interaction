@@ -3,7 +3,17 @@ import { mainFormGroup} from "../../css/pages.css";
 import { DomParser } from '../utils/dom';
 import  { LoadingBasic as Loading } from "../components/Loading";
 
-function toggleFormDisabled(root) {
+let root;
+let containerBgImg = null;
+let centerThumbImg = null;
+
+export function getElements(rootEl){
+    root = rootEl;
+    containerBgImg = root.querySelector('.bg-container');
+    centerThumbImg = root.querySelector('.img-circle img');
+}
+
+export function toggleFormDisabled() {
     const forms = root.querySelector(`.${mainFormGroup}`);
     const formItems = forms.querySelectorAll('select, button');
     formItems.forEach(item => {
@@ -22,24 +32,19 @@ export function initializeIconShot() {
         loop: true,
         autoplay: true,
         path: '/pin-gallery/assets/lotties/lottie.smile.json',
-        name: "Hello World",
     });
 }
 
-export function setRandomImage(root) {
-    const containerImg = root.querySelector('.bg-container');
-    const thumbImg = root.querySelector('.img-circle img');
-    const pic = ['./assets/img/@random_1.png', './assets/img/@random_2.png',
+export function setRandomImage() {
+    const randomImages = ['./assets/img/@random_1.png', './assets/img/@random_2.png',
         './assets/img/@random_3.png', './assets/img/@random_4.png',
         './assets/img/@random_5.jpg', './assets/img/@random_6.jpg', './assets/img/@random_7.jpg'];
-    const randomIndex = () => Math.floor(Math.random() * pic.length);
-    containerImg.src = thumbImg.src = pic[randomIndex()];
+    const randomIndex = () => Math.floor(Math.random() * randomImages.length);
+    setImage(randomImages[randomIndex()]);
 }
 
-export function setImage(root, imgsrc) {
-    const containerImg = root.querySelector('.bg-container');
-    const thumbImg = root.querySelector('.img-circle img');
-    containerImg.src = thumbImg.src = imgsrc;
+export function setImage(imgsrc) {
+    containerBgImg.src = centerThumbImg.src = imgsrc;
 }
 
 export function handleCircleButtonClick(root, iconShot) {
@@ -50,8 +55,8 @@ export function handleCircleButtonClick(root, iconShot) {
             root.classList.add('is-loading');
             target.before(DomParser(Loading('uploading')));
             iconShot.stop();
-            setRandomImage(root);
-            toggleFormDisabled(root);
+            setRandomImage();
+            toggleFormDisabled();
         } else {
             const loading = document.querySelector('#el-uploading');
             loading.remove();
@@ -88,7 +93,7 @@ export function handleCategoryChange(e) {
     }
 }
 
-export function handleCaptureCamera(e,root, icon){
+export function handleCaptureCamera(e, icon){
     console.log('handleCaptureCamera')
     const file = e.target.files[0];
 
@@ -97,7 +102,11 @@ export function handleCaptureCamera(e,root, icon){
         reader.onload =  () => {
             const imgUrl = window.URL.createObjectURL(file);
             window.URL.revokeObjectURL(file);
-            setImage(root, imgUrl);
+            setImage(imgUrl);
+            toggleFormDisabled();
+
+
+
         };
         reader.readAsDataURL(file);
         reader.onerror = (err) => {
@@ -105,5 +114,8 @@ export function handleCaptureCamera(e,root, icon){
         };
     }
 
+    // 앨범 등록
 
 }
+
+
