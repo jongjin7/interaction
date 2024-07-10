@@ -25,7 +25,6 @@ import {
 
 export default class HomeFrame {
     constructor(containerId) {
-        this.iconShot = null;
         this.root = document.querySelector(containerId);
         this.container = this.root.querySelector('.page-container');
     }
@@ -100,8 +99,6 @@ export default class HomeFrame {
         `;
         this.container.innerHTML = htmlData;
     }
-
-
 
     render(){
         getElements(this.root);

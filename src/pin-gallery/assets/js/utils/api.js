@@ -81,4 +81,9 @@ export async function fetchCategory(){
     return await fetchAPI({url:`${API_BASE_URL}/account/me/albums/0`, author:'access'})
 }
 
+// 리스트
+export async function fetchGalleryList(){
+    return await fetchAPI({url:`${API_BASE_URL}`, author:'access'})
+}
+
 

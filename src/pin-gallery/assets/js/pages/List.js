@@ -14,6 +14,7 @@ import {
     handleScroll,
     handleTabNavClick
 } from './ListEventHandler';
+import {fetchGalleryList} from "../utils/api";
 
 export default class ListFrame {
     constructor(containerId) {
@@ -23,6 +24,7 @@ export default class ListFrame {
         this.galleryPanelPositions = [];
         this.galleryPanel = null;
         this.galleryPanelItems = null;
+        this.listData = [];
 
 
         this.htmlData = '';
@@ -35,15 +37,16 @@ export default class ListFrame {
     }
 
     async loadData() {
-        //const listData = await fetchData);
+        this.listData = await fetchGalleryList();
+        console.log('this.listData =>', this.listData)
         this.createContentHTML();
         this.render();
     }
 
-    generateListItem(num) {
+    async generateListItem(num) {
         let list = ''
 
-        const html = () => {
+        const html1 = () => {
             function getRandomInt(min, max) {
                 min = Math.ceil(min);
                 max = Math.floor(max);
@@ -59,6 +62,8 @@ export default class ListFrame {
                 <a href="" target="_blank" title="이미지"><img src="https://picsum.photos/${w}/${h}" alt=""></a>
             </li>`
         };
+
+        const html = '';
 
         [...new Array(num)].forEach(() => {
             list += html()

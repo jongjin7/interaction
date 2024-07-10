@@ -52,7 +52,7 @@ export async function getAlbumCategory(){
        <option value="">앨범을 선택하세요</option>
         ${lis}
        <option value="user_add">신규 카테고리 직접 입력</option>
-    `
+    `;
 }
 
 export function initializeIconShot() {
