@@ -5,14 +5,15 @@ import {
     IMG_ACCESS_TOKEN
 } from "../config/api.config";
 
-export async function fetchAPI() {
+export async function fetchAPI({url,author}) {
+    console.log('aaaa', url,author)
     const headers = new Headers();
-    // headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
-    headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
+    if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
+    else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
     headers.append("Accept", "application/json");
     //87vbR7E
     try {
-        const response = await fetch(`${API_BASE_URL}/account/me/images`,{
+        const response = await fetch(url,{
             method: 'GET',
             headers: headers,
             redirect: 'follow'
@@ -29,8 +30,8 @@ export async function uploadImage(formData) {
 
 }
 
-async function moveImageToAlbum(){
-
+export async function getAlbumLists(){
+    return await fetchAPI({url:`${API_BASE_URL}/account/me/albums/0`, author:'access'})
 }
 
 export async function postAPI(formData){

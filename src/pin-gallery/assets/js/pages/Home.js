@@ -14,7 +14,7 @@ import {
     inputFieldClass,
 } from '../utils/tailwind.component';
 
-import {fetchAPI, postAPI} from '../utils/api'
+import {fetchAPI, getAlbumLists,  postAPI} from '../utils/api'
 
 import {
     getElements,
@@ -72,13 +72,12 @@ export default class HomeFrame {
                 <div class="${mainFormGroup}">
                     <div class="flex w-full gap-2">
                         <select class="${inputFieldClass}" id="category-select" disabled="disabled">
-                            <option value="">선택하세요</option>
-                            <option value="user_add">신규 카테고리 직접 입력</option>
+                            <!-- 옵션 리스트 -->
                         </select>
                         
                     </div>
                      
-                    <div id="el-custom-filed" class="custom-field w-full">
+                    <div id="el-custom-filed" class="custom-field w-full none">
                         <div class="flex">
                             <label for="add-category" class="shrink-0 pr-2 text-white/50" style="line-height:3;">신규 카테고리</label>
                             <input type="text" id="add-category" class="${inputFieldClass} w-full" placeholder="입력하세요">
@@ -128,9 +127,9 @@ export default class HomeFrame {
         //circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
 
         // 카테고리 설정 및 선택
-        const categorySelect = document.querySelector('#category-select');
+        this.categorySelect = document.querySelector('#category-select');
         this.fetchData();
-        categorySelect.addEventListener('change', handleCategoryChange);
+        this.categorySelect.addEventListener('change', handleCategoryChange);
 
         //직접 입력
         const customField = this.root.querySelector('#add-category')
@@ -141,13 +140,24 @@ export default class HomeFrame {
     }
 
     async fetchData(){
-        const resData = await fetchAPI();
-        console.log('카테고리:', resData)
+        const resData = await getAlbumLists();
+
+        const lis = resData.data.map(item=>{
+            console.log('카테고리:', item)
+            return  `<option value="${item.id}">${item.title}</option>`
+        }).join(' ');
+
+        // 셀렉트박스에 옵션 추가
+        this.categorySelect.innerHTML = `
+           <option value="">선택하세요</option>
+            ${lis}
+           <option value="user_add">신규 카테고리 직접 입력</option>
+        `
     }
 
     async createAlbum (e){
         const formdata = new FormData();
-        formdata.append("title", "종진폴더");
+        formdata.append("title", e.target.value);
         formdata.append("description", "This albums contains a lot of dank memes. Be prepared.");
 
         const resData = await postAPI(formdata);
