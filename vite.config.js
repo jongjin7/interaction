@@ -28,10 +28,10 @@ export default ({ command, mode }) => {
         base: '/', // Public Base Path
         // publicDir: path.resolve(__dirname, "./public"),
         server: {
-            port: 3100,
+            port: 3900,
         },
         preview: {
-            port: 4100,
+            port: 4900,
         },
         css: {
             devSourcemap: true

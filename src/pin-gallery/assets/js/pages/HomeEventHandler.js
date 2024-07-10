@@ -2,10 +2,25 @@ import lottie from 'lottie-web';
 import { mainFormGroup} from "../../css/pages.css";
 import { DomParser } from '../utils/dom';
 import  { LoadingBasic as Loading } from "../components/Loading";
+import {addNewCategory, sendImageFile} from "../utils/api";
 
 let root;
 let containerBgImg = null;
 let centerThumbImg = null;
+let uploadFile = '';
+let selectedAlbumCategory = {
+    category:'',
+
+    get selected(){
+        return this.category
+    },
+
+    set selected(val){
+        console.log('selected!')
+        this.category = val
+    }
+};
+
 
 export function getElements(rootEl){
     root = rootEl;
@@ -90,32 +105,47 @@ export function handleCategoryChange(e) {
         customField.querySelector('input').focus();
     } else {
         if (!customField.classList.contains('none')) customField.classList.add('none');
+        selectedAlbumCategory.selected = e.target.value;
     }
 }
 
-export function handleCaptureCamera(e, icon){
-    console.log('handleCaptureCamera')
-    const file = e.target.files[0];
+export function handleSubmit(){
+    if(!selectedAlbumCategory.selected) alert('카테고리를 선택해 주세요.')
+    console.log('------ 전송 ------', uploadFile)
+    const formdata = new FormData();
+    formdata.append('image', uploadFile);
+    formdata.append("type", 'image');
+    formdata.append("title", '업로드용 파일');
+    formdata.append("description", '새로운 곳에서 브라우저에서 올리는 것이다.');
 
-    if (file) {
+    sendImageFile(formdata, selectedAlbumCategory.selected);
+}
+
+export function handleCaptureCamera(e, icon){
+    uploadFile = e.target.files[0];
+
+    if (uploadFile) {
         const reader = new FileReader();
         reader.onload =  () => {
-            const imgUrl = window.URL.createObjectURL(file);
-            window.URL.revokeObjectURL(file);
+            const imgUrl = window.URL.createObjectURL(uploadFile);
+            window.URL.revokeObjectURL(uploadFile);
             setImage(imgUrl);
             toggleFormDisabled();
-
-
-
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(uploadFile);
         reader.onerror = (err) => {
             console.error('Error reading file:', err);
         };
     }
+}
 
-    // 앨범 등록
+export async function handleNewCategory (e){
+    const formdata = new FormData();
+    formdata.append("title", e.target.value);
+    formdata.append("description", "This albums contains a lot of dank memes. Be prepared.");
+    addNewCategory(formdata);
 
+    selectedAlbumCategory.selected = e.target.value;
 }
 
 

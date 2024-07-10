@@ -21,7 +21,9 @@ import {
     initializeIconShot,
     setRandomImage,
     handleCaptureCamera,
-    handleCategoryChange
+    handleCategoryChange,
+    handleNewCategory,
+    handleSubmit
 } from './HomeEventHandler';
 
 export default class HomeFrame {
@@ -33,6 +35,7 @@ export default class HomeFrame {
 
     loadData(){
         this.createContentHTML();
+        this.fetchData();
         this.render();
     }
 
@@ -71,7 +74,7 @@ export default class HomeFrame {
                 
                 <div class="${mainFormGroup}">
                     <div class="flex w-full gap-2">
-                        <select class="${inputFieldClass}" id="category-select" disabled="disabled">
+                        <select id="category-select" class="${inputFieldClass}" disabled="disabled">
                             <!-- 옵션 리스트 -->
                         </select>
                         
@@ -84,7 +87,7 @@ export default class HomeFrame {
                         </div>
                     </div>
                     
-                    <button type="button" class="${buttonPrimaryClass} ${buttonSizeLarge} ${buttonDisabledClass} py-3 w-full justify-center" disabled="disabled">
+                    <button type="button" id="submit-upload" class="${buttonPrimaryClass} ${buttonSizeLarge} ${buttonDisabledClass} py-3 w-full justify-center" disabled="disabled">
                         <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
                         </svg>
@@ -102,14 +105,24 @@ export default class HomeFrame {
         this.container.innerHTML = htmlData;
     }
 
-    render(){
-        //this.setCategory();
-        getElements(this.root);
-        this.bindEvents();
+    async fetchData(){
+        const resData = await getAlbumLists();
+
+        const lis = resData.data.map(item=>{
+            return  `<option value="${item.id}">${item.title}</option>`
+        }).join(' ');
+
+        // 셀렉트박스에 옵션 추가
+        this.categorySelect.innerHTML = `
+           <option value="">앨범을 선택하세요</option>
+            ${lis}
+           <option value="user_add">신규 카테고리 직접 입력</option>
+        `
     }
 
-    setCategory(){
-
+    render(){
+        getElements(this.root);
+        this.bindEvents();
     }
 
     bindEvents(){
@@ -128,39 +141,14 @@ export default class HomeFrame {
 
         // 카테고리 설정 및 선택
         this.categorySelect = document.querySelector('#category-select');
-        this.fetchData();
         this.categorySelect.addEventListener('change', handleCategoryChange);
 
         //직접 입력
         const customField = this.root.querySelector('#add-category')
-        customField.onchange = this.createAlbum;
+        customField.addEventListener('change', handleNewCategory);
 
-
-
-    }
-
-    async fetchData(){
-        const resData = await getAlbumLists();
-
-        const lis = resData.data.map(item=>{
-            console.log('카테고리:', item)
-            return  `<option value="${item.id}">${item.title}</option>`
-        }).join(' ');
-
-        // 셀렉트박스에 옵션 추가
-        this.categorySelect.innerHTML = `
-           <option value="">선택하세요</option>
-            ${lis}
-           <option value="user_add">신규 카테고리 직접 입력</option>
-        `
-    }
-
-    async createAlbum (e){
-        const formdata = new FormData();
-        formdata.append("title", e.target.value);
-        formdata.append("description", "This albums contains a lot of dank memes. Be prepared.");
-
-        const resData = await postAPI(formdata);
-        console.log('사용자 필드:', resData)
+        //이미지 전송
+        const btnSubmit = this.root.querySelector('#submit-upload')
+        btnSubmit.addEventListener('click', handleSubmit);
     }
 }

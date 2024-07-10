@@ -6,7 +6,6 @@ import {
 } from "../config/api.config";
 
 export async function fetchAPI({url,author}) {
-    console.log('aaaa', url,author)
     const headers = new Headers();
     if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
     else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
@@ -26,24 +25,16 @@ export async function fetchAPI({url,author}) {
     }
 }
 
-export async function uploadImage(formData) {
-
-}
-
-export async function getAlbumLists(){
-    return await fetchAPI({url:`${API_BASE_URL}/account/me/albums/0`, author:'access'})
-}
-
-export async function postAPI(formData){
+export async function postAPI({url,author, formdata}){
     const headers = new Headers();
-    headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
-    //headers.append("Authorization", `"Client-ID ${IMG_CLIENT_ID}"`);
+    if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
+    else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
     headers.append("Accept", "application/json");
 
     try {
-        const response = await fetch(`${API_ALBUM_URL}`, {
+        const response = await fetch(url, {
             method: 'POST',
-            body: formData,
+            body: formdata,
             headers: headers,
             redirect: 'follow'
         });
@@ -54,3 +45,36 @@ export async function postAPI(formData){
         throw error;
     }
 }
+
+export async function addNewCategory(formdata) {
+    return await postAPI({url:`${API_ALBUM_URL}`, author:'access', formdata: formdata})
+}
+
+export async function sendImageFile(formdata, album_hash) {
+    const  image = await postAPI({
+        url:`${API_BASE_URL}/image`,
+        author:'access',
+        formdata: formdata
+    })
+    console.log('sendFile', image, album_hash)
+    return await moveToAlbum(album_hash, image.data.id)
+}
+
+export async function moveToAlbum(album_hash, img_hash){
+    console.log('--- moveToAlbum ----', album_hash, img_hash )
+    const formdata = new FormData();
+    formdata.append('ids[]', img_hash);
+
+    const result = await postAPI({
+        url:`${API_ALBUM_URL}/${album_hash}/add`,
+        author:'access',
+        formdata: formdata,
+    })
+    console.log('moveAlbum -->', result)
+}
+
+export async function getAlbumLists(){
+    return await fetchAPI({url:`${API_BASE_URL}/account/me/albums/0`, author:'access'})
+}
+
+

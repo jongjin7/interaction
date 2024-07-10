@@ -1,5 +1,4 @@
 import EventManager from './EventManager.js';
-import { uploadImage } from '../utils/api.js';
 import { DomParser } from "../utils/dom";
 import  { LoadingBasic as Loading } from "./Loading";
 import HomeFrame from "../pages/Home";
