@@ -42,7 +42,6 @@ export function getElements(rootEl){
 
 export async function getAlbumCategory(){
     const resData = await fetchCategory();
-
     const lis = resData.data.map(item=>{
         return  `<option value="${item.id}">${item.title}</option>`
     }).join(' ');

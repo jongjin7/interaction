@@ -14,7 +14,7 @@ import {
     handleScroll,
     handleTabNavClick
 } from './ListEventHandler';
-import {fetchGalleryList} from "../utils/api";
+import {fetchCategory, fetchGalleryList} from "../utils/api";
 
 export default class ListFrame {
     constructor(containerId) {
@@ -37,8 +37,11 @@ export default class ListFrame {
     }
 
     async loadData() {
-        this.listData = await fetchGalleryList();
-        console.log('this.listData =>', this.listData)
+        const categories = await fetchCategory();
+        this.categoryData = categories.data;
+        const albums = await fetchGalleryList();
+        this.listData = albums.data;
+        console.log('this.listData =>', this.categoryData)
         this.createContentHTML();
         this.render();
     }
@@ -46,7 +49,9 @@ export default class ListFrame {
     async generateListItem(num) {
         let list = ''
 
-        const html1 = () => {
+
+
+        const html = () => {
             function getRandomInt(min, max) {
                 min = Math.ceil(min);
                 max = Math.floor(max);
@@ -63,8 +68,6 @@ export default class ListFrame {
             </li>`
         };
 
-        const html = '';
-
         [...new Array(num)].forEach(() => {
             list += html()
         })
@@ -73,7 +76,7 @@ export default class ListFrame {
     }
 
     generateTabMenu() {
-        const menu = this.galleryData.map(item => `<a href="">${item.category}</a>`).join('')
+        const menu = this.categoryData.map(item => `<a href="">${item.title}</a>`).join('')
         const html = `<div class="tabs">
                 <div class="tab-nav text-gray-400">
                     <a href="">전체</a>
