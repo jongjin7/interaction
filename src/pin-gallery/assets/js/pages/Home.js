@@ -14,16 +14,13 @@ import {
     inputFieldClass,
 } from '../utils/tailwind.component';
 
-import {fetchAPI, getAlbumLists,  postAPI} from '../utils/api'
-
 import {
     getElements,
-    initializeIconShot,
     setRandomImage,
     handleCaptureCamera,
     handleCategoryChange,
     handleNewCategory,
-    handleSubmit
+    handleSubmit, getAlbumCategory
 } from './HomeEventHandler';
 
 export default class HomeFrame {
@@ -35,7 +32,6 @@ export default class HomeFrame {
 
     loadData(){
         this.createContentHTML();
-        this.fetchData();
         this.render();
     }
 
@@ -105,38 +101,21 @@ export default class HomeFrame {
         this.container.innerHTML = htmlData;
     }
 
-    async fetchData(){
-        const resData = await getAlbumLists();
 
-        const lis = resData.data.map(item=>{
-            return  `<option value="${item.id}">${item.title}</option>`
-        }).join(' ');
-
-        // 셀렉트박스에 옵션 추가
-        this.categorySelect.innerHTML = `
-           <option value="">앨범을 선택하세요</option>
-            ${lis}
-           <option value="user_add">신규 카테고리 직접 입력</option>
-        `
-    }
 
     render(){
         getElements(this.root);
+        getAlbumCategory();
         this.bindEvents();
     }
 
     bindEvents(){
-        // 아이콘 등록
-        this.iconShot = initializeIconShot();
-
         // 앱 로딩 후 랜덤 이미지 세팅
         setRandomImage();
 
         // 미리보기 영역
         const circleInput = document.querySelector('#input-camera');
-        circleInput.addEventListener('change', (e)=>{
-            handleCaptureCamera(e, this.iconShot)
-        })
+        circleInput.addEventListener('change', handleCaptureCamera);
         //circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
 
         // 카테고리 설정 및 선택

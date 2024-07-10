@@ -47,7 +47,11 @@ export async function postAPI({url,author, formdata}){
 }
 
 export async function addNewCategory(formdata) {
-    return await postAPI({url:`${API_ALBUM_URL}`, author:'access', formdata: formdata})
+    return await postAPI({
+        url:`${API_ALBUM_URL}`,
+        author:'access',
+        formdata: formdata
+    })
 }
 
 export async function sendImageFile(formdata, album_hash) {
@@ -56,24 +60,24 @@ export async function sendImageFile(formdata, album_hash) {
         author:'access',
         formdata: formdata
     })
-    console.log('sendFile', image, album_hash)
-    return await moveToAlbum(album_hash, image.data.id)
+    const result = await moveToAlbum(album_hash, image.data.id)
+    console.log('result', result)
+    return result;
 }
 
 export async function moveToAlbum(album_hash, img_hash){
-    console.log('--- moveToAlbum ----', album_hash, img_hash )
     const formdata = new FormData();
     formdata.append('ids[]', img_hash);
 
-    const result = await postAPI({
+    return await postAPI({
         url:`${API_ALBUM_URL}/${album_hash}/add`,
         author:'access',
         formdata: formdata,
     })
-    console.log('moveAlbum -->', result)
 }
 
-export async function getAlbumLists(){
+
+export async function fetchCategory(){
     return await fetchAPI({url:`${API_BASE_URL}/account/me/albums/0`, author:'access'})
 }
 

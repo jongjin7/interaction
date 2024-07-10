@@ -55,7 +55,7 @@ export const pageTypeMain = style([
                 '.icon-shot':{
                     transform:'scale(0.95)',
                     filter:'grayscale(1)',
-                    opacity: 0.2,
+                    opacity: 0.3,
                 }
             }
         },
