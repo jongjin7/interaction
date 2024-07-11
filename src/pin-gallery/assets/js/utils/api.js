@@ -1,9 +1,4 @@
-import {
-    API_BASE_URL,
-    API_ALBUM_URL,
-    IMG_CLIENT_ID,
-    IMG_ACCESS_TOKEN
-} from "../config/api.config";
+import {API_ALBUM_URL, API_BASE_URL, IMG_ACCESS_TOKEN, IMG_CLIENT_ID} from "../config/api.config";
 
 export async function fetchAPI({url,author}) {
     const headers = new Headers();
@@ -78,12 +73,30 @@ export async function moveToAlbum(album_hash, img_hash){
 
 
 export async function fetchCategory(){
-    return await fetchAPI({url:`${API_BASE_URL}/account/me/albums/0`, author:'access'})
+    return await fetchAPI({url:`${API_BASE_URL}/account/me/albums`, author:'access'})
 }
 
 // 리스트
-export async function fetchGalleryList(){
-    return await fetchAPI({url:`${API_BASE_URL}`, author:'access'})
+export async function fetchGalleryList(albumHashes){
+    async function fetchMultipleAlbums(albumHashes) {
+        const fetchPromises = albumHashes.map(hash => fetchAPI({url: `${API_ALBUM_URL}/${hash}/images`, author: 'client'}));
+
+        try {
+            return await Promise.all(fetchPromises);
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
+    }
+    return await fetchMultipleAlbums(albumHashes);
+
+    //
+    //     .then(albums => {
+    //         console.log('Fetched albums:', albums);
+    //     })
+    //     .catch(error => {
+    //         console.error('Error fetching albums:', error);
+    //     });
+
 }
 
 

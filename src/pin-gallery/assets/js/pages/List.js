@@ -1,11 +1,6 @@
 import EventManager from "../components/EventManager";
 import {galleryList,} from "../../css/pages.css";
-import {
-    buttonDangerClass,
-    buttonOutlineClass,
-    buttonSizeSmall,
-    buttonDisabledClass
-} from '../utils/tailwind.component';
+import {buttonDangerClass, buttonDisabledClass, buttonOutlineClass, buttonSizeSmall} from '../utils/tailwind.component';
 import {buttonDelete} from '../components/CommonTemplate';
 import {
     handleButtonGroupClick,
@@ -24,55 +19,67 @@ export default class ListFrame {
         this.galleryPanelPositions = [];
         this.galleryPanel = null;
         this.galleryPanelItems = null;
-        this.listData = [];
-
 
         this.htmlData = '';
-        this.galleryData = [
-            {category: '배경', lists: [...new Array(20)]},
-            {category: '건축물', lists: [...new Array(7)]},
-            {category: '자연', lists: [...new Array(11)]},
-        ]
         this.container = document.querySelector(containerId).querySelector('.page-container');
     }
 
     async loadData() {
-        const categories = await fetchCategory();
-        this.categoryData = categories.data;
-        const albums = await fetchGalleryList();
-        this.listData = albums.data;
-        console.log('this.listData =>', this.categoryData)
+        const categoryLabels = await fetchCategory();
+        this.categoryData = categoryLabels.data;
+        const categoryIds = this.categoryData.map(item=>item.id);
+        const galleryAlbums = await fetchGalleryList(categoryIds);
+        this.galleryPanelItems = galleryAlbums.map(item=> item.data);
+        // 가장 등록을 많이한 앨범 추출
+        function findLongestArray(arr) {
+            if (!Array.isArray(arr) || arr.length === 0) {
+                throw new Error('Input must be a non-empty 2D array');
+            }
+
+            return arr.reduce((result, current, index) => {
+                if (current.length > result.array.length) {
+                    return { array: current, index: index };
+                } else {
+                    return result;
+                }
+            }, { array: arr[0], index: 0 });
+        }
+        this.longestArrayItem = (sliceLength) => {
+            if(sliceLength === 'total') return findLongestArray(this.galleryPanelItems);
+            else if(sliceLength === 'index') return findLongestArray(this.galleryPanelItems).index;
+            else return findLongestArray(this.galleryPanelItems).array.slice(0, sliceLength?? 8)
+        }
+
+        // 전체배열에서 랜덤하게 추출
+        function getRandomItems(arr, numItems) {
+            if (!Array.isArray(arr)) {
+                throw new Error('Input must be an array');
+            }
+            if (numItems > arr.length) {
+                throw new Error('Number of items to extract is greater than array length');
+            }
+
+            // Fisher-Yates shuffle algorithm
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+            }
+
+            return arr.slice(0, numItems);
+        }
+        this.randomArrayItem = (sliceLength = 8) => getRandomItems(this.galleryPanelItems.flat(), sliceLength);
+
         this.createContentHTML();
         this.render();
     }
 
-    async generateListItem(num) {
-        let list = ''
-
-
-
-        const html = () => {
-            function getRandomInt(min, max) {
-                min = Math.ceil(min);
-                max = Math.floor(max);
-                return (Math.random() * (max - min + 1) + min).toFixed(2); // min (포함) 과 max (포함) 사이의 정수 반환
-            }
-
-            const randomRatio = getRandomInt(1, 1.5);
-
-            const w = 100;
-            const h = Math.ceil(w * randomRatio);
+    generateListItem(list) {
+        return list.map((item) => {
             return `<li class="list-item">
-                ${buttonDelete}
-                <a href="" target="_blank" title="이미지"><img src="https://picsum.photos/${w}/${h}" alt=""></a>
-            </li>`
-        };
-
-        [...new Array(num)].forEach(() => {
-            list += html()
-        })
-
-        return list;
+                ${buttonDelete(item.id)}
+                <a href="#" target="_blank" title="${item.title}"><img src="${item.link}" alt="${item.description}"></a>
+            </li>`;
+        }).join(' ');
     }
 
     generateTabMenu() {
@@ -92,8 +99,8 @@ export default class ListFrame {
             <div class="title">
                 <h2 class="font-semibold">${info.title} ${!info.subtitle && info.itemLength ? `(${info.itemLength})` : ''}</h2>
                 ${info.subtitle ? `<small class="text-gray-500">${info.subtitle}(${info.itemLength})</small>` : ''}
-            </div>
-        `
+            </div>`;
+
         const allContentPanel = () => {
             const html = `
                 <div class="gallery-list ${galleryList}">
@@ -105,30 +112,30 @@ export default class ListFrame {
                         ${panelTitle({title: '전체'})}
                     </div>
                     <ul class="list">
-                       ${this.generateListItem(14)}
+                       ${ this.generateListItem(this.randomArrayItem()) }
                     </ul>
                         
                 </div>
                     
                 <div class="gallery-list ${galleryList}">
                     <div class="list-header">
-                        ${panelTitle({title: '인기 카테고리', subtitle: '건물', itemLength: 99})}
+                        ${panelTitle({title: '인기 카테고리', subtitle: this.categoryData[this.longestArrayItem('index')].title, itemLength: this.longestArrayItem('total').array.length})}
                     </div>
                     <ul class="list">
-                       ${this.generateListItem(8)}
+                       ${ this.generateListItem(this.longestArrayItem()) }
                     </ul>
                 </div>`;
             return html;
         }
 
         const contentPanel = () => {
-            const listTemplate = (item) => `
+            const listTemplate = (item, index) => `
                 <div class="gallery-list ${galleryList}"> 
                     <div class="list-header">
-                        ${panelTitle({title: item.category, itemLength: item.lists.length})}
+                        ${panelTitle({title: this.categoryData[index].title, itemLength: item.length})}
                     </div>
                     <ul class="list">
-                       ${this.generateListItem(item.lists.length)}
+                       ${ this.generateListItem(item) }
                     </ul>
                     <div class="btn-group">
                         <button type="button" class="${buttonDangerClass} ${buttonSizeSmall} ${buttonDisabledClass} btn-del-all" disabled="disabled">카테고리 전체 삭제</button>
@@ -138,10 +145,10 @@ export default class ListFrame {
 
             const tabPanel = (item, index) => `
                 <div class="tab-panel" id="tab-panel-${index + 1}">
-                    ${listTemplate(item)}
+                    ${listTemplate(item, index)}
                 </div>`;
 
-            return this.galleryData.map((item, index) => {
+            return this.galleryPanelItems.map((item, index) => {
                 return tabPanel(item, index)
             }).join('');
         }

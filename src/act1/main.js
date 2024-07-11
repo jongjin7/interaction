@@ -107,7 +107,7 @@ function init(){
     async function addAlbumToImages(imgHash, deletehash){
         const formdata = new FormData();
         formdata.append('ids[]', imgHash);
-
+        console.log('move....', `${useImgHost.postAlbumUrl}/add`)
         try {
             const response = await fetch(`${useImgHost.postAlbumUrl}/add`, {
                 method: "POST",
