@@ -80,7 +80,6 @@ export async function fetchCategory(){
 export async function fetchGalleryList(albumHashes){
     async function fetchMultipleAlbums(albumHashes) {
         const fetchPromises = albumHashes.map(hash => fetchAPI({url: `${API_ALBUM_URL}/${hash}/images`, author: 'client'}));
-
         try {
             return await Promise.all(fetchPromises);
         } catch (error) {
@@ -88,15 +87,6 @@ export async function fetchGalleryList(albumHashes){
         }
     }
     return await fetchMultipleAlbums(albumHashes);
-
-    //
-    //     .then(albums => {
-    //         console.log('Fetched albums:', albums);
-    //     })
-    //     .catch(error => {
-    //         console.error('Error fetching albums:', error);
-    //     });
-
 }
 
 

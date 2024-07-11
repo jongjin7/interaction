@@ -5,6 +5,7 @@ import {buttonDelete} from '../components/CommonTemplate';
 import {
     handleButtonGroupClick,
     handleDeleteButtonClick,
+    handleImageLinkClick,
     handleResize,
     handleScroll,
     handleTabNavClick
@@ -31,7 +32,7 @@ export default class ListFrame {
         const galleryAlbums = await fetchGalleryList(categoryIds);
         this.galleryPanelItems = galleryAlbums.map(item=> item.data);
         // 가장 등록을 많이한 앨범 추출
-        function findLongestArray(arr) {
+        function findLongestArrayWithIndex(arr) {
             if (!Array.isArray(arr) || arr.length === 0) {
                 throw new Error('Input must be a non-empty 2D array');
             }
@@ -44,11 +45,19 @@ export default class ListFrame {
                 }
             }, { array: arr[0], index: 0 });
         }
-        this.longestArrayItem = (sliceLength) => {
-            if(sliceLength === 'total') return findLongestArray(this.galleryPanelItems);
-            else if(sliceLength === 'index') return findLongestArray(this.galleryPanelItems).index;
-            else return findLongestArray(this.galleryPanelItems).array.slice(0, sliceLength?? 8)
-        }
+
+        this.longestArrayItem = (returnType) => {
+            const longestArrayData = findLongestArrayWithIndex(this.galleryPanelItems);
+
+            switch (returnType) {
+                case 'total':
+                    return longestArrayData.array;
+                case 'index':
+                    return longestArrayData.index;
+                default:
+                    return longestArrayData.array.slice(0, returnType ?? 8);
+            }
+        };
 
         // 전체배열에서 랜덤하게 추출
         function getRandomItems(arr, numItems) {
@@ -76,8 +85,8 @@ export default class ListFrame {
     generateListItem(list) {
         return list.map((item) => {
             return `<li class="list-item">
-                ${buttonDelete(item.id)}
-                <a href="#" target="_blank" title="${item.title}"><img src="${item.link}" alt="${item.description}"></a>
+                ${ buttonDelete(item.id) }
+                <a href="#" title="${item.title}" data-link-id="${item.id}"><img src="${item.link}" alt="${item.description}"></a>
             </li>`;
         }).join(' ');
     }
@@ -119,7 +128,11 @@ export default class ListFrame {
                     
                 <div class="gallery-list ${galleryList}">
                     <div class="list-header">
-                        ${panelTitle({title: '인기 카테고리', subtitle: this.categoryData[this.longestArrayItem('index')].title, itemLength: this.longestArrayItem('total').array.length})}
+                        ${panelTitle({
+                            title: '인기 카테고리', 
+                            subtitle: this.categoryData[this.longestArrayItem('index')].title, 
+                            itemLength: this.longestArrayItem('total').length
+                        })}
                     </div>
                     <ul class="list">
                        ${ this.generateListItem(this.longestArrayItem()) }
@@ -192,13 +205,12 @@ export default class ListFrame {
         this.galleryPanel = document.querySelector('#el-tab-contents');
         this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
 
-        this.eventManager.delegateEvent('.gallery-list .btn-group > button', 'click', (e) => {
-            handleButtonGroupClick(e);
-        });
+        // 상세보기
+        this.eventManager.delegateEvent('.gallery-list .list-item a', 'click', handleImageLinkClick);
 
-        this.eventManager.delegateEvent('.gallery-list .btn-delete', 'click', (e) => {
-            handleDeleteButtonClick(e);
-        });
+        this.eventManager.delegateEvent('.gallery-list .btn-group > button', 'click', handleButtonGroupClick);
+
+        this.eventManager.delegateEvent('.gallery-list .btn-delete', 'click', handleDeleteButtonClick);
 
         const getItemOffsetInfo = handleResize(this.galleryPanelItems);
         this.galleryPanelPositions = getItemOffsetInfo();

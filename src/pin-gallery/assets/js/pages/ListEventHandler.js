@@ -64,3 +64,8 @@ export function handleTabNavClick(e, galleryPanel, galleryPanelPositions, idx) {
     e.preventDefault();
     galleryPanel.scrollTo(galleryPanelPositions[idx], 0);
 }
+
+export function handleImageLinkClick(e){
+    e.preventDefault();
+    console.log('this', e.target)
+}

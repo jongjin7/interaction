@@ -480,6 +480,9 @@ export const galleryList = style({
                 },
             }
         },
+        a:{
+            display:'block',
+        },
         img:{
             width:'100%',
             height: '100%',
