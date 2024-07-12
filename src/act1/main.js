@@ -21,7 +21,7 @@ function init(){
     const isImgUr = TYPE === 'imgur';
 
     // imgur api 설정
-    const albumHash = '87vbR7E';
+    const albumHash = 'cwrgSx9';
     const getHeader = new Headers();
     getHeader.append("Authorization", "Client-ID bc6b68c16865024");
     getHeader.append("Accept", "application/json");
@@ -134,8 +134,19 @@ function init(){
                 headers: useImgHost.getHeader,
                 redirect: 'follow'
             });
-            const result = await response.json();
-            imageList = result.data;
+
+            const textResponse = await response.text(); // JSON으로 파싱하기 전에 텍스트로 읽어옴
+            console.log('Raw response:', textResponse); // 원시 응답 텍스트를 콘솔에 출력
+
+            if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
+
+            try {
+                const result = await response.json();
+                imageList = result.data;
+            } catch (jsonError) {
+                throw new Error(`Failed to parse JSON: ${jsonError.message}`);
+            }
+
             console.log("GET 성공:", resultHolder.childNodes);
             if(resultHolder.childNodes.length) resultHolder.replaceChildren();
             imageList.forEach(item=>{

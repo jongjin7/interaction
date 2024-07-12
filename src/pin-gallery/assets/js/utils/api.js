@@ -5,12 +5,14 @@ export async function fetchAPI({url,author}) {
     if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
     else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
     headers.append("Accept", "application/json");
+    console.log('hhh', headers)
     //87vbR7E
     try {
         const response = await fetch(url,{
             method: 'GET',
             headers: headers,
-            redirect: 'follow'
+            redirect: 'follow',
+            // verify: false,
         });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
@@ -78,6 +80,9 @@ export async function fetchCategory(){
 
 // 리스트
 export async function fetchGalleryList(albumHashes){
+    const credit = await fetchAPI({url: `https://api.imgur.com/3/credits`, author: 'client'})
+    console.log('credit', credit)
+
     async function fetchMultipleAlbums(albumHashes) {
         const fetchPromises = albumHashes.map(hash => fetchAPI({url: `${API_ALBUM_URL}/${hash}/images`, author: 'client'}));
         try {
@@ -86,6 +91,7 @@ export async function fetchGalleryList(albumHashes){
             console.error('There has been a problem with your fetch operation:', error);
         }
     }
+
     return await fetchMultipleAlbums(albumHashes);
 }
 
