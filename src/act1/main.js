@@ -129,6 +129,15 @@ function init(){
 
     async function loadImages(){
         try {
+
+            // const setting = await fetch(`https://api.imgur.com/3/account/ttl2875kr/albums/0`, {
+            //     method: "GET",
+            //     headers: useImgHost.postHeader,
+            //     redirect: 'follow'
+            // });
+            //
+            // console.log('setting:', setting)
+
             const response = await fetch(`${useImgHost.getUrl}`, {
                 method: "GET",
                 headers: useImgHost.getHeader,

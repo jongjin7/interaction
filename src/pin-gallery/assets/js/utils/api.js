@@ -5,7 +5,6 @@ export async function fetchAPI({url,author}) {
     if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
     else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
     headers.append("Accept", "application/json");
-    console.log('hhh', headers)
     //87vbR7E
     try {
         const response = await fetch(url,{
