@@ -372,6 +372,9 @@ export const pageTypeList = style({
             },
 
             '&.is-removable':{
+                '.btn-del-sel':{
+
+                },
                 '.btn-delete':{
                     visibility:'visible',
                     pointerEvents:'auto',
@@ -382,10 +385,6 @@ export const pageTypeList = style({
             },
         }
     },
-    '.btn-group':{
-        display:'flex',
-        gap: '8px',
-    }
 });
 export const galleryList = style({
     paddingTop:'16px',
@@ -490,8 +489,4 @@ export const galleryList = style({
         },
 
     },
-    '.btn-group':{
-        justifyContent:'space-between',
-        padding:'16px 16px',
-    }
 });

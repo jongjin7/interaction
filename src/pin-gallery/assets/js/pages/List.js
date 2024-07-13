@@ -3,12 +3,12 @@ import {galleryList,} from "../../css/pages.css";
 import {buttonDangerClass, buttonDisabledClass, buttonOutlineClass, buttonSizeSmall} from '../utils/tailwind.component';
 import {buttonDelete} from '../components/CommonTemplate';
 import {
-    handleButtonGroupClick,
-    handleDeleteButtonClick,
+    handleImageDeleteClick,
     handleImageLinkClick,
     handleResize,
     handleScroll,
-    handleTabNavClick
+    handleTabNavClick,
+    handleEnableImageDeleteToggle
 } from './ListEventHandler';
 import {fetchCategory, fetchGalleryList} from "../utils/api";
 
@@ -31,7 +31,6 @@ export default class ListFrame {
         const categoryIds = this.categoryData.map(item=>item.id);
         const galleryAlbums = await fetchGalleryList(categoryIds);
         this.galleryPanelItems = galleryAlbums.map(item=> item.data);
-
         // 가장 등록을 많이한 앨범 추출
         function findLongestArrayWithIndex(arr) {
             if (!Array.isArray(arr) || arr.length === 0) {
@@ -87,7 +86,7 @@ export default class ListFrame {
         return list.map((item) => {
             return `<li class="list-item">
                 ${ buttonDelete(item.id) }
-                <a href="#" title="${item.title}" data-link-id="${item.id}"><img src="${item.link}" alt="${item.description}"></a>
+                <a href="#" title="${item.title ?? new Date(item.datetime * 1000).toDateString() }" data-item-id="${item.id}"><img src="${item.link}" alt="${item.description}"></a>
             </li>`;
         }).join(' ');
     }
@@ -114,17 +113,12 @@ export default class ListFrame {
         const allContentPanel = () => {
             const html = `
                 <div class="gallery-list ${galleryList}">
-                    <div class="btn-group">
-                        <button type="button" class="${buttonDangerClass} ${buttonSizeSmall} ${buttonDisabledClass} btn-del-all" disabled="disabled">카테고리 전체 삭제</button>
-                        <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel">선택 삭제</button>
-                    </div>
                     <div class="list-header">
                         ${panelTitle({title: '전체'})}
                     </div>
                     <ul class="list">
                        ${ this.generateListItem(this.randomArrayItem()) }
                     </ul>
-                        
                 </div>
                     
                 <div class="gallery-list ${galleryList}">
@@ -147,14 +141,11 @@ export default class ListFrame {
                 <div class="gallery-list ${galleryList}"> 
                     <div class="list-header">
                         ${panelTitle({title: this.categoryData[index].title, itemLength: item.length})}
+                        <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel">선택 삭제</button>
                     </div>
                     <ul class="list">
                        ${ this.generateListItem(item) }
                     </ul>
-                    <div class="btn-group">
-                        <button type="button" class="${buttonDangerClass} ${buttonSizeSmall} ${buttonDisabledClass} btn-del-all" disabled="disabled">카테고리 전체 삭제</button>
-                        <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel">선택 삭제</button>
-                    </div>
                 </div>`;
 
             const tabPanel = (item, index) => `
@@ -209,9 +200,9 @@ export default class ListFrame {
         // 상세보기
         this.eventManager.delegateEvent('.gallery-list .list-item a', 'click', handleImageLinkClick);
 
-        this.eventManager.delegateEvent('.gallery-list .btn-group > button', 'click', handleButtonGroupClick);
+        this.eventManager.delegateEvent('.gallery-list .btn-delete', 'click', handleImageDeleteClick);
 
-        this.eventManager.delegateEvent('.gallery-list .btn-delete', 'click', handleDeleteButtonClick);
+        this.eventManager.delegateEvent('.gallery-list .btn-del-sel', 'click', handleEnableImageDeleteToggle);
 
         const getItemOffsetInfo = handleResize(this.galleryPanelItems);
         this.galleryPanelPositions = getItemOffsetInfo();

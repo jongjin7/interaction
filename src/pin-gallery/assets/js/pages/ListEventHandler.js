@@ -1,29 +1,27 @@
-
+import {deleteImageItem} from "../utils/api";
 
 let PREV_TAB_INDEX = 0;
 let CURRENT_TAB_INDEX = 0;
-export function handleButtonGroupClick(e) {
+
+export function handleEnableImageDeleteToggle(e) {
     const targetBtn = e.target;
     const currentPanel = targetBtn.closest('.tab-panel');
-    const btnDeleteAll = currentPanel.querySelector('.btn-del-all');
 
     if (targetBtn.classList.contains('btn-del-sel')) {
         currentPanel.classList.toggle('is-removable');
-        btnDeleteAll.toggleAttribute('disabled');
-    }
-
-    if (targetBtn.classList.contains('btn-del-all')) {
-        console.log('전체 삭제 버튼');
     }
 }
 
-export function handleDeleteButtonClick(e) {
+export function handleImageDeleteClick(e) {
     const targetBtn = e.target.classList.contains('.btn-delete') ? e.target : e.target.closest('button');
     targetBtn.classList.add('selected');
     setTimeout(() => {
         const isYes = window.confirm('현재 선택된 아이템을 삭제할가요?');
         if (isYes) {
-            console.log('삭제로직 수행중입니다.', targetBtn);
+            const result = deleteImageItem(targetBtn.dataset.itemId);
+            result.then(() => {
+                alert('선택한 이미지가 삭제되었습니다.')
+            })
         }
         targetBtn.classList.remove('selected');
     }, 30);

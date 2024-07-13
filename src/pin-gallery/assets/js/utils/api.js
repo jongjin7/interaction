@@ -1,5 +1,26 @@
 import {API_ALBUM_URL, API_BASE_URL, IMG_ACCESS_TOKEN, IMG_CLIENT_ID} from "../config/api.config";
 
+export async function clientFetchAPI ({type, url,author, formdata}){
+    const headers = new Headers();
+    if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
+    else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
+    headers.append("Accept", "application/json");
+
+    try {
+        const response = await fetch(url, {
+            method: type,
+            body: formdata,
+            headers: headers,
+            redirect: 'follow'
+        });
+        if (!response.ok) throw new Error('Network response was not ok');
+        return await response.json();
+    } catch (error) {
+        console.error(`Image ${type==='post'? 'upload':'delete'} failed: ${error}`);
+        throw error;
+    }
+}
+
 export async function fetchAPI({url,author}) {
     const headers = new Headers();
     if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
@@ -22,7 +43,7 @@ export async function fetchAPI({url,author}) {
 }
 
 export async function postAPI({url,author, formdata}){
-    const headers = new Headers();
+    /*const headers = new Headers();
     if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
     else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
     headers.append("Accept", "application/json");
@@ -39,7 +60,14 @@ export async function postAPI({url,author, formdata}){
     } catch (error) {
         console.error('Image upload failed:', error);
         throw error;
-    }
+    }*/
+
+    return await clientFetchAPI({
+        type: 'post',
+        url: url,
+        author: author,
+        formdata: formdata,
+    })
 }
 
 export async function addNewCategory(formdata) {
@@ -94,6 +122,15 @@ export async function fetchGalleryList(albumHashes){
     }
 
     return await fetchMultipleAlbums(albumHashes);
+}
+
+// 이미지 삭제
+export async function deleteImageItem(imageHash){
+    return await clientFetchAPI({
+        type: 'delete',
+        url: `${API_BASE_URL}/image/${imageHash}`,
+        author: 'access',
+    })
 }
 
 
