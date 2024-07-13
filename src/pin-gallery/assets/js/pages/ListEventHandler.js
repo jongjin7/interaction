@@ -1,4 +1,13 @@
 import {deleteImageItem} from "../utils/api";
+import { DomParser } from "../utils/dom";
+import { galleryDetail } from '../../css/pages.css';
+
+let root, pageContainer, eventModule;
+export function getElements(rootEl, container, eventManager) {
+    eventModule = eventManager;
+    root = rootEl;
+    pageContainer = container;
+}
 
 let PREV_TAB_INDEX = 0;
 let CURRENT_TAB_INDEX = 0;
@@ -65,5 +74,13 @@ export function handleTabNavClick(e, galleryPanel, galleryPanelPositions, idx) {
 
 export function handleImageLinkClick(e){
     e.preventDefault();
-    console.log('this', e.target)
+
+    const detailPanel = root.querySelector(galleryDetail)
+    root.append(DomParser(detailPanel));
+        pageContainer.style.marginLeft = `-100%`;
+
+    eventModule.delegateEvent(`#list .btn-close`, 'click', handleCloseDetail);
+    function handleCloseDetail (){
+        pageContainer.style.marginLeft = `0`;
+    }
 }

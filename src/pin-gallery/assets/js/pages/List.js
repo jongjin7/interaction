@@ -1,8 +1,9 @@
 import EventManager from "../components/EventManager";
-import {galleryList,} from "../../css/pages.css";
+import {galleryDetail, galleryList} from "../../css/pages.css";
 import {buttonDangerClass, buttonDisabledClass, buttonOutlineClass, buttonSizeSmall} from '../utils/tailwind.component';
 import {buttonDelete} from '../components/CommonTemplate';
 import {
+    getElements,
     handleImageDeleteClick,
     handleImageLinkClick,
     handleResize,
@@ -10,10 +11,13 @@ import {
     handleTabNavClick,
     handleEnableImageDeleteToggle
 } from './ListEventHandler';
+
 import {fetchCategory, fetchGalleryList} from "../utils/api";
+import {DomParser} from "../utils/dom";
 
 export default class ListFrame {
     constructor(containerId) {
+        this.root = document.querySelector(containerId);
         this.eventManager = new EventManager();
         this.prevTabIndex = 0;
         this.currentTabIndex = 0;
@@ -22,7 +26,7 @@ export default class ListFrame {
         this.galleryPanelItems = null;
 
         this.htmlData = '';
-        this.container = document.querySelector(containerId).querySelector('.page-container');
+        this.container = this.root.querySelector('.page-container');
     }
 
     async loadData() {
@@ -184,6 +188,11 @@ export default class ListFrame {
 
     render() {
         this.container.innerHTML = this.htmlData;
+        const detailPanel = `<div class="${galleryDetail}"><h1>상세페이지</h1>
+            <button type="button" class="btn-close">닫기</button>
+            </div>`;
+        this.root.append(DomParser(detailPanel));
+        getElements(this.root, this.container, this.eventManager);
         this.bindEvents();
     }
 

@@ -310,6 +310,8 @@ export const mainFormGroup = style({
 
 // 서브
 export const pageTypeList = style({
+    display:'flex',
+
     opacity:0 ,
     opacity:'1 !important',
     position: 'relative',
@@ -319,6 +321,11 @@ export const pageTypeList = style({
     '& > .page-container':{
         height: '100%',
         padding:'16px 0 12px',
+        transition: 'margin-left 0.5s ease-in-out'
+    },
+    '& > *':{
+        flexShrink:0,
+        width: '100%',
     },
     '.page-header':{
         display:'flex',
@@ -490,3 +497,10 @@ export const galleryList = style({
 
     },
 });
+
+export const galleryDetail = style({
+    width: '100vw',
+    height: '100vh',
+    background:'rgba(100,100,100, 0.3)',
+    outline: '2px solid green'
+})
