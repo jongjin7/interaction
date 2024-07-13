@@ -31,6 +31,7 @@ export default class ListFrame {
         const categoryIds = this.categoryData.map(item=>item.id);
         const galleryAlbums = await fetchGalleryList(categoryIds);
         this.galleryPanelItems = galleryAlbums.map(item=> item.data);
+
         // 가장 등록을 많이한 앨범 추출
         function findLongestArrayWithIndex(arr) {
             if (!Array.isArray(arr) || arr.length === 0) {
@@ -65,7 +66,7 @@ export default class ListFrame {
                 throw new Error('Input must be an array');
             }
             if (numItems > arr.length) {
-                throw new Error('Number of items to extract is greater than array length');
+                return arr;
             }
 
             // Fisher-Yates shuffle algorithm

@@ -5,7 +5,7 @@ export async function fetchAPI({url,author}) {
     if(author === 'access') headers.append("Authorization", `Bearer ${IMG_ACCESS_TOKEN}`);
     else if(author === 'client') headers.append("Authorization", `Client-ID ${IMG_CLIENT_ID}`);
     headers.append("Accept", "application/json");
-    //87vbR7E
+
     try {
         const response = await fetch(url,{
             method: 'GET',
@@ -79,8 +79,10 @@ export async function fetchCategory(){
 
 // 리스트
 export async function fetchGalleryList(albumHashes){
-    const credit = await fetchAPI({url: `https://api.imgur.com/3/credits`, author: 'client'})
-    console.log('credit', credit)
+    // 하루 사용 크레딧 체크
+    // const credit = await fetchAPI({url: `https://api.imgur.com/3/credits`, author: 'client'})
+    // console.log('credit', credit)
+
 
     async function fetchMultipleAlbums(albumHashes) {
         const fetchPromises = albumHashes.map(hash => fetchAPI({url: `${API_ALBUM_URL}/${hash}/images`, author: 'client'}));
