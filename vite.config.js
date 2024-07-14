@@ -26,7 +26,7 @@ export default ({ command, mode }) => {
     return defineConfig({
         root: path.join(__dirname, "./src"),
         base: '/', // Public Base Path
-        // publicDir: path.resolve(__dirname, "./public"),
+        publicDir: path.resolve(__dirname, "./public"),
         server: {
             port: 3900,
         },
@@ -71,7 +71,7 @@ export default ({ command, mode }) => {
                         //     return `${relativeDir}/assets/[name].[hash].js`;
                         // },
                         // assetFileNames: ( {name}) => {
-                        //         const relativeDir = name.split('.')[0];
+                        //   console.log('aaaa', name);
                         //         return `assets/[name][hash][extname]`
                         // },
                         // manualChunks(id, { getModuleInfo, getModuleIds }) {

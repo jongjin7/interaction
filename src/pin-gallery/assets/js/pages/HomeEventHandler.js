@@ -34,7 +34,7 @@ export function initializeIconShot() {
     renderer: 'canvas',
     loop: true,
     autoplay: true,
-    path: '/pin-gallery/assets/lotties/lottie.smile.json',
+    path: '/lotties/lottie.smile.json',
   });
 }
 
@@ -88,7 +88,7 @@ export function setRandomImage() {
   const arrayLength = 10;
   const randomImages = [];
   for (let i = 0; i < arrayLength; i++) {
-    randomImages.push(`./assets/img/@random_${i}.png`);
+    randomImages.push(`/pingallery-img/@random_${i}.png`);
   }
   const randomIndex = () => Math.floor(Math.random() * arrayLength);
   setImage(randomImages[randomIndex()]);
@@ -172,7 +172,7 @@ export async function handleSubmit() {
         renderer: 'canvas',
         loop: false,
         autoplay: false,
-        path: '/pin-gallery/assets/lotties/lottie.submit.json',
+        path: '/lotties/lottie.submit.json',
       });
 
       const loading = document.querySelector('#el-uploading');
