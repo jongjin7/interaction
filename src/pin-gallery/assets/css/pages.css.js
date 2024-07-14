@@ -4,7 +4,7 @@ import {bodyBgColorEnd, previewCircleName, bodyMaxWidth, bodyMinWidth, circleSiz
 // 메인
 export const pageTypeMain = style([
     {
-        display:'none',
+        //display:'none',
         position:'fixed', zIndex: 100,
         transition: 'transform 0.5s ease-in-out',
 
@@ -313,7 +313,7 @@ export const pageTypeList = style({
     display:'flex',
 
     opacity:0 ,
-    opacity:'1 !important',
+   // opacity:'1 !important',
     position: 'relative',
     transform: 'translateY(1.5vh) scale(0.98)',
     transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
@@ -502,7 +502,7 @@ export const galleryDetail = style({
     width: '100vw',
     height: '100%',
     padding: '16px 16px 12vh',
-    backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
+    //backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
     '.inner':{
         position:'relative',
         height: '100%',
