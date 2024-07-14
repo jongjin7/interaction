@@ -13,7 +13,7 @@ import {
 } from './ListEventHandler';
 
 import { fetchCategory, fetchGalleryList } from '../utils/api';
-import { DomParser } from '../utils/dom';
+import DomParser from '../utils/dom';
 
 export default class ListFrame {
   constructor(containerId) {
@@ -34,6 +34,7 @@ export default class ListFrame {
     const categoryIds = this.categoryData.map((item) => item.id);
     const galleryAlbums = await fetchGalleryList(categoryIds);
     this.galleryPanelItems = galleryAlbums.map((item) => item.data);
+
     // 가장 등록을 많이한 앨범 추출
     function findLongestArrayWithIndex(arr) {
       if (!Array.isArray(arr) || arr.length === 0) {
@@ -41,12 +42,11 @@ export default class ListFrame {
       }
 
       return arr.reduce(
-        (result, current, index) => {
+        (result, current, oindex) => {
           if (current.length > result.array.length) {
-            return { array: current, index: index };
-          } else {
-            return result;
+            return { array: current, index: oindex };
           }
+          return result;
         },
         { array: arr[0], index: 0 },
       );
@@ -77,32 +77,35 @@ export default class ListFrame {
       // Fisher-Yates shuffle algorithm
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
+        // eslint-disable-next-line no-param-reassign
         [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
       }
 
       return arr.slice(0, numItems);
     }
+
     this.randomArrayItem = (sliceLength = 8) => getRandomItems(this.galleryPanelItems.flat(), sliceLength);
 
     this.render();
   }
 
+  // eslint-disable-next-line class-methods-use-this
   generateListItem(list) {
     return list
       .map((item) => {
-        return `<li class="list-item">
+        return `<li class='list-item'>
                 ${buttonDelete(item.id)}
-                <a href="#" title="${item.title ?? new Date(item.datetime * 1000).toDateString()}" data-item-id="${item.id}"><img src="${item.link}" alt="${item.description}"></a>
+                <a href='#' title='${item.title ?? new Date(item.datetime * 1000).toDateString()}' data-item-id='${item.id}'><img src='${item.link}' alt='${item.description}'></a>
             </li>`;
       })
       .join(' ');
   }
 
   generateTabMenu() {
-    const menu = this.categoryData.map((item) => `<a href="">${item.title}</a>`).join('');
-    const html = `<div class="tabs">
-                <div class="tab-nav text-gray-400">
-                    <a href="">전체</a>
+    const menu = this.categoryData.map((item) => `<a href=''>${item.title}</a>`).join('');
+    const html = `<div class='tabs'>
+                <div class='tab-nav text-gray-400'>
+                    <a href=''>전체</a>
                     ${menu}
                 </div>
             </div>`;
@@ -112,31 +115,31 @@ export default class ListFrame {
 
   generateTabContent() {
     const panelTitle = (info) => `
-            <div class="title">
-                <h2 class="font-semibold">${info.title} ${!info.subtitle && info.itemLength ? `(${info.itemLength})` : ''}</h2>
-                ${info.subtitle ? `<small class="text-gray-500">${info.subtitle}(${info.itemLength})</small>` : ''}
+            <div class='title'>
+                <h2 class='font-semibold'>${info.title} ${!info.subtitle && info.itemLength ? `(${info.itemLength})` : ''}</h2>
+                ${info.subtitle ? `<small class='text-gray-500'>${info.subtitle}(${info.itemLength})</small>` : ''}
             </div>`;
 
     const allContentPanel = () => {
       const html = `
-                <div class="gallery-list ${galleryList}">
-                    <div class="list-header">
+                <div class='gallery-list ${galleryList}'>
+                    <div class='list-header'>
                         ${panelTitle({ title: '전체' })}
                     </div>
-                    <ul class="list">
+                    <ul class='list'>
                        ${this.generateListItem(this.randomArrayItem())}
                     </ul>
                 </div>
                     
-                <div class="gallery-list ${galleryList}">
-                    <div class="list-header">
+                <div class='gallery-list ${galleryList}'>
+                    <div class='list-header'>
                         ${panelTitle({
                           title: '인기 카테고리',
                           subtitle: this.categoryData[this.longestArrayItem('index')].title,
                           itemLength: this.longestArrayItem('total').length,
                         })}
                     </div>
-                    <ul class="list">
+                    <ul class='list'>
                        ${this.generateListItem(this.longestArrayItem())}
                     </ul>
                 </div>`;
@@ -145,18 +148,18 @@ export default class ListFrame {
 
     const contentPanel = () => {
       const listTemplate = (item, index) => `
-                <div class="gallery-list ${galleryList}"> 
-                    <div class="list-header">
+                <div class='gallery-list ${galleryList}'> 
+                    <div class='list-header'>
                         ${panelTitle({ title: this.categoryData[index].title, itemLength: item.length })}
-                        <button type="button" class="${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel">선택 삭제</button>
+                        <button type='button' class='${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel'>선택 삭제</button>
                     </div>
-                    <ul class="list">
+                    <ul class='list'>
                        ${this.generateListItem(item)}
                     </ul>
                 </div>`;
 
       const tabPanel = (item, index) => `
-                <div class="tab-panel" id="tab-panel-${index + 1}">
+                <div class='tab-panel' id='tab-panel-${index + 1}'>
                     ${listTemplate(item, index)}
                 </div>`;
 
@@ -168,9 +171,9 @@ export default class ListFrame {
     };
 
     const html = `
-            <div id="el-tab-contents" class="tab-contents">
+            <div id='el-tab-contents' class='tab-contents'>
                 <!-- tab all -->
-                <div class="tab-panel" id="tab-panel-0">
+                <div class='tab-panel' id='tab-panel-0'>
                     ${allContentPanel()}
                 </div>
                 <!-- 카테고리와 매핑된 리스트 패널 -->
@@ -181,20 +184,21 @@ export default class ListFrame {
     return html;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   generateDetailPanel() {
-    return `<div class="${galleryDetail}">
-                    <div class="inner">
-                        <img class="img" src="" alt="">
-                        <button type="button" class="btn-close">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"" viewBox="0 0 16 16">
-                              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+    return `<div class='${galleryDetail}'>
+                    <div class='inner'>
+                        <img class='img' src='' alt=''>
+                        <button type='button' class='btn-close'>
+                            <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'" viewBox="0 0 16 16">
+                              <path d='M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z'/>
                             </svg>
                         </button>
                     </div>
                 </div>`;
   }
 
-  createContentHTML(data) {
+  createContentHTML() {
     const htmlData = `
             <!--<div class="page-header">-->
             <!--    <h1 class="text-2xl text-neutral-900">갤러리 상세</h1>-->
@@ -240,6 +244,7 @@ export default class ListFrame {
 
     const tabNav = document.querySelectorAll('.tab-nav > a');
     tabNav.forEach((nav, idx) => {
+      // eslint-disable-next-line no-param-reassign
       nav.onclick = (e) => handleTabNavClick(e, this.galleryPanel, this.galleryPanelPositions, idx);
     });
 

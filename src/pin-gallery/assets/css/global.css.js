@@ -23,7 +23,7 @@ globalStyle('body', {
     [primaryColor]: '#F97316',
   },
   backgroundColor: '#000',
-  color: '#374151', //gray-700
+  color: '#374151', // gray-700
   minWidth: bodyMinWidth,
   maxWidth: bodyMaxWidth,
   margin: '0 auto',

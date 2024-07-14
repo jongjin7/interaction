@@ -11,7 +11,7 @@ import {
 // 메인
 export const pageTypeMain = style([
   {
-    //display:'none',
+    // display:'none',
     position: 'fixed',
     zIndex: 100,
     transition: 'transform 0.5s ease-in-out',
@@ -57,7 +57,7 @@ export const pageTypeMain = style([
         objectFit: 'cover',
       },
       '& > img': {
-        //filter:'grayscale(1) brightness(1.2)',
+        // filter:'grayscale(1) brightness(1.2)',
         opacity: 0.85,
       },
       '@container': {
@@ -247,7 +247,7 @@ export const mainPreviewCircleButton = style([
         '&:before': {
           width: `calc(100% - var(--img-track-width))`,
           height: `calc(100% - var(--img-track-width))`,
-          //backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
+          // backgroundImage:'radial-gradient(circle at 10% 10%, rgba(255,255,255, 0.5), transparent)',
           backgroundColor: 'rgba(255,255,255,0.6)',
           boxShadow: `inset 0.2vw 0.2vw 1vw rgba(0,0,0, 0.5)`,
         },
@@ -406,7 +406,7 @@ export const pageTypeList = style({
       flexShrink: 0,
       width: '100%',
       scrollSnapAlign: 'start',
-      //paddingTop: '8px',
+      // paddingTop: '8px',
       height: 'calc(88svh - 56px)',
       overflowY: 'auto',
       '& > div': {
@@ -544,7 +544,7 @@ export const galleryDetail = style({
   width: '100vw',
   height: '100%',
   padding: '16px 16px 0',
-  //backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
+  // backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
   '.inner': {
     position: 'relative',
     height: '100%',

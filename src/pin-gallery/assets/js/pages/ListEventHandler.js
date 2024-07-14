@@ -1,7 +1,9 @@
 import { deleteImageItem } from '../utils/api';
 import { galleryDetail } from '../../css/pages.css';
 
-let root, pageContainer, eventModule;
+let root;
+let pageContainer;
+let eventModule;
 let prevTabIndex = 0;
 let currentTabIndex = 0;
 
@@ -79,8 +81,6 @@ export function handleImageLinkClick(e) {
   pageContainer.style.marginLeft = `-100%`;
   imgEl.src = e.target.src;
 
-  eventModule.delegateEvent(`#list .btn-close`, 'click', handleCloseDetail);
-
   function handleCloseDetail() {
     pageContainer.style.marginLeft = 0;
 
@@ -90,4 +90,6 @@ export function handleImageLinkClick(e) {
     };
     pageContainer.addEventListener('transitionend', handleTransitionend);
   }
+
+  eventModule.delegateEvent(`#list .btn-close`, 'click', handleCloseDetail);
 }

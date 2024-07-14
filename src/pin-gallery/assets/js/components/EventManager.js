@@ -7,9 +7,9 @@ export default class EventManager {
     if (!this.delegatedEvents[event]) {
       this.delegatedEvents[event] = [];
       document.body.addEventListener(event, (e) => {
-        this.delegatedEvents[event].forEach(({ selector, handler }) => {
-          if (e.target.closest(selector)) {
-            handler(e);
+        this.delegatedEvents[event].forEach(({ deselector, dehandler }) => {
+          if (e.target.closest(deselector)) {
+            dehandler(e);
           }
         });
       });
@@ -26,6 +26,7 @@ export default class EventManager {
   }
 
   removeAllDelegatedEvents() {
+    // eslint-disable-next-line guard-for-in,no-restricted-syntax
     for (const event in this.delegatedEvents) {
       this.delegatedEvents[event] = [];
     }

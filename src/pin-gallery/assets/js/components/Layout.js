@@ -1,10 +1,9 @@
 import EventManager from './EventManager.js';
-import { DomParser } from '../utils/dom';
+import DomParser from '../utils/dom';
 import { LoadingBasic as Loading } from './Loading';
 import HomeFrame from '../pages/Home';
 import ListFrame from '../pages/List';
 
-let currentPageCodeToken = 'home';
 export default class Layout {
   constructor(containerId) {
     this.frameHome = '';
@@ -12,16 +11,6 @@ export default class Layout {
     this.currentPage = 'home';
     this.container = document.querySelector(containerId);
     this.eventManager = new EventManager();
-  }
-
-  static get currentPageToken() {
-    console.log('get currentPage==>', currentPageCodeToken);
-    return currentPageCodeToken;
-  }
-
-  static set currentPageToken(code) {
-    console.log('set currentPage==>', currentPageCodeToken);
-    return (currentPageCodeToken = code);
   }
 
   createBaseLayout(content) {
@@ -33,7 +22,7 @@ export default class Layout {
 
       this.createPageFrames(content);
 
-      //임시
+      // 임시
       this.frameHome = new HomeFrame('#home');
       this.frameHome.loadData();
       this.frameList = new ListFrame('#list');
