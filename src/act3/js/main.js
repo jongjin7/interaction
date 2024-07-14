@@ -1,35 +1,34 @@
 import {
-    headerContent,
-    pseudoCircle,
-    vars,
-    mainBodyContent,
-    previewCircle,
-    mainController,
-    pageTypeList,
-    container,
-    iconLink,
-    pageTypeMain,
-    galleryList,
-    pageToggleArea,
-
+  headerContent,
+  pseudoCircle,
+  vars,
+  mainBodyContent,
+  previewCircle,
+  mainController,
+  pageTypeList,
+  container,
+  iconLink,
+  pageTypeMain,
+  galleryList,
+  pageToggleArea,
 } from '../css/styles.css.js';
-import {LoadingBasic} from "../css/loading.css";
+import { LoadingBasic } from '../css/loading.css';
 
 // 페이지 랜더
-const loading = (className)=> `<div id="el-${className}" class="${LoadingBasic} ${className}">
+const loading = (className) => `<div id="el-${className}" class="${LoadingBasic} ${className}">
                         <div class="ripple"></div>
-                    </div>`
+                    </div>`;
 
-const createFrame = (params) =>{
-    const {id, className, data} = params;
-    const content = document.createElement('div');
-    content.id= id;
-    content.classList.add(className);
-    content.classList.add('page-panel');
-    content.innerHTML = data;
+const createFrame = (params) => {
+  const { id, className, data } = params;
+  const content = document.createElement('div');
+  content.id = id;
+  content.classList.add(className);
+  content.classList.add('page-panel');
+  content.innerHTML = data;
 
-    return content;
-}
+  return content;
+};
 
 // 컴포넌트 정의
 const iconToggleDefault = `
@@ -48,7 +47,7 @@ const iconDeleteFile = `<svg xmlns="http://www.w3.org/2000/svg" width="16" heigh
 let currentPage = 'home';
 let useCustomField = false;
 let carousel;
-let carouselItems ;
+let carouselItems;
 let carouselItemStartPoints;
 let currentTabIndex = 0;
 let prevTabIndex = 0;
@@ -61,14 +60,14 @@ const buttonSizeMedium = `px-4 py-1.5 text-base`;
 const buttonSizeSmall = `px-2 py-1.5 text-sm`;
 const buttonOutlineClass = `${buttonBasicClass} border-solid border hover:bg-orange-100 hover:border-orange-500`;
 const buttonOutlinePrimaryClass = `${buttonBasicClass} border-solid border border-orange-600 hover:bg-orange-50`;
-const buttonPrimaryClass = `${buttonBasicClass} bg-orange-500 text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700`
-const buttonDangerClass = `${buttonBasicClass} bg-rose-500 text-white hover:bg-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700`
+const buttonPrimaryClass = `${buttonBasicClass} bg-orange-500 text-white shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700`;
+const buttonDangerClass = `${buttonBasicClass} bg-rose-500 text-white hover:bg-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700`;
 const linkText = `font-semibold  text-gray-900`;
-const inputFieldClass = `relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 pl-5 pr-12 outline-none transition focus:border-orange-500 active:border-orange dark:border-form-strokedark dark:bg-form-input`
-const main= (params)=>{
-    // 파일 업로드 진행시 클래스 추가: is-loading
-    // Target: page-container
-    const htmlData = `
+const inputFieldClass = `relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 pl-5 pr-12 outline-none transition focus:border-orange-500 active:border-orange dark:border-form-strokedark dark:bg-form-input`;
+const main = (params) => {
+  // 파일 업로드 진행시 클래스 추가: is-loading
+  // Target: page-container
+  const htmlData = `
         <div class="page-container">
             <header class="${headerContent}">
                 <div class="inner">
@@ -136,12 +135,11 @@ const main= (params)=>{
             <!--<img src="./img/img_wide.png" alt="">-->
         </div>
         `;
-    return createFrame({...params, data: htmlData});
-}
+  return createFrame({ ...params, data: htmlData });
+};
 
-const pageGallery= (params)=>{
-
-    const listData  = `<div className="${galleryList}">
+const pageGallery = (params) => {
+  const listData = `<div className="${galleryList}">
         <h4>갤러리 제목입니다.</h4>
         <ul className="list">
             <li className="list-item"><a href=""><img
@@ -160,7 +158,7 @@ const pageGallery= (params)=>{
         </ul>
     </div>`;
 
-    const htmlData = `<div class="page-container">
+  const htmlData = `<div class="page-container">
 <!--<div class="page-header">-->
 <!--    <h1 class="text-2xl text-neutral-900">갤러리 상세</h1>-->
 <!--</div>-->
@@ -255,190 +253,187 @@ const pageGallery= (params)=>{
         </div>
     </div>
 </div> `;
-    return createFrame({...params, data: htmlData});
-}
+  return createFrame({ ...params, data: htmlData });
+};
 
-const setCurrentPage = ()=>{
-    currentPage = currentPage === 'home' ? 'list' : 'home';
-    document.body.dataset.currentPage = currentPage;
-    if(currentPage === 'home') initCarousel();
-}
+const setCurrentPage = () => {
+  currentPage = currentPage === 'home' ? 'list' : 'home';
+  document.body.dataset.currentPage = currentPage;
+  if (currentPage === 'home') initCarousel();
+};
 
 // router
 // https://velog.io/@sjoleee_/VanillaJS-%EB%B0%94%EB%8B%90%EB%9D%BCJS%EB%A1%9C-SPA-%EC%BB%A4%EB%A8%B8%EC%8A%A4-%EB%A7%8C%EB%93%A4%EA%B8%B0-%EB%9D%BC%EC%9A%B0%ED%84%B0
 const routes = [
-    {
-        path: "/act3/",
-        view: ()=>{
-            console.log("---- 메인화면입니다.", )
-            currentPage  = 'home';
-        }
+  {
+    path: '/act3/',
+    view: () => {
+      console.log('---- 메인화면입니다.');
+      currentPage = 'home';
     },
-    {
-        path: "/act3/list",
-        view: ()=>{
-            console.log("---- 갤러리 리스트입니다.")
-            // const pageId = 'list'
-            // const page = document.querySelector(`#${pageId}`)
-            // page.classList.add('show');
-            // document.body.dataset.currentPage = pageId;
-        }
-    }
+  },
+  {
+    path: '/act3/list',
+    view: () => {
+      console.log('---- 갤러리 리스트입니다.');
+      // const pageId = 'list'
+      // const page = document.querySelector(`#${pageId}`)
+      // page.classList.add('show');
+      // document.body.dataset.currentPage = pageId;
+    },
+  },
 ];
 
-
 function navigateTo(url) {
-    window.history.pushState(null, null, url);
-    route();
+  window.history.pushState(null, null, url);
+  route();
 }
 
 const route = async (app) => {
-    const pageMatches = routes.map(route => {
-        return {
-            route: route,
-            isMatch: window.location.pathname === route.path,
-        };
+  const pageMatches = routes.map((route) => {
+    return {
+      route: route,
+      isMatch: window.location.pathname === route.path,
+    };
+  });
+
+  let match = pageMatches.find((pageMatch) => pageMatch.isMatch);
+
+  if (!match) {
+    match = {
+      route: routes[0], // 기본 라우트로 설정 (예: 메인 화면)
+      isMatch: true,
+    };
+  }
+
+  match.route.view();
+};
+
+function generatePage(app) {
+  app.append(main({ id: 'home', className: pageTypeMain }));
+  app.append(pageGallery({ id: 'list', className: pageTypeList }));
+}
+
+function initCarousel() {
+  console.log('캐러셀 초기화');
+  carousel.scrollTo(carouselItemStartPoints[0], 0);
+  carouselItems[currentTabIndex].scrollTo(0, 0);
+}
+function init() {
+  // app Loading
+  const parser = new DOMParser();
+  const appContainer = document.querySelector('#app');
+  const doc = parser.parseFromString(loading('app-loading'), 'text/html');
+  const element = doc.body.firstChild;
+  document.body.append(element);
+  setTimeout(() => {
+    const appLoading = document.querySelector('#el-app-loading');
+    generatePage(appContainer);
+    appStart();
+
+    appLoading.classList.add('fadeout');
+    appContainer.classList.remove('fadeout');
+    appLoading.addEventListener('transitionend', () => {
+      appLoading.remove();
+      document.body.dataset.currentPage = 'home';
+    });
+  }, 1000);
+
+  function appStart() {
+    document.body.addEventListener('click', (e) => {
+      const target = e.target.closest('a') || e.target.closest('button');
+      if (!target || !(target instanceof HTMLAnchorElement || target instanceof HTMLButtonElement)) return;
+
+      e.preventDefault();
+      if (target.tagName.toLowerCase() === 'a') navigateTo(target.href);
+      if (target.tagName.toLowerCase() === 'button') {
+        if (target.classList.contains('btn-toggle')) {
+          setCurrentPage();
+        } else if (target.classList.contains('btn-circle')) {
+          console.log('카메라 버튼');
+        }
+      }
     });
 
-    let match = pageMatches.find(pageMatch => pageMatch.isMatch);
+    // 카테고리 선택
+    const categorySelect = document.querySelector('#pic-category');
+    categorySelect.addEventListener('change', (e) => {
+      console.log('현재 선택된 카테고리', e.target.value);
+      const customField = document.querySelector('#el-custom-filed');
+      if (e.target.value === 'user_add' && customField.classList.contains('none')) {
+        customField.classList.remove('none');
+        customField.querySelector('input').focus();
+      } else {
+        if (!customField.classList.contains('none')) customField.classList.add('none');
+      }
+    });
 
-    if (!match) {
-        match = {
-            route: routes[0], // 기본 라우트로 설정 (예: 메인 화면)
-            isMatch: true
-        };
+    // carousel
+    carousel = document.querySelector('#el-tab-contents');
+    carouselItems = carousel.querySelectorAll('.tab-panel');
+
+    // 아이템의 좌표 등록
+    function getItemOffsetInfo() {
+      carouselItemStartPoints = Array.from(carouselItems).map((item, index) => {
+        return item.offsetLeft;
+      });
     }
+    getItemOffsetInfo();
 
-    match.route.view();
-}
+    window.addEventListener('resize', () => {
+      getItemOffsetInfo();
+    });
+    console.log('position ==>', carouselItemStartPoints);
 
-function generatePage(app){
-    app.append(main({id:'home', className: pageTypeMain}));
-    app.append(pageGallery({id:'list', className: pageTypeList}));
-}
+    let isScrolling;
+    const tabNav = document.querySelectorAll('.tab-nav > a');
+    tabNav.forEach((nav, idx) => {
+      nav.onclick = (e) => {
+        e.preventDefault();
+        carousel.scrollTo(carouselItemStartPoints[idx], 0);
+      };
+    });
 
-function initCarousel(){
-    console.log('캐러셀 초기화')
-    carousel.scrollTo(carouselItemStartPoints[0], 0);
-    carouselItems[currentTabIndex].scrollTo(0,0);
-}
-function init(){
-    // app Loading
-    const parser = new DOMParser();
-    const appContainer = document.querySelector('#app');
-    const doc = parser.parseFromString(loading('app-loading'), "text/html");
-    const element = doc.body.firstChild;
-    document.body.append(element);
-    setTimeout(()=>{
-        const appLoading = document.querySelector('#el-app-loading');
-        generatePage(appContainer);
-        appStart();
+    const scrollHandler = () => {
+      const endDelayTime = 60;
+      // Clear the existing timeout throughout the scroll
+      window.clearTimeout(isScrolling);
 
-        appLoading.classList.add('fadeout')
-        appContainer.classList.remove('fadeout')
-        appLoading.addEventListener('transitionend', ()=> {
-            appLoading.remove();
-            document.body.dataset.currentPage = 'home';
-        })
+      // Set a timeout to run after scrolling ends
+      isScrolling = setTimeout(() => {
+        console.log('------ Scrolling has stopped.');
+        prevTabIndex = currentTabIndex;
+        carouselItemStartPoints.forEach((position, index) => {
+          if (carousel.scrollLeft === position) {
+            currentTabIndex = index;
+            if (prevTabIndex === currentTabIndex) return false;
 
-    }, 1000)
-
-    function appStart(){
-
-        document.body.addEventListener("click", e => {
-            const target = e.target.closest("a") || e.target.closest("button");
-            if (!target || !(target instanceof HTMLAnchorElement || target instanceof HTMLButtonElement)) return;
-
-            e.preventDefault();
-            if(target.tagName.toLowerCase() === 'a') navigateTo(target.href);
-            if(target.tagName.toLowerCase() === 'button') {
-                if(target.classList.contains('btn-toggle')){
-                    setCurrentPage();
-                }else if(target.classList.contains('btn-circle')) {
-                    console.log('카메라 버튼')
-                }
-            }
+            carouselItems[prevTabIndex].scrollTo(0, 0);
+            tabNav.forEach((nav, idx) => {
+              if (nav.classList.contains('bg-gray-700')) {
+                nav.classList.remove('bg-gray-700', 'text-white');
+              }
+              if (idx === index) {
+                nav.classList.add('bg-gray-700', 'text-white');
+              }
+            });
+          }
         });
 
-        // 카테고리 선택
-        const categorySelect = document.querySelector('#pic-category');
-        categorySelect.addEventListener('change', (e)=>{
-            console.log('현재 선택된 카테고리', e.target.value)
-            const customField = document.querySelector('#el-custom-filed');
-            if(e.target.value === 'user_add' && customField.classList.contains('none')){
-                customField.classList.remove('none');
-                customField.querySelector('input').focus();
-            }else{
-                if(!customField.classList.contains('none')) customField.classList.add('none');
-            }
-        })
+        isScrolling = null;
+      }, endDelayTime); // Combine the delays to a single timeout
+    };
 
-        // carousel
-        carousel = document.querySelector('#el-tab-contents');
-        carouselItems = carousel.querySelectorAll('.tab-panel');
+    carousel.addEventListener('scroll', scrollHandler, false);
 
-        // 아이템의 좌표 등록
-        function getItemOffsetInfo(){
-            carouselItemStartPoints = Array.from(carouselItems).map((item, index)=>{
-                return item.offsetLeft;
-            })
-        }
-        getItemOffsetInfo()
+    initCarousel();
+    tabNav[0].classList.add('bg-gray-700', 'text-white');
+  }
 
-        window.addEventListener('resize', ()=>{
-            getItemOffsetInfo();
-        })
-        console.log('position ==>', carouselItemStartPoints)
+  //window.addEventListener("popstate", route);
 
-        let isScrolling;
-        const tabNav = document.querySelectorAll('.tab-nav > a')
-        tabNav.forEach((nav, idx) =>{
-            nav.onclick = (e)=>{
-                e.preventDefault();
-                carousel.scrollTo(carouselItemStartPoints[idx], 0)
-            }
-        })
-
-        const scrollHandler = () => {
-            const endDelayTime = 60;
-            // Clear the existing timeout throughout the scroll
-            window.clearTimeout(isScrolling);
-
-            // Set a timeout to run after scrolling ends
-            isScrolling = setTimeout(() => {
-                console.log('------ Scrolling has stopped.');
-                prevTabIndex = currentTabIndex;
-                carouselItemStartPoints.forEach((position, index) => {
-                    if (carousel.scrollLeft === position) {
-                        currentTabIndex = index;
-                        if(prevTabIndex === currentTabIndex) return false;
-
-                        carouselItems[prevTabIndex].scrollTo(0,0);
-                        tabNav.forEach((nav, idx) => {
-                            if (nav.classList.contains('bg-gray-700')) {
-                                nav.classList.remove('bg-gray-700', 'text-white');
-                            }
-                            if (idx === index) {
-                                nav.classList.add('bg-gray-700', 'text-white');
-                            }
-                        });
-                    }
-                });
-
-                isScrolling = null;
-            }, endDelayTime ); // Combine the delays to a single timeout
-        };
-
-        carousel.addEventListener('scroll', scrollHandler, false);
-
-        initCarousel();
-        tabNav[0].classList.add('bg-gray-700', 'text-white');
-    }
-
-    //window.addEventListener("popstate", route);
-
-    //route();
-    /*
+  //route();
+  /*
     const okSubmit = lottie.loadAnimation({
         container: document.getElementById('loading'), // the dom element that will contain the animation
         renderer: 'canvas',
@@ -452,4 +447,4 @@ function init(){
     },3000)
     */
 }
-document.addEventListener('DOMContentLoaded', init)
+document.addEventListener('DOMContentLoaded', init);

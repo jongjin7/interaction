@@ -1,41 +1,42 @@
 import {
-    mainHeader,
-    mainFormGroup,
-    mainToggleBtnArea,
-    mainPreviewCircleButton,
-    mainPseudoCircle
-} from "../../css/pages.css";
+  mainHeader,
+  mainFormGroup,
+  mainToggleBtnArea,
+  mainPreviewCircleButton,
+  mainPseudoCircle,
+} from '../../css/pages.css';
 
 import {
-    buttonSizeLarge,
-    buttonPrimaryClass,
-    buttonDangerClass,
-    buttonDisabledClass,
-    inputFieldClass,
+  buttonSizeLarge,
+  buttonPrimaryClass,
+  buttonDangerClass,
+  buttonDisabledClass,
+  inputFieldClass,
 } from '../utils/tailwind.component';
 
 import {
-    getElements,
-    setRandomImage,
-    handleCaptureCamera,
-    handleCategoryChange,
-    handleNewCategory,
-    handleSubmit, getAlbumCategory
+  getElements,
+  setRandomImage,
+  handleCaptureCamera,
+  handleCategoryChange,
+  handleNewCategory,
+  handleSubmit,
+  getAlbumCategory,
 } from './HomeEventHandler';
 
 export default class HomeFrame {
-    constructor(containerId) {
-        this.root = document.querySelector(containerId);
-        this.container = this.root.querySelector('.page-container');
-    }
+  constructor(containerId) {
+    this.root = document.querySelector(containerId);
+    this.container = this.root.querySelector('.page-container');
+  }
 
-    loadData(){
-        this.createContentHTML();
-        this.render();
-    }
+  loadData() {
+    this.createContentHTML();
+    this.render();
+  }
 
-    createContentHTML(){
-        const htmlData = `
+  createContentHTML() {
+    const htmlData = `
             <header class="${mainHeader}">
                 <div class="inner">
                     <div class="text-holder">
@@ -97,34 +98,34 @@ export default class HomeFrame {
             <!-- 배경 이미지 -->
             <img class="bg-container" src="" alt="">
         `;
-        this.container.innerHTML = htmlData;
-    }
+    this.container.innerHTML = htmlData;
+  }
 
-    render(){
-        getElements(this.root);
-        getAlbumCategory();
-        this.bindEvents();
-    }
+  render() {
+    getElements(this.root);
+    getAlbumCategory();
+    this.bindEvents();
+  }
 
-    bindEvents(){
-        // 앱 로딩 후 랜덤 이미지 세팅
-        setRandomImage();
+  bindEvents() {
+    // 앱 로딩 후 랜덤 이미지 세팅
+    setRandomImage();
 
-        // 미리보기 영역
-        const circleInput = document.querySelector('#input-camera');
-        circleInput.addEventListener('change', handleCaptureCamera);
-        //circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
+    // 미리보기 영역
+    const circleInput = document.querySelector('#input-camera');
+    circleInput.addEventListener('change', handleCaptureCamera);
+    //circleBtn.onclick = handleCircleButtonClick(root, this.iconShot);
 
-        // 카테고리 설정 및 선택
-        this.categorySelect = document.querySelector('#category-select');
-        this.categorySelect.addEventListener('change', handleCategoryChange);
+    // 카테고리 설정 및 선택
+    this.categorySelect = document.querySelector('#category-select');
+    this.categorySelect.addEventListener('change', handleCategoryChange);
 
-        //직접 입력
-        const customField = this.root.querySelector('#add-category')
-        customField.addEventListener('change', handleNewCategory);
+    //직접 입력
+    const customField = this.root.querySelector('#add-category');
+    customField.addEventListener('change', handleNewCategory);
 
-        //이미지 전송
-        const btnSubmit = this.root.querySelector('#submit-upload')
-        btnSubmit.addEventListener('click', handleSubmit);
-    }
+    //이미지 전송
+    const btnSubmit = this.root.querySelector('#submit-upload');
+    btnSubmit.addEventListener('click', handleSubmit);
+  }
 }

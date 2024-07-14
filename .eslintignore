@@ -1,0 +1,18 @@
+# Ignore built files
+build/
+dist/
+
+# Ignore specific files
+*.config.js
+
+# Ignore all files in a directory
+node_modules/
+
+# Ignore multiple directories
+logs/
+temp/
+
+# 디렉토리 제외
+act1/
+act2/
+act3/

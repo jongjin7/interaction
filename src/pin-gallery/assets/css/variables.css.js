@@ -1,4 +1,4 @@
-import {createContainer, createVar} from "@vanilla-extract/css";
+import { createContainer, createVar } from '@vanilla-extract/css';
 
 export const bodyMinWidth = createVar();
 export const bodyMaxWidth = createVar();
