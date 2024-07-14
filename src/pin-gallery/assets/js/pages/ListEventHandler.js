@@ -74,13 +74,21 @@ export function handleTabNavClick(e, galleryPanel, galleryPanelPositions, idx) {
 
 export function handleImageLinkClick(e){
     e.preventDefault();
+    const detailPanel = root.querySelector(`.${galleryDetail}`);
+    const imgEl = detailPanel.querySelector('.img');
 
-    const detailPanel = root.querySelector(galleryDetail)
-    root.append(DomParser(detailPanel));
-        pageContainer.style.marginLeft = `-100%`;
+    pageContainer.style.marginLeft = `-100%`;
+    imgEl.src = e.target.src;
 
     eventModule.delegateEvent(`#list .btn-close`, 'click', handleCloseDetail);
+
     function handleCloseDetail (){
-        pageContainer.style.marginLeft = `0`;
+            pageContainer.style.marginLeft = 0;
+        const handleTransitionend = ()=>{
+        console.log('ttt')
+            imgEl.src = '';
+            pageContainer.removeEventListener('transitionend', handleTransitionend);
+        }
+        pageContainer.addEventListener('transitionend', handleTransitionend)
     }
 }

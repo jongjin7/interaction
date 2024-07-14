@@ -1,15 +1,15 @@
 import EventManager from "../components/EventManager";
 import {galleryDetail, galleryList} from "../../css/pages.css";
-import {buttonDangerClass, buttonDisabledClass, buttonOutlineClass, buttonSizeSmall} from '../utils/tailwind.component';
+import {buttonOutlineClass, buttonSizeSmall} from '../utils/tailwind.component';
 import {buttonDelete} from '../components/CommonTemplate';
 import {
     getElements,
+    handleEnableImageDeleteToggle,
     handleImageDeleteClick,
     handleImageLinkClick,
     handleResize,
     handleScroll,
-    handleTabNavClick,
-    handleEnableImageDeleteToggle
+    handleTabNavClick
 } from './ListEventHandler';
 
 import {fetchCategory, fetchGalleryList} from "../utils/api";
@@ -25,7 +25,6 @@ export default class ListFrame {
         this.galleryPanel = null;
         this.galleryPanelItems = null;
 
-        this.htmlData = '';
         this.container = this.root.querySelector('.page-container');
     }
 
@@ -82,7 +81,6 @@ export default class ListFrame {
         }
         this.randomArrayItem = (sliceLength = 8) => getRandomItems(this.galleryPanelItems.flat(), sliceLength);
 
-        this.createContentHTML();
         this.render();
     }
 
@@ -176,22 +174,36 @@ export default class ListFrame {
         return html;
     }
 
+    generateDetailPanel(){
+        return `<div class="${galleryDetail}">
+                    <div class="inner">
+                        <img class="img" src="" alt="">
+                        <button type="button" class="btn-close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"" viewBox="0 0 16 16">
+                              <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>`;
+        }
+
     createContentHTML(data) {
-        this.htmlData = `
+        const htmlData = `
             <!--<div class="page-header">-->
             <!--    <h1 class="text-2xl text-neutral-900">갤러리 상세</h1>-->
             <!--</div>-->
             
             ${this.generateTabMenu()}
             ${this.generateTabContent()}`;
+
+        this.container.innerHTML = htmlData;
+
+        // 상세페이지
+        this.root.append(DomParser(this.generateDetailPanel()));
     }
 
     render() {
-        this.container.innerHTML = this.htmlData;
-        const detailPanel = `<div class="${galleryDetail}"><h1>상세페이지</h1>
-            <button type="button" class="btn-close">닫기</button>
-            </div>`;
-        this.root.append(DomParser(detailPanel));
+        this.createContentHTML();
         getElements(this.root, this.container, this.eventManager);
         this.bindEvents();
     }

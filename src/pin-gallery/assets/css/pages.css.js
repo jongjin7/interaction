@@ -321,7 +321,7 @@ export const pageTypeList = style({
     '& > .page-container':{
         height: '100%',
         padding:'16px 0 12px',
-        transition: 'margin-left 0.5s ease-in-out'
+        transition: 'margin-left 0.35s ease-in-out'
     },
     '& > *':{
         flexShrink:0,
@@ -500,7 +500,32 @@ export const galleryList = style({
 
 export const galleryDetail = style({
     width: '100vw',
-    height: '100vh',
-    background:'rgba(100,100,100, 0.3)',
-    outline: '2px solid green'
+    height: '100%',
+    padding: '16px 16px 12vh',
+    backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
+    '.inner':{
+        position:'relative',
+        height: '100%',
+        borderRadius: '16px',
+        backgroundColor:'white',
+        boxShadow: '0 0 1vw rgba(0,0,0,0.4)',
+        overflow: 'hidden',
+
+        '.img':{
+            width: '100%',
+            height: '100%',
+            objectFit:'cover',
+        },
+        '.btn-close':{
+            position:'absolute', top: '16px',right: '16px',
+            width: '24px', height: '24px',
+            color: 'rgba(255,255, 255, 1)',
+            svg: {
+                width: '100%', height: '100%',
+                path:{
+                    filter: 'drop-shadow(0 0 1px rgba(0, 0, 0, 0.5))',
+                }
+            }
+        }
+    }
 })
