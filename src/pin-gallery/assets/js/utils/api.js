@@ -16,7 +16,11 @@ export async function clientFetchAPI ({type, url,author, formdata}){
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
     } catch (error) {
-        console.error(`Image ${type==='post'? 'upload':'delete'} failed: ${error}`);
+        console.error(`Image ${
+            type==='get' 
+                ? 'load': type === 'post' 
+                    ? 'upload':'delete'
+        } failed: ${error}`);
         throw error;
     }
 }
@@ -79,21 +83,25 @@ export async function addNewCategory(formdata) {
 }
 
 export async function sendImageFile(formdata, album_hash) {
-    const  image = await postAPI({
+    const  image = await clientFetchAPI({
+        type:'post',
         url:`${API_BASE_URL}/image`,
         author:'access',
         formdata: formdata
     })
+    console.log('---- sendImageFile ----')
     const result = await moveToAlbum(album_hash, image.data.id)
     console.log('result', result)
     return result;
 }
 
 export async function moveToAlbum(album_hash, img_hash){
+    console.log('---- moveToAlbum ----')
     const formdata = new FormData();
     formdata.append('ids[]', img_hash);
 
-    return await postAPI({
+    return await clientFetchAPI({
+        type:'post',
         url:`${API_ALBUM_URL}/${album_hash}/add`,
         author:'access',
         formdata: formdata,

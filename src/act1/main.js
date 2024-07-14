@@ -21,13 +21,13 @@ function init(){
     const isImgUr = TYPE === 'imgur';
 
     // imgur api 설정
-    const albumHash = 'cwrgSx9';
+    const albumHash = 'oAij3qf';
     const getHeader = new Headers();
-    getHeader.append("Authorization", "Client-ID bc6b68c16865024");
+    getHeader.append("Authorization", "Client-ID abcdc33d1b64fbd");
     getHeader.append("Accept", "application/json");
 
     const postHeader = new Headers();
-    postHeader.append("Authorization", "Bearer 5f1e7737e69cb62f937b52b90907f179b00a5de2");
+    postHeader.append("Authorization", "Bearer 10a6370ae8be145f958a2e689d317935ae8ea008");
     postHeader.append("Accept", "application/json");
     // image host
     const imgur = {
@@ -144,8 +144,8 @@ function init(){
                 redirect: 'follow'
             });
 
-            const textResponse = await response.text(); // JSON으로 파싱하기 전에 텍스트로 읽어옴
-            console.log('Raw response:', textResponse); // 원시 응답 텍스트를 콘솔에 출력
+            //const textResponse = await response.text(); // JSON으로 파싱하기 전에 텍스트로 읽어옴
+            //console.log('Raw response:', textResponse); // 원시 응답 텍스트를 콘솔에 출력
 
             if (!response.ok) throw new Error(`Network response was not ok: ${response.statusText}`);
 

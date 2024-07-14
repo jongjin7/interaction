@@ -501,12 +501,12 @@ export const galleryList = style({
 export const galleryDetail = style({
     width: '100vw',
     height: '100%',
-    padding: '16px 16px 12vh',
+    padding: '16px 16px 0',
     //backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
     '.inner':{
         position:'relative',
         height: '100%',
-        borderRadius: '16px',
+        borderRadius: '16px 16px 0 0',
         backgroundColor:'white',
         boxShadow: '0 0 1vw rgba(0,0,0,0.4)',
         overflow: 'hidden',

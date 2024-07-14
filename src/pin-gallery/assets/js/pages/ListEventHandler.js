@@ -1,16 +1,15 @@
 import {deleteImageItem} from "../utils/api";
-import { DomParser } from "../utils/dom";
 import { galleryDetail } from '../../css/pages.css';
 
 let root, pageContainer, eventModule;
+let prevTabIndex = 0;
+let currentTabIndex = 0;
+
 export function getElements(rootEl, container, eventManager) {
     eventModule = eventManager;
     root = rootEl;
     pageContainer = container;
 }
-
-let PREV_TAB_INDEX = 0;
-let CURRENT_TAB_INDEX = 0;
 
 export function handleEnableImageDeleteToggle(e) {
     const targetBtn = e.target;
@@ -49,16 +48,16 @@ export function handleScroll(galleryPanel, galleryPanelPositions, galleryPanelIt
     return () => {
         window.clearTimeout(isScrolling);
         isScrolling = setTimeout(() => {
-            PREV_TAB_INDEX = CURRENT_TAB_INDEX;
+            prevTabIndex = currentTabIndex;
             console.log('------ Scrolling has stopped.');
             galleryPanelPositions.forEach((position, index) => {
                 if (galleryPanel.scrollLeft === position) {
-                    CURRENT_TAB_INDEX = index;
+                    currentTabIndex = index;
                     tabNav.forEach((nav, idx) => {
                         nav.classList.toggle('bg-gray-700', idx === index);
                         nav.classList.toggle('text-white', idx === index);
                     });
-                    galleryPanelItems[PREV_TAB_INDEX].scrollTo(0, 0);
+                    galleryPanelItems[prevTabIndex].scrollTo(0, 0);
                 }
             });
 
@@ -83,12 +82,12 @@ export function handleImageLinkClick(e){
     eventModule.delegateEvent(`#list .btn-close`, 'click', handleCloseDetail);
 
     function handleCloseDetail (){
-            pageContainer.style.marginLeft = 0;
+        pageContainer.style.marginLeft = 0;
+
         const handleTransitionend = ()=>{
-        console.log('ttt')
             imgEl.src = '';
             pageContainer.removeEventListener('transitionend', handleTransitionend);
         }
-        pageContainer.addEventListener('transitionend', handleTransitionend)
+        pageContainer.addEventListener('transitionend', handleTransitionend);
     }
 }
