@@ -74,6 +74,7 @@ export function handleTabNavClick(e, galleryPanel, galleryPanelPositions, idx) {
 }
 
 export function handleImageLinkClick(e) {
+    console.log('handleImageLinkClick')
   e.preventDefault();
   const detailPanel = root.querySelector(`.${galleryDetail}`);
   const imgEl = detailPanel.querySelector('.img');

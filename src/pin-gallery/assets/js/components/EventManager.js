@@ -7,9 +7,10 @@ export default class EventManager {
     if (!this.delegatedEvents[event]) {
       this.delegatedEvents[event] = [];
       document.body.addEventListener(event, (e) => {
-        this.delegatedEvents[event].forEach(({ deselector, dehandler }) => {
-          if (e.target.closest(deselector)) {
-            dehandler(e);
+        // eslint-disable-next-line no-shadow
+        this.delegatedEvents[event].forEach(({ selector, handler }) => {
+          if (e.target.closest(selector)) {
+            handler(e);
           }
         });
       });
