@@ -223,6 +223,10 @@ export default class ListFrame {
     // 닫기 할때 초기화
     this.galleryPanel.scrollTo(this.galleryPanelPositions[0], 0);
     this.galleryPanelItems[0].scrollTo(0, 0);
+    if (this.root.classList.contains('show-detail')) {
+      const detailPanel = this.root.querySelector(`.${galleryDetail}`);
+      detailPanel.querySelector('.btn-close').click();
+    }
   }
 
   bindEvents() {

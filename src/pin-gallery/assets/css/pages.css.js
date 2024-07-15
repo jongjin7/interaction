@@ -342,6 +342,42 @@ export const mainFormGroup = style({
 });
 
 // 서브
+export const galleryDetail = style({
+  width: '100vw',
+  height: '100%',
+  padding: '16px 16px 0',
+  transition: 'transform 0.35s ease-in-out',
+  '.inner': {
+    position: 'relative',
+    height: '100%',
+    borderRadius: '16px 16px 0 0',
+    backgroundImage: `linear-gradient(0deg, #fff 0%, #fafafa 100%)`,
+    boxShadow: '0 0 1vw rgba(0,0,0,0.4)',
+    overflow: 'hidden',
+
+    '.img': {
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    },
+    '.btn-close': {
+      position: 'absolute',
+      top: '16px',
+      right: '16px',
+      width: '24px',
+      height: '24px',
+      color: 'rgba(255,255, 255, 1)',
+      svg: {
+        width: '100%',
+        height: '100%',
+        path: {
+          filter: 'drop-shadow(0 0 1px rgba(0, 0, 0, 0.5))',
+        },
+      },
+    },
+  },
+});
+
 export const pageTypeList = style({
   display: 'flex',
 
@@ -354,8 +390,18 @@ export const pageTypeList = style({
   '& > .page-container': {
     height: '100%',
     padding: '16px 0 12px',
-    transition: 'margin-left 0.35s ease-in-out',
+    transition: 'transform 0.35s ease-in-out',
   },
+
+  '&.show-detail': {
+    '.page-container': {
+      transform: 'translateX(-100%)',
+    },
+    [`.${galleryDetail}`]: {
+      transform: 'translateX(-100%)',
+    },
+  },
+
   '& > *': {
     flexShrink: 0,
     width: '100%',
@@ -391,6 +437,7 @@ export const pageTypeList = style({
       borderRadius: '8px',
       textAlign: 'center',
       whiteSpace: 'nowrap',
+      // scrollMargin: '30px',
     },
   },
   '.tab-contents': {
@@ -426,6 +473,7 @@ export const pageTypeList = style({
     },
   },
 });
+
 export const galleryList = style({
   paddingTop: '16px',
   marginBottom: '8px',
@@ -536,42 +584,6 @@ export const galleryList = style({
       width: '100%',
       height: '100%',
       objectFit: 'contain',
-    },
-  },
-});
-
-export const galleryDetail = style({
-  width: '100vw',
-  height: '100%',
-  padding: '16px 16px 0',
-  // backgroundImage:`linear-gradient(0deg, #fff 0%, #d2d2d2 100%)`,
-  '.inner': {
-    position: 'relative',
-    height: '100%',
-    borderRadius: '16px 16px 0 0',
-    backgroundColor: 'white',
-    boxShadow: '0 0 1vw rgba(0,0,0,0.4)',
-    overflow: 'hidden',
-
-    '.img': {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-    },
-    '.btn-close': {
-      position: 'absolute',
-      top: '16px',
-      right: '16px',
-      width: '24px',
-      height: '24px',
-      color: 'rgba(255,255, 255, 1)',
-      svg: {
-        width: '100%',
-        height: '100%',
-        path: {
-          filter: 'drop-shadow(0 0 1px rgba(0, 0, 0, 0.5))',
-        },
-      },
     },
   },
 });

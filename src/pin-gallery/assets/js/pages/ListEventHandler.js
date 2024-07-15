@@ -58,6 +58,13 @@ export function handleScroll(galleryPanel, galleryPanelPositions, galleryPanelIt
           tabNav.forEach((nav, idx) => {
             nav.classList.toggle('bg-gray-700', idx === index);
             nav.classList.toggle('text-white', idx === index);
+
+            if (nav.classList.contains('bg-gray-700')) {
+              nav.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+              });
+            }
           });
           galleryPanelItems[prevTabIndex].scrollTo(0, 0);
         }
@@ -74,16 +81,14 @@ export function handleTabNavClick(e, galleryPanel, galleryPanelPositions, idx) {
 }
 
 export function handleImageLinkClick(e) {
-    console.log('handleImageLinkClick')
   e.preventDefault();
   const detailPanel = root.querySelector(`.${galleryDetail}`);
   const imgEl = detailPanel.querySelector('.img');
-
-  pageContainer.style.marginLeft = `-100%`;
+  root.classList.add('show-detail');
   imgEl.src = e.target.src;
 
   function handleCloseDetail() {
-    pageContainer.style.marginLeft = 0;
+    root.classList.remove('show-detail');
 
     const handleTransitionend = () => {
       imgEl.src = '';

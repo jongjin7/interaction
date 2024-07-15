@@ -9,6 +9,8 @@ import {
   primaryColor,
 } from './variables.css';
 
+import { galleryDetail } from './pages.css';
+
 globalStyle('html, body', {
   overflow: 'hidden',
 });
@@ -73,7 +75,7 @@ globalStyle('[data-current-page=list]', {
     margin: '8px',
     borderTopLeftRadius: '12px',
     borderTopRightRadius: '12px',
-    boxShadow: '0 -1vw 4vw 2vw rgba(255,255,255, 0.8)',
+    boxShadow: '0 -1vw 3vw 0.25vw rgba(255,255,255, 0.7)',
     width: `calc( 100% - 16px)`,
     maxWidth: `calc( ${bodyMaxWidth} - 16px)`,
     overflow: 'hidden',
@@ -83,7 +85,7 @@ globalStyle('[data-current-page=list]', {
       header: {
         '.inner': {
           '.btn-toggle': {
-            marginTop: '-2svh !important',
+            // marginTop: '-2svh !important',
           },
         },
       },
@@ -104,13 +106,13 @@ globalStyle('[data-current-page=list]', {
           display: 'none',
         },
         '.btn-toggle': {
-          marginTop: '1svh',
+          // marginTop: '1svh',
         },
       },
     },
     '.btn-toggle': {
       transform: 'rotate(-270deg)',
-      // left: '4px',
+      left: '8px',
       'span:nth-of-type(1), span:nth-of-type(3)': {
         width: '10px',
       },
