@@ -11,7 +11,7 @@ let customField;
 let forms;
 let formsItemSelect;
 let formsItemInput;
-// let formsItemSubmit;
+let formsItemSubmit;
 let uploadFile;
 let stateCenterIcon;
 
@@ -46,7 +46,7 @@ export function getElements(rootEl) {
   forms = root.querySelector(`.${mainFormGroup}`);
   formsItemSelect = root.querySelector('#category-select');
   formsItemInput = root.querySelector('#add-category');
-  // formsItemSubmit = root.querySelector('#submit-upload');
+  formsItemSubmit = root.querySelector('#submit-upload');
 
   // 아이콘 등록
   initializeIconShot();
@@ -156,6 +156,7 @@ export async function handleSubmit() {
     console.log('------ 전송 ------');
     root.classList.add('is-loading');
     root.querySelector('.btn-circle').before(DomParser(Loading('uploading')));
+    formsItemSubmit.blur(); // 업로드 버튼
 
     const formdata = new FormData();
     formdata.append('image', uploadFile);

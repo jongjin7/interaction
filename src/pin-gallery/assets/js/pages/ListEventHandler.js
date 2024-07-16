@@ -84,8 +84,8 @@ export function handleImageLinkClick(e) {
   e.preventDefault();
   const detailPanel = root.querySelector(`.${galleryDetail}`);
   const imgEl = detailPanel.querySelector('.img');
-  root.classList.add('show-detail');
   imgEl.src = e.target.src;
+  root.classList.add('show-detail');
 
   function handleCloseDetail() {
     root.classList.remove('show-detail');

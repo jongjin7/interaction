@@ -68,12 +68,21 @@ export const pageTypeMain = style([
     },
 
     '&.is-loading': {
+      '.page-container': {
+        '&:after': {
+          display: 'block',
+          zIndex: 1000,
+        },
+      },
       '.btn-circle': {
         '.icon-shot': {
           transform: 'scale(0.95)',
           filter: 'grayscale(1)',
-          opacity: 0.3,
+          opacity: 0.4,
         },
+      },
+      '#submit-upload': {
+        filter: 'saturate(0.7)',
       },
     },
   },

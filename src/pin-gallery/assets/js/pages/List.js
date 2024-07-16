@@ -34,7 +34,6 @@ export default class ListFrame {
     const categoryIds = this.categoryData.map((item) => item.id);
     const galleryAlbums = await fetchGalleryList(categoryIds);
     this.galleryPanelItems = galleryAlbums.map((item) => item.data);
-
     // 가장 등록을 많이한 앨범 추출
     function findLongestArrayWithIndex(arr) {
       if (!Array.isArray(arr) || arr.length === 0) {
@@ -61,7 +60,7 @@ export default class ListFrame {
         case 'index':
           return longestArrayData.index;
         default:
-          return longestArrayData.array.slice(0, returnType ?? 8);
+          return longestArrayData.array.reverse().slice(0, returnType ?? 8);
       }
     };
 
@@ -91,11 +90,29 @@ export default class ListFrame {
 
   // eslint-disable-next-line class-methods-use-this
   generateListItem(list) {
+    function changeImageSize(url) {
+      const suffix = 'h'; // 결합할 특정 문자
+      return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
+        // 파일명에서 확장자 분리
+        const parts = filename.split('.');
+        const name = parts[0];
+        const extension = parts[1];
+
+        // 새로운 파일명 생성
+        const newFileName = `${name}${suffix}.${extension}`;
+
+        // 슬래시와 새로운 파일명을 결합하여 반환
+        return `/${newFileName}`;
+      });
+    }
+
     return list
       .map((item) => {
         return `<li class='list-item'>
                 ${buttonDelete(item.id)}
-                <a href='#' title='${item.title ?? new Date(item.datetime * 1000).toDateString()}' data-item-id='${item.id}'><img src='${item.link}' alt='${item.description}'></a>
+                <a href='#' title='${item.title ?? new Date(item.datetime * 1000).toDateString()}' data-item-id='${item.id}'>
+                  <img src='${changeImageSize(item.link)}' alt='${item.description}'>
+                </a>
             </li>`;
       })
       .join(' ');
