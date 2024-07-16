@@ -437,7 +437,11 @@ export const pageTypeList = style({
       borderRadius: '8px',
       textAlign: 'center',
       whiteSpace: 'nowrap',
-      // scrollMargin: '30px',
+      scrollMarginLeft: '32px',
+      scrollMarginRight: '32px',
+      '&:last-child': {
+        scrollMarginRight: '8px',
+      },
     },
   },
   '.tab-contents': {
