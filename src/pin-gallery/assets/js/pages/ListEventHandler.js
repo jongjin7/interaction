@@ -24,6 +24,7 @@ export function handleEnableImageDeleteToggle(e) {
 
 export function handleImageDeleteClick(e) {
   const targetBtn = e.target.classList.contains('.btn-delete') ? e.target : e.target.closest('button');
+  const enableToggleButton = targetBtn.closest('.gallery-list').querySelector('.btn-del-sel');
   targetBtn.classList.add('selected');
   setTimeout(() => {
     const isYes = window.confirm('현재 선택된 아이템을 삭제할가요?');
@@ -31,6 +32,7 @@ export function handleImageDeleteClick(e) {
       const result = deleteImageItem(targetBtn.dataset.itemId);
       result.then(() => {
         alert('선택한 이미지가 삭제되었습니다.');
+        enableToggleButton.click();
       });
     }
     targetBtn.classList.remove('selected');
