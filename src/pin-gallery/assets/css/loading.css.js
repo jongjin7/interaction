@@ -81,6 +81,14 @@ const defLoading = style({
       borderWidth: '2px',
     },
   },
+
+  '&.btn-loading': {
+    '.ripple': {
+      width: '24px',
+      height: '24px',
+      borderWidth: '3px',
+    },
+  },
 });
 
 // eslint-disable-next-line import/prefer-default-export

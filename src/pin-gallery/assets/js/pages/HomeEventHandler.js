@@ -156,6 +156,7 @@ export async function handleSubmit() {
     console.log('------ 전송 ------');
     root.classList.add('is-loading');
     root.querySelector('.btn-circle').before(DomParser(Loading('uploading')));
+    root.querySelector('.icon-box').append(DomParser(Loading('btn-loading')));
     formsItemSubmit.blur(); // 업로드 버튼
 
     const formdata = new FormData();
@@ -177,7 +178,11 @@ export async function handleSubmit() {
       });
 
       const loading = document.querySelector('#el-uploading');
+      const btnLoading = document.querySelector('#el-btn-loading');
       loading.remove();
+      setTimeout(() => {
+        btnLoading.remove();
+      }, 200);
 
       iconSubmit.setSpeed(1.5);
       iconSubmit.play();

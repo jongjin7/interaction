@@ -1,11 +1,11 @@
 import { style } from '@vanilla-extract/css';
 import {
   bodyBgColorEnd,
-  previewCircleName,
   bodyMaxWidth,
   bodyMinWidth,
   circleSize,
   maxCircleSize,
+  previewCircleName,
 } from './variables.css';
 
 // 메인
@@ -82,7 +82,15 @@ export const pageTypeMain = style([
         },
       },
       '#submit-upload': {
-        filter: 'saturate(0.7)',
+        filter: 'brightness(0.7)',
+      },
+      '.icon-box': {
+        '.btn-loading': {
+          opacity: 1,
+        },
+        svg: {
+          opacity: 0,
+        },
       },
     },
   },
@@ -335,6 +343,19 @@ export const mainFormGroup = style({
   },
   '.divide-box': {
     border: '1px solid red',
+  },
+
+  '.icon-box': {
+    position: 'relative',
+    '& > *': {
+      transition: 'all 0.15s',
+    },
+    '.btn-loading': {
+      opacity: 0,
+    },
+    svg: {
+      opacity: 1,
+    },
   },
 
   '.custom-field': {
