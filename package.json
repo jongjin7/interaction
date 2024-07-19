@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "@vanilla-extract/css": "^1.15.2",
+    "d3": "^7.9.0",
     "fast-glob": "^3.3.2",
     "lottie-web": "^5.12.2",
     "sass": "^1.77.6",
