@@ -54,7 +54,11 @@ export default class Layout {
     const setCurrentPage = () => {
       this.currentPage = this.currentPage === 'home' ? 'list' : 'home';
       document.body.dataset.currentPage = this.currentPage;
-      if (this.currentPage === 'home') this.frameList.initGalleryPanel();
+      if (this.currentPage === 'home') {
+        this.frameList.initGalleryPanel();
+      } else {
+        document.body.scrollIntoView();
+      }
     };
 
     // 홈과 리스트 전환
