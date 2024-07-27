@@ -8,6 +8,8 @@ import {
 
 import { buttonSizeLarge, buttonPrimaryClass, buttonDisabledClass, inputFieldClass } from '../utils/tailwind.component';
 
+import geoLocation from '../utils/geoLocation';
+
 import {
   getElements,
   setRandomImage,
@@ -17,6 +19,7 @@ import {
   handleSubmit,
   getAlbumCategory,
 } from './HomeEventHandler';
+
 import { LoadingBasic as Loading } from '../components/Loading';
 
 export default class HomeFrame {
@@ -72,9 +75,9 @@ export default class HomeFrame {
                     </div>
                      
                     <div id='el-custom-filed' class='custom-field w-full none'>
-                        <div class='flex'>
-                            <label for='add-category' class='shrink-0 pr-2 text-white/50' style='line-height:3;'>신규 카테고리</label>
-                            <input type='text' id='add-category' class='${inputFieldClass} w-full' placeholder='입력하세요'>
+                        <div class='flex gap-2'>
+                            <input type='text' id='add-category' class='${inputFieldClass}' placeholder='입력하세요'>
+                            <button class='rounded border border-stroke w-2/4'>확인</button>
                         </div>
                     </div>
                     
@@ -104,10 +107,9 @@ export default class HomeFrame {
     this.bindEvents();
   }
 
-  bindEvents() {
+  async bindEvents() {
     // 앱 로딩 후 랜덤 이미지 세팅
     setRandomImage();
-
     // 미리보기 영역
     const circleInput = document.querySelector('#input-camera');
     circleInput.addEventListener('change', handleCaptureCamera);
@@ -119,7 +121,8 @@ export default class HomeFrame {
 
     // 직접 입력
     const customField = this.root.querySelector('#add-category');
-    customField.addEventListener('change', handleNewCategory);
+    const customFieldButton = customField.nextElementSibling;
+    customFieldButton.addEventListener('click', handleNewCategory);
 
     // 이미지 전송
     const btnSubmit = this.root.querySelector('#submit-upload');
