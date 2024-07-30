@@ -3,6 +3,7 @@ import { mainFormGroup } from '../../css/pages.css';
 import DomParser from '../utils/dom';
 import { LoadingBasic as Loading } from '../components/Loading';
 import { addNewCategory, fetchCategory, sendImageFile } from '../utils/api';
+import geoLocation from '../utils/geoLocation';
 
 let root;
 let containerBgImg = null;
@@ -69,7 +70,7 @@ export async function getAlbumCategory() {
 }
 
 export function toggleFormDisabled() {
-  const formItems = forms.querySelectorAll('select, button');
+  const formItems = forms.querySelectorAll('select, #submit-upload');
   formItems.forEach((item) => {
     if (item.getAttribute('disabled')) {
       item.removeAttribute('disabled');
@@ -98,7 +99,6 @@ export function handleCategoryChange(e) {
   customField = document.querySelector('#el-custom-filed');
   if (e.target.value === 'user_add' && customField.classList.contains('none')) {
     customField.classList.remove('none');
-    customField.querySelector('input').focus();
   } else {
     if (!customField.classList.contains('none')) customField.classList.add('none');
     selectedAlbumCategory.selected = e.target.value;
@@ -125,13 +125,14 @@ export function handleCaptureCamera(e) {
   }
 }
 
-export async function handleNewCategory(e) {
+export async function handleNewCategory() {
   const formdata = new FormData();
-  formdata.append('title', e.target.value);
-  formdata.append('description', 'This albums contains a lot of dank memes. Be prepared.');
+  formdata.append('title', formsItemInput.value);
+  formdata.append('description', `${formsItemInput.value} 이름으로 만든 앨범입니다.`);
   const result = await addNewCategory(formdata);
   if (result) {
     customField.classList.add('none');
+    formsItemInput.value = '';
     await getAlbumCategory();
   }
 }
@@ -159,14 +160,16 @@ export async function handleSubmit() {
     root.querySelector('.icon-box').append(DomParser(Loading('btn-loading')));
     formsItemSubmit.blur(); // 업로드 버튼
 
+    const msg = await geoLocation.init();
     const formdata = new FormData();
     formdata.append('image', uploadFile);
     formdata.append('type', 'image');
-    formdata.append('title', '업로드용 파일');
-    formdata.append('description', '새로운 곳에서 브라우저에서 올리는 것이다.');
+    formdata.append('title', msg ? msg.time : '제목 없음');
+    formdata.append('description', msg ? msg.message : '설명 없음');
 
     const result = await sendImageFile(formdata, selectedAlbumCategory.selected);
-    console.log('submit result=>', result);
+    // console.log('submit result=>', result);
+
     if (result) {
       // 등록 성공시
       const iconSubmit = lottie.loadAnimation({

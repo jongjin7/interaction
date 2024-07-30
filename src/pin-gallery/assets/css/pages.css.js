@@ -337,6 +337,9 @@ export const mainFormGroup = style({
     color: 'rgba(255,255,255,0.8)',
     borderColor: 'rgba(255,255,255,0.3)',
     backgroundColor: 'rgba(255,255,255,0.1)',
+    '&::placeholder': {
+      color: 'rgba(255,255,255,0.5)',
+    },
     '&:focus': {
       borderColor: 'white',
     },
@@ -361,6 +364,18 @@ export const mainFormGroup = style({
   '.custom-field': {
     '&.none': {
       display: 'none',
+    },
+
+    'input:not(:placeholder-shown) + button': {
+      borderColor: 'white',
+      color: 'white',
+      pointerEvents: 'auto',
+    },
+
+    button: {
+      color: 'rgba(255,255,255,0.5)',
+      borderColor: 'rgba(255,255,255,0.3)',
+      pointerEvents: 'none',
     },
   },
 
