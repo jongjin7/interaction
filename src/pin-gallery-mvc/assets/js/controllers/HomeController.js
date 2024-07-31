@@ -102,7 +102,7 @@ class HomeController {
           iconSubmit.addEventListener('complete', () => {
             this.view.toggleFormDisabled();
             iconSubmit.destroy();
-            window.location.reload();
+            this.setRandomImage();
           });
         }
       } catch (error) {

@@ -1,4 +1,3 @@
-// ListController.js
 import ListModel from '../models/ListModel';
 import ListView from '../views/ListView';
 import {
@@ -18,14 +17,11 @@ export default class ListController {
   }
 
   async initialize() {
-    console.log('initialize called');
     try {
       this.view.renderLoading();
       const categoryData = await this.model.fetchCategoryData();
-      // console.log('categoryData:', categoryData);
       const categoryIds = categoryData.map((item) => item.id);
       const galleryPanelItems = await this.model.fetchGalleryData(categoryIds);
-      // console.log('galleryPanelItems:', galleryPanelItems);
       this.view.render(
         categoryData,
         galleryPanelItems,
@@ -36,20 +32,22 @@ export default class ListController {
     } catch (error) {
       console.error(error);
       this.view.showError(error);
-    } finally {
-      // this.view.hideLoading();
     }
   }
 
-  setupEventHandlers() {
-    this.galleryPanel = document.querySelector('#el-tab-contents');
-    this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
+  async setupEventHandlers() {
+    // Delay attaching the event handlers until after the content is fully rendered
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     initializeEventHandlers(this.view.root, this.view.container, this);
+
+    this.galleryPanel = document.querySelector('#el-tab-contents');
+    this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
 
     document.querySelectorAll('.gallery-list .list-item a').forEach((el) => {
       el.addEventListener('click', handleImageLinkClick);
     });
+
     document.querySelectorAll('.gallery-list .btn-delete').forEach((el) => {
       el.addEventListener('click', handleImageDeleteClick);
     });

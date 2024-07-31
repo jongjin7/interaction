@@ -1,4 +1,5 @@
 import { addNewCategory, fetchCategory, sendImageFile } from '../api/apiService';
+import geoLocation from '../../../../pin-gallery/assets/js/utils/geoLocation';
 
 class HomeModel {
   constructor() {
@@ -41,14 +42,14 @@ class HomeModel {
 
   async submitImage() {
     try {
+      const msg = await geoLocation.init();
       const formdata = new FormData();
       formdata.append('image', this.uploadFile);
       formdata.append('type', 'image');
-      formdata.append('title', 'Upload Image');
-      formdata.append('description', 'Uploaded via browser.');
+      formdata.append('title', msg ? msg.time : '제목 없음');
+      formdata.append('description', msg ? msg.message : '설명 없음');
 
-      const result = await sendImageFile(formdata, this.selectedAlbumCategory);
-      return result;
+      return await sendImageFile(formdata, this.selectedAlbumCategory);
     } catch (error) {
       console.error('Failed to submit image:', error);
       throw error;

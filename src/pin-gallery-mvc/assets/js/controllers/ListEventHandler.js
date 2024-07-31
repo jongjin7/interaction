@@ -1,12 +1,13 @@
-// ListEventHandler.js
 let root;
 let pageContainer;
 let controller;
+let detailPanel;
 
 export function initializeEventHandlers(rootEl, container, listController) {
   root = rootEl;
   pageContainer = container;
   controller = listController;
+  detailPanel = root.querySelector('.gallery-detail');
 }
 
 export function handleEnableImageDeleteToggle(e) {
@@ -65,9 +66,10 @@ export function handleTabNavClick(e, galleryPanel, galleryPanelPositions, idx) {
   galleryPanel.scrollTo(galleryPanelPositions[idx], 0);
 }
 
+// ListEventHandler.js
 export function handleImageLinkClick(e) {
   e.preventDefault();
-  const detailPanel = root.querySelector('.gallery-detail');
+
   const imgEl = detailPanel.querySelector('.img');
   imgEl.src = e.target.src;
   root.classList.add('show-detail');
@@ -81,5 +83,5 @@ export function handleImageLinkClick(e) {
     pageContainer.addEventListener('transitionend', handleTransitionend);
   }
 
-  pageContainer.querySelector('.btn-close').addEventListener('click', handleCloseDetail);
+  detailPanel.querySelector('.btn-close').addEventListener('click', handleCloseDetail);
 }

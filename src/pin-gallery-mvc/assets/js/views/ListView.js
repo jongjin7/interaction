@@ -14,10 +14,6 @@ export default class ListView {
     this.container.innerHTML = '<p>Loading...</p>';
   }
 
-  hideLoading() {
-    this.container.innerHTML = '';
-  }
-
   showError(error) {
     this.container.innerHTML = `<div class="error">Error: ${error.message}</div>`;
   }
@@ -44,7 +40,7 @@ export default class ListView {
     const menu = this.categoryData.map((item) => `<a href=''>${item.title}</a>`).join('');
     const html = `<div class='tabs'>
       <div class='tab-nav text-gray-400'>
-        <a href=''>전체 랜덤</a>
+        <a href=''>전체</a>
         ${menu}
       </div>
     </div>`;
@@ -63,7 +59,7 @@ export default class ListView {
       const html = `
         <div class='gallery-list ${galleryList}'>
           <div class='list-header'>
-            ${panelTitle({ title: '전체' })}
+            ${panelTitle({ title: '전체 랜덤' })}
           </div>
           <ul class='list'>
             ${this.generateListItem(this.randomArrayItem())}
@@ -145,7 +141,7 @@ export default class ListView {
   }
 
   generateDetailPanel() {
-    return `<div class='${galleryDetail}'>
+    return `<div class='gallery-detail ${galleryDetail}'>
       <div class='inner'>
         <img class='img' src='' alt=''>
         <button type='button' class='btn-close'>
