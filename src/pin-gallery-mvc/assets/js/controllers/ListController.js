@@ -18,11 +18,14 @@ export default class ListController {
   }
 
   async initialize() {
+    console.log('initialize called');
     try {
       this.view.renderLoading();
       const categoryData = await this.model.fetchCategoryData();
+      // console.log('categoryData:', categoryData);
       const categoryIds = categoryData.map((item) => item.id);
       const galleryPanelItems = await this.model.fetchGalleryData(categoryIds);
+      // console.log('galleryPanelItems:', galleryPanelItems);
       this.view.render(
         categoryData,
         galleryPanelItems,
@@ -34,7 +37,7 @@ export default class ListController {
       console.error(error);
       this.view.showError(error);
     } finally {
-      this.view.hideLoading();
+      // this.view.hideLoading();
     }
   }
 

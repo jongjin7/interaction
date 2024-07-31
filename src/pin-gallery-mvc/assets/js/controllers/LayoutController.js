@@ -17,7 +17,7 @@ export default class LayoutController {
     this.view.renderLoading(); // 로딩 화면을 먼저 렌더링합니다.
     await this.setupLayout(); // 레이아웃을 설정합니다.
     this.view.hideLoading(); // 로딩 화면을 숨깁니다.
-    // this.bindEvents(); // 이벤트 바인딩을 합니다.
+    this.bindEvents(); // 이벤트 바인딩을 합니다.
   }
 
   async setupLayout() {
@@ -33,7 +33,7 @@ export default class LayoutController {
     this.listController = new ListController('#list');
 
     this.homeController.initialize(); // Home 페이지 컨트롤러 초기화
-    this.listController.initialize(); // List 페이지 컨트롤러 초기화
+    await this.listController.initialize(); // List 페이지 컨트롤러 초기화
   }
 
   bindEvents() {

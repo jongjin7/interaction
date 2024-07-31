@@ -18,6 +18,10 @@ export default class ListView {
     this.container.innerHTML = '';
   }
 
+  showError(error) {
+    this.container.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+  }
+
   render(categoryData, galleryPanelItems, longestArrayItem, randomArrayItem) {
     this.categoryData = categoryData;
     this.galleryPanelItems = galleryPanelItems;
@@ -111,7 +115,6 @@ export default class ListView {
         ${contentPanel()}
       </div>
     `;
-
     return html;
   }
 
