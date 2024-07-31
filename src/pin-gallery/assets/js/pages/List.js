@@ -1,6 +1,6 @@
 import EventManager from '../components/EventManager';
 import { galleryDetail, galleryList } from '../../css/pages.css';
-import { buttonOutlineClass, buttonSizeSmall } from '../utils/tailwind.component';
+import { buttonOutlineClass, buttonSizeSmall } from '../../css/tailwind.component';
 import { buttonDelete } from '../components/CommonTemplate';
 import {
   getElements,

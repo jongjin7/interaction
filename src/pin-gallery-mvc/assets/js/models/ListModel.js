@@ -1,5 +1,5 @@
 // ListModel.js
-import { fetchCategory, fetchGalleryList, deleteImageItem } from '../utils/api';
+import { fetchCategory, fetchGalleryList, deleteImageItem } from '../api/apiService';
 
 export default class ListModel {
   async fetchCategoryData() {

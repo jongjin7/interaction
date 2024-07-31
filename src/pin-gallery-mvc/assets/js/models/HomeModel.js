@@ -1,4 +1,4 @@
-import { addNewCategory, fetchCategory, sendImageFile } from '../utils/api';
+import { addNewCategory, fetchCategory, sendImageFile } from '../api/apiService';
 
 class HomeModel {
   constructor() {

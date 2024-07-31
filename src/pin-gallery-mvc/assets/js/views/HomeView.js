@@ -6,7 +6,7 @@ import {
   mainPreviewCircleButton,
   mainPseudoCircle,
 } from '../../css/pages.css';
-import { buttonSizeLarge, buttonPrimaryClass, buttonDisabledClass, inputFieldClass } from '../utils/tailwind.component';
+import { buttonSizeLarge, buttonPrimaryClass, buttonDisabledClass, inputFieldClass } from '../../css/tailwind.component';
 import { LoadingBasic as Loading } from '../components/Loading';
 
 class HomeView {
