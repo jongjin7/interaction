@@ -8,7 +8,7 @@ class HomeController {
     this.view = new HomeView(containerId);
   }
 
-  async init() {
+  async initialize() {
     try {
       const categories = await this.model.fetchCategories();
       this.view.render(categories);
