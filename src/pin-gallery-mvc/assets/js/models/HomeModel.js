@@ -1,5 +1,4 @@
-import { addNewCategory, fetchCategory, sendImageFile } from '../api/apiService';
-import geoLocation from '../../../../pin-gallery/assets/js/utils/geoLocation';
+import ApiService from '../services/ApiService';
 
 class HomeModel {
   constructor() {
@@ -10,7 +9,7 @@ class HomeModel {
 
   async fetchCategories() {
     try {
-      const resData = await fetchCategory();
+      const resData = await ApiService.fetchCategory();
       this.categories = resData.data;
       return this.categories;
     } catch (error) {
@@ -21,10 +20,10 @@ class HomeModel {
 
   async addCategory(title) {
     try {
-      const formdata = new FormData();
-      formdata.append('title', title);
-      formdata.append('description', 'This album contains a lot of dank memes. Be prepared.');
-      await addNewCategory(formdata);
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', 'This album contains a lot of dank memes. Be prepared.');
+      await ApiService.addNewCategory(formData);
       return this.fetchCategories();
     } catch (error) {
       console.error('Failed to add category:', error);
@@ -42,14 +41,14 @@ class HomeModel {
 
   async submitImage() {
     try {
-      const msg = await geoLocation.init();
-      const formdata = new FormData();
-      formdata.append('image', this.uploadFile);
-      formdata.append('type', 'image');
-      formdata.append('title', msg ? msg.time : '제목 없음');
-      formdata.append('description', msg ? msg.message : '설명 없음');
+      const formData = new FormData();
+      formData.append('image', this.uploadFile);
+      formData.append('type', 'image');
+      formData.append('title', 'Upload Image');
+      formData.append('description', 'Uploaded via browser.');
 
-      return await sendImageFile(formdata, this.selectedAlbumCategory);
+      const result = await ApiService.sendImageFile(formData, this.selectedAlbumCategory);
+      return result;
     } catch (error) {
       console.error('Failed to submit image:', error);
       throw error;

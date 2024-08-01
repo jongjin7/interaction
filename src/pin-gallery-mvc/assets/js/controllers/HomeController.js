@@ -1,6 +1,5 @@
-import lottie from 'lottie-web';
-import HomeModel from '../models/HomeModel';
 import HomeView from '../views/HomeView';
+import HomeModel from '../models/HomeModel';
 
 class HomeController {
   constructor(containerId) {
@@ -13,18 +12,9 @@ class HomeController {
       const categories = await this.model.fetchCategories();
       this.view.render(categories);
       this.view.bindEvents(this.getHandlers());
-      this.view.initializeIconShot();
-      this.setRandomImage();
     } catch (error) {
       console.error('Initialization failed:', error);
     }
-  }
-
-  setRandomImage() {
-    const arrayLength = 10;
-    const randomImages = Array.from({ length: arrayLength }, (_, i) => `/assets/pin-gallery/imgs/@random_${i}.png`);
-    const randomIndex = () => Math.floor(Math.random() * arrayLength);
-    this.view.setImage(randomImages[randomIndex()]);
   }
 
   getHandlers() {
@@ -36,8 +26,8 @@ class HomeController {
     };
   }
 
-  handleCaptureCamera(e) {
-    const uploadFile = e.target.files[0];
+  handleCaptureCamera(event) {
+    const uploadFile = event.target.files[0];
     if (uploadFile) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -55,59 +45,36 @@ class HomeController {
     }
   }
 
-  async handleCategoryChange(e) {
-    if (e.target.value === 'user_add') {
+  handleCategoryChange(event) {
+    if (event.target.value === 'user_add') {
       this.view.root.querySelector('#el-custom-filed').classList.remove('none');
       this.view.root.querySelector('#add-category').focus();
     } else {
       this.view.root.querySelector('#el-custom-filed').classList.add('none');
-      this.model.setSelectedAlbumCategory(e.target.value);
+      this.model.setSelectedAlbumCategory(event.target.value);
     }
   }
 
-  async handleNewCategory(e) {
+  async handleNewCategory(event) {
+    event.preventDefault();
+    const title = event.target.querySelector('#add-category').value;
     try {
-      const result = await this.model.addCategory(e.target.value);
-      this.view.root.querySelector('#el-custom-filed').classList.add('none');
-      this.view.render(result); // Update categories
+      await this.model.addCategory(title);
+      const categories = await this.model.fetchCategories();
+      this.view.render(categories);
     } catch (error) {
-      console.error('Failed to add new category:', error);
+      console.error('Error adding new category:', error);
     }
   }
 
-  async handleSubmit() {
-    if (!this.model.selectedAlbumCategory) {
-      alert('카테고리를 선택해 주세요.');
-      this.view.root.querySelector('#category-select').focus();
-    } else {
-      this.view.showLoading();
-      this.view.showButtonLoading();
-      try {
-        const result = await this.model.submitImage();
-        if (result) {
-          const iconSubmit = lottie.loadAnimation({
-            container: document.getElementById('el-icon-submit'),
-            renderer: 'canvas',
-            loop: false,
-            autoplay: false,
-            path: '/assets/pin-gallery/lotties/lottie.submit.json',
-          });
-
-          this.view.removeLoading();
-          this.view.removeButtonLoading();
-
-          iconSubmit.setSpeed(1.5);
-          iconSubmit.play();
-
-          iconSubmit.addEventListener('complete', () => {
-            this.view.toggleFormDisabled();
-            iconSubmit.destroy();
-            this.setRandomImage();
-          });
-        }
-      } catch (error) {
-        console.error('Submit failed:', error);
-      }
+  async handleSubmit(event) {
+    event.preventDefault();
+    try {
+      await this.model.submitImage();
+      const categories = await this.model.fetchCategories();
+      this.view.render(categories);
+    } catch (error) {
+      console.error('Error submitting form:', error);
     }
   }
 }

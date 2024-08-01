@@ -1,14 +1,5 @@
 import ListModel from '../models/ListModel';
 import ListView from '../views/ListView';
-import {
-  initializeEventHandlers,
-  handleEnableImageDeleteToggle,
-  handleImageDeleteClick,
-  handleImageLinkClick,
-  handleResize,
-  handleScroll,
-  handleTabNavClick,
-} from './ListEventHandler';
 
 export default class ListController {
   constructor(containerId) {
@@ -18,69 +9,47 @@ export default class ListController {
 
   async initialize() {
     try {
-      this.view.renderLoading();
       const categoryData = await this.model.fetchCategoryData();
-      const categoryIds = categoryData.map((item) => item.id);
-      const galleryPanelItems = await this.model.fetchGalleryData(categoryIds);
-      this.view.render(
-        categoryData,
-        galleryPanelItems,
-        this.model.getLongestArrayItem.bind(this.model),
-        this.model.getRandomArrayItem.bind(this.model),
-      );
-      this.setupEventHandlers();
+      const galleryData = await this.model.fetchGalleryData(categoryData.map((cat) => cat.id));
+      const longestArrayItem = this.model.getLongestArrayItem('total');
+      const randomArrayItem = this.model.getRandomArrayItem();
+
+      this.view.render(categoryData, galleryData, longestArrayItem, randomArrayItem);
+      this.bindEvents();
     } catch (error) {
-      console.error(error);
-      this.view.showError(error);
+      console.error('Initialization failed:', error);
     }
   }
 
-  async setupEventHandlers() {
-    // Delay attaching the event handlers until after the content is fully rendered
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    initializeEventHandlers(this.view.root, this.view.container, this);
-
-    this.galleryPanel = document.querySelector('#el-tab-contents');
-    this.galleryPanelItems = this.galleryPanel.querySelectorAll('.tab-panel');
-
-    document.querySelectorAll('.gallery-list .list-item a').forEach((el) => {
-      el.addEventListener('click', handleImageLinkClick);
-    });
-
-    document.querySelectorAll('.gallery-list .btn-delete').forEach((el) => {
-      el.addEventListener('click', handleImageDeleteClick);
-    });
-    document.querySelectorAll('.gallery-list .btn-del-sel').forEach((el) => {
-      el.addEventListener('click', handleEnableImageDeleteToggle);
-    });
-
-    const getItemOffsetInfo = handleResize(this.galleryPanelItems);
-    this.galleryPanelPositions = getItemOffsetInfo();
-    window.addEventListener('resize', () => {
-      this.galleryPanelPositions = getItemOffsetInfo();
-    });
-
-    const tabNav = document.querySelectorAll('.tab-nav > a');
-    tabNav.forEach((nav, idx) => {
-      nav.onclick = (e) => handleTabNavClick(e, this.galleryPanel, this.galleryPanelPositions, idx);
-    });
-
-    this.galleryPanel.addEventListener(
-      'scroll',
-      handleScroll(this.galleryPanel, this.galleryPanelPositions, this.galleryPanelItems, tabNav),
-    );
-
-    this.initGalleryPanel();
-    tabNav[0].classList.add('bg-gray-700', 'text-white');
+  bindEvents() {
+    this.view.bindEvents(this.getHandlers());
   }
 
-  initGalleryPanel() {
-    this.galleryPanel.scrollTo(this.galleryPanelPositions[0], 0);
-    this.galleryPanelItems[0].scrollTo(0, 0);
-    if (this.view.root.classList.contains('show-detail')) {
-      const detailPanel = this.view.root.querySelector('.gallery-detail');
-      detailPanel.querySelector('.btn-close').click();
+  getHandlers() {
+    return {
+      handleTabChange: this.handleTabChange.bind(this),
+      handleItemClick: this.handleItemClick.bind(this),
+      handleDelete: this.handleDelete.bind(this),
+    };
+  }
+
+  async handleDelete(event) {
+    const targetBtn = event.target.closest('button');
+    if (targetBtn) {
+      const imageId = targetBtn.dataset.itemId;
+      if (confirm('현재 선택된 아이템을 삭제할까요?')) {
+        await this.model.deleteImage(imageId);
+        alert('선택한 이미지가 삭제되었습니다.');
+        this.initialize(); // Reinitialize to refresh data
+      }
     }
+  }
+
+  handleTabChange(event) {
+    // Implement tab change logic
+  }
+
+  handleItemClick(event) {
+    // Implement item click logic
   }
 }

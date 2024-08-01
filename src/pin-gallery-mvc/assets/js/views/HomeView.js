@@ -1,3 +1,4 @@
+// HomeView.js
 import lottie from 'lottie-web';
 import {
   mainHeader,
@@ -6,7 +7,12 @@ import {
   mainPreviewCircleButton,
   mainPseudoCircle,
 } from '../../css/pages.css';
-import { buttonSizeLarge, buttonPrimaryClass, buttonDisabledClass, inputFieldClass } from '../../css/tailwind.component';
+import {
+  buttonSizeLarge,
+  buttonPrimaryClass,
+  buttonDisabledClass,
+  inputFieldClass,
+} from '../../css/tailwind.component';
 import { LoadingBasic as Loading } from '../components/Loading';
 
 class HomeView {
@@ -17,6 +23,8 @@ class HomeView {
 
   render(categories) {
     this.createContentHTML(categories);
+    this.setRandomImage();
+    this.initializeIconShot();
   }
 
   createContentHTML(categories) {
@@ -93,10 +101,19 @@ class HomeView {
     this.root.querySelector('#submit-upload').addEventListener('click', handlers.handleSubmit);
   }
 
+  setRandomImage() {
+    const arrayLength = 10;
+    const randomImages = Array.from({ length: arrayLength }, (_, i) => `/assets/pin-gallery/imgs/@random_${i}.png`);
+    const randomIndex = () => Math.floor(Math.random() * arrayLength);
+    this.setImage(randomImages[randomIndex()]);
+  }
+
   setImage(imgsrc) {
     const containerBgImg = this.root.querySelector('.bg-container');
     const centerThumbImg = this.root.querySelector('.img-circle img');
-    containerBgImg.src = centerThumbImg.src = imgsrc;
+
+    containerBgImg.src = imgsrc;
+    centerThumbImg.src = imgsrc;
   }
 
   toggleFormDisabled() {

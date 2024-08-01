@@ -1,21 +1,40 @@
-// ListModel.js
-import { fetchCategory, fetchGalleryList, deleteImageItem } from '../api/apiService';
+import ApiService from '../services/ApiService';
 
 export default class ListModel {
+  constructor() {
+    this.categoryData = [];
+    this.galleryPanelItems = [];
+  }
+
   async fetchCategoryData() {
-    const categoryLabels = await fetchCategory();
-    this.categoryData = categoryLabels.data;
-    return this.categoryData;
+    try {
+      const categoryLabels = await fetchCategory();
+      this.categoryData = categoryLabels.data;
+      return this.categoryData;
+    } catch (error) {
+      console.error('Failed to fetch category data:', error);
+      throw error;
+    }
   }
 
   async fetchGalleryData(categoryIds) {
-    const galleryAlbums = await fetchGalleryList(categoryIds);
-    this.galleryPanelItems = galleryAlbums.map((item) => item.data);
-    return this.galleryPanelItems;
+    try {
+      const galleryAlbums = await fetchGalleryList(categoryIds);
+      this.galleryPanelItems = galleryAlbums.map((item) => item.data);
+      return this.galleryPanelItems;
+    } catch (error) {
+      console.error('Failed to fetch gallery data:', error);
+      throw error;
+    }
   }
 
   async deleteImage(imageId) {
-    await deleteImageItem(imageId);
+    try {
+      await deleteImageItem(imageId);
+    } catch (error) {
+      console.error('Failed to delete image:', error);
+      throw error;
+    }
   }
 
   findLongestArrayWithIndex(arr) {

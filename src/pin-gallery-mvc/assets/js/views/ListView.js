@@ -1,4 +1,3 @@
-// ListView.js
 import { galleryDetail, galleryList } from '../../css/pages.css';
 import { buttonOutlineClass, buttonSizeSmall } from '../../css/tailwind.component';
 import { buttonDelete } from '../components/CommonTemplate';
@@ -8,14 +7,7 @@ export default class ListView {
   constructor(containerId) {
     this.root = document.querySelector(containerId);
     this.container = this.root.querySelector('.page-container');
-  }
-
-  renderLoading() {
-    this.container.innerHTML = '<p>Loading...</p>';
-  }
-
-  showError(error) {
-    this.container.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+    this.detailPanel = null; // Will be set in createContentHTML
   }
 
   render(categoryData, galleryPanelItems, longestArrayItem, randomArrayItem) {
@@ -25,6 +17,7 @@ export default class ListView {
     this.randomArrayItem = randomArrayItem;
 
     this.createContentHTML();
+    this.bindEvents();
   }
 
   createContentHTML() {
@@ -33,14 +26,35 @@ export default class ListView {
       ${this.generateTabContent()}
     `;
     this.container.innerHTML = htmlData;
-    this.root.append(DomParser(this.generateDetailPanel()));
+
+    // Append detail panel to root
+    this.detailPanel = DomParser(this.generateDetailPanel());
+    this.root.append(this.detailPanel);
+  }
+
+  bindEvents() {
+    this.root.querySelectorAll('.tab-nav a').forEach((tabNav, idx) => {
+      tabNav.addEventListener('click', (e) => this.handleTabNavClick(e, idx));
+    });
+
+    this.root.querySelectorAll('.list-item a').forEach((item) => {
+      item.addEventListener('click', (e) => this.handleItemClick(e));
+    });
+
+    this.root.querySelectorAll('.btn-delete').forEach((btn) => {
+      btn.addEventListener('click', (e) => this.handleDelete(e));
+    });
+
+    this.root.querySelectorAll('.btn-del-sel').forEach((btn) => {
+      btn.addEventListener('click', (e) => this.handleEnableImageDeleteToggle(e));
+    });
   }
 
   generateTabMenu() {
-    const menu = this.categoryData.map((item) => `<a href=''>${item.title}</a>`).join('');
+    const menu = this.categoryData.map((item) => `<a href='#' data-index='${item.index}'>${item.title}</a>`).join('');
     const html = `<div class='tabs'>
       <div class='tab-nav text-gray-400'>
-        <a href=''>전체</a>
+        <a href='#' data-index='0'>전체</a>
         ${menu}
       </div>
     </div>`;
@@ -55,31 +69,28 @@ export default class ListView {
       </div>
     `;
 
-    const allContentPanel = () => {
-      const html = `
-        <div class='gallery-list ${galleryList}'>
-          <div class='list-header'>
-            ${panelTitle({ title: '전체 랜덤' })}
-          </div>
-          <ul class='list'>
-            ${this.generateListItem(this.randomArrayItem())}
-          </ul>
+    const allContentPanel = () => `
+      <div class='gallery-list ${galleryList}'>
+        <div class='list-header'>
+          ${panelTitle({ title: '전체 랜덤' })}
         </div>
-        <div class='gallery-list ${galleryList}'>
-          <div class='list-header'>
-            ${panelTitle({
-              title: '인기 카테고리',
-              subtitle: this.categoryData[this.longestArrayItem('index')].title,
-              itemLength: this.longestArrayItem('total').length,
-            })}
-          </div>
-          <ul class='list'>
-            ${this.generateListItem(this.longestArrayItem())}
-          </ul>
+        <ul class='list'>
+          ${this.generateListItem(this.randomArrayItem())}
+        </ul>
+      </div>
+      <div class='gallery-list ${galleryList}'>
+        <div class='list-header'>
+          ${panelTitle({
+            title: '인기 카테고리',
+            subtitle: this.categoryData[this.longestArrayItem('index')].title,
+            itemLength: this.longestArrayItem('total').length,
+          })}
         </div>
-      `;
-      return html;
-    };
+        <ul class='list'>
+          ${this.generateListItem(this.longestArrayItem())}
+        </ul>
+      </div>
+    `;
 
     const contentPanel = () => {
       const listTemplate = (item, index) => `
@@ -103,7 +114,7 @@ export default class ListView {
       return this.galleryPanelItems.map((item, index) => tabPanel(item, index)).join('');
     };
 
-    const html = `
+    return `
       <div id='el-tab-contents' class='tab-contents'>
         <div class='tab-panel' id='tab-panel-0'>
           ${allContentPanel()}
@@ -111,20 +122,16 @@ export default class ListView {
         ${contentPanel()}
       </div>
     `;
-    return html;
   }
 
   generateListItem(list) {
-    function changeImageSize(url) {
+    const changeImageSize = (url) => {
       const suffix = 'h';
       return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
-        const parts = filename.split('.');
-        const name = parts[0];
-        const extension = parts[1];
-        const newFileName = `${name}${suffix}.${extension}`;
-        return `/${newFileName}`;
+        const [name, extension] = filename.split('.');
+        return `/${name}${suffix}.${extension}`;
       });
-    }
+    };
 
     return list
       .map(
@@ -145,11 +152,40 @@ export default class ListView {
       <div class='inner'>
         <img class='img' src='' alt=''>
         <button type='button' class='btn-close'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor'" viewBox="0 0 16 16">
-            <path d='M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z'/>
+          <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewBox='0 0 16 16'>
+            <path d='M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707 2.854 14.854a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854z'/>
           </svg>
         </button>
       </div>
     </div>`;
+  }
+
+  handleTabNavClick(e, idx) {
+    e.preventDefault();
+    const tabPanel = this.root.querySelector(`#tab-panel-${idx}`);
+    tabPanel.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  handleItemClick(e) {
+    e.preventDefault();
+    const imgEl = this.detailPanel.querySelector('.img');
+    imgEl.src = e.target.src;
+    this.root.classList.add('show-detail');
+    this.detailPanel.querySelector('.btn-close').addEventListener('click', () => {
+      this.root.classList.remove('show-detail');
+      imgEl.src = '';
+    });
+  }
+
+  handleDelete(e) {
+    // Implement deletion logic if necessary
+  }
+
+  handleEnableImageDeleteToggle(e) {
+    const targetBtn = e.target;
+    const currentPanel = targetBtn.closest('.tab-panel');
+    if (targetBtn.classList.contains('btn-del-sel')) {
+      currentPanel.classList.toggle('is-removable');
+    }
   }
 }
