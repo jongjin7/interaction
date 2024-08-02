@@ -45,6 +45,14 @@ export default ({ command, mode }) => {
     css: {
       devSourcemap: true
     },
+  resolve: {
+      alias: [
+          {
+              find: "@",
+              replacement: path.resolve(__dirname, "src/"),
+          },
+      ]
+  },
     plugins: [
       tailwindcss(),
       vanillaExtractPlugin({
