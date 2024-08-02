@@ -8,7 +8,7 @@ export default class ListModel {
 
   async fetchCategoryData() {
     try {
-      const categoryLabels = await fetchCategory();
+      const categoryLabels = await ApiService.fetchCategory();
       this.categoryData = categoryLabels.data;
       return this.categoryData;
     } catch (error) {
@@ -19,7 +19,7 @@ export default class ListModel {
 
   async fetchGalleryData(categoryIds) {
     try {
-      const galleryAlbums = await fetchGalleryList(categoryIds);
+      const galleryAlbums = await ApiService.fetchGalleryList(categoryIds);
       this.galleryPanelItems = galleryAlbums.map((item) => item.data);
       return this.galleryPanelItems;
     } catch (error) {
@@ -30,7 +30,7 @@ export default class ListModel {
 
   async deleteImage(imageId) {
     try {
-      await deleteImageItem(imageId);
+      await ApiService.deleteImageItem(imageId);
     } catch (error) {
       console.error('Failed to delete image:', error);
       throw error;
@@ -54,14 +54,10 @@ export default class ListModel {
 
   getLongestArrayItem(returnType) {
     const longestArrayData = this.findLongestArrayWithIndex(this.galleryPanelItems);
-    switch (returnType) {
-      case 'total':
-        return longestArrayData.array;
-      case 'index':
-        return longestArrayData.index;
-      default:
-        return longestArrayData.array.reverse().slice(0, returnType ?? 8);
+    if (returnType === 'index') {
+      return longestArrayData.index;
     }
+    return longestArrayData;
   }
 
   getRandomItems(arr, numItems) {

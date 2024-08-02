@@ -7,16 +7,24 @@ export default class ListView {
   constructor(containerId) {
     this.root = document.querySelector(containerId);
     this.container = this.root.querySelector('.page-container');
+    this.tabNavs = null;
+    this.tabPanelContainer = null;
+    this.tabPanels = null;
+    this.tabPanelPositions = [];
     this.detailPanel = null; // Will be set in createContentHTML
   }
 
   render(categoryData, galleryPanelItems, longestArrayItem, randomArrayItem) {
-    this.categoryData = categoryData;
-    this.galleryPanelItems = galleryPanelItems;
-    this.longestArrayItem = longestArrayItem;
-    this.randomArrayItem = randomArrayItem;
+    this.categoryData = Array.isArray(categoryData) ? categoryData : [];
+    this.galleryPanelItems = Array.isArray(galleryPanelItems) ? galleryPanelItems : [];
+    this.longestArrayItem = longestArrayItem || { array: [], index: 0 };
+    this.randomArrayItem = Array.isArray(randomArrayItem) ? randomArrayItem : [];
 
     this.createContentHTML();
+
+    this.tabPanels = this.root.querySelectorAll('.tab-panel');
+    this.setOffsetTabPanels();
+
     this.bindEvents();
   }
 
@@ -33,21 +41,52 @@ export default class ListView {
   }
 
   bindEvents() {
-    this.root.querySelectorAll('.tab-nav a').forEach((tabNav, idx) => {
-      tabNav.addEventListener('click', (e) => this.handleTabNavClick(e, idx));
-    });
+    if (this.eventHandlers) {
+      const {
+        handleTabChange,
+        handleItemClick,
+        handleDelete,
+        handleEnableImageDeleteToggle,
+        handleScrollTabPanelContainer,
+      } = this.eventHandlers;
 
-    this.root.querySelectorAll('.list-item a').forEach((item) => {
-      item.addEventListener('click', (e) => this.handleItemClick(e));
-    });
+      this.tabPanelContainer = this.root.querySelector('.tab-contents');
 
-    this.root.querySelectorAll('.btn-delete').forEach((btn) => {
-      btn.addEventListener('click', (e) => this.handleDelete(e));
-    });
+      if (handleTabChange) {
+        this.tabNavs = this.root.querySelectorAll('.tab-nav a');
+        this.tabNavs.forEach((tabNav, idx) => {
+          tabNav.addEventListener('click', (e) => handleTabChange(e, idx));
+        });
+      }
 
-    this.root.querySelectorAll('.btn-del-sel').forEach((btn) => {
-      btn.addEventListener('click', (e) => this.handleEnableImageDeleteToggle(e));
-    });
+      if (handleItemClick) {
+        this.root.querySelectorAll('.list-item a').forEach((item) => {
+          item.addEventListener('click', (e) => handleItemClick(e));
+        });
+      }
+
+      if (handleDelete) {
+        this.root.querySelectorAll('.btn-delete').forEach((btn) => {
+          btn.addEventListener('click', (e) => handleDelete(e));
+        });
+      }
+
+      if (handleEnableImageDeleteToggle) {
+        this.root.querySelectorAll('.btn-del-sel').forEach((btn) => {
+          btn.addEventListener('click', (e) => handleEnableImageDeleteToggle(e));
+        });
+      }
+
+      this.root.querySelector('.tab-contents').addEventListener('scroll', (e) => handleScrollTabPanelContainer(e));
+    }
+  }
+
+  setEventHandlers(handlers) {
+    this.eventHandlers = handlers;
+  }
+
+  setOffsetTabPanels() {
+    this.tabPanelPositions = Array.from(this.tabPanels).map((item) => item.offsetLeft);
   }
 
   generateTabMenu() {
@@ -69,34 +108,37 @@ export default class ListView {
       </div>
     `;
 
-    const allContentPanel = () => `
-      <div class='gallery-list ${galleryList}'>
-        <div class='list-header'>
-          ${panelTitle({ title: '전체 랜덤' })}
+    const allContentPanel = () => {
+      const html = `
+        <div class='gallery-list ${galleryList}'>
+          <div class='list-header'>
+            ${panelTitle({ title: '전체 랜덤' })}
+          </div>
+          <ul class='list'>
+            ${this.generateListItem(this.randomArrayItem)}
+          </ul>
         </div>
-        <ul class='list'>
-          ${this.generateListItem(this.randomArrayItem())}
-        </ul>
-      </div>
-      <div class='gallery-list ${galleryList}'>
-        <div class='list-header'>
-          ${panelTitle({
-            title: '인기 카테고리',
-            subtitle: this.categoryData[this.longestArrayItem('index')].title,
-            itemLength: this.longestArrayItem('total').length,
-          })}
+        <div class='gallery-list ${galleryList}'>
+          <div class='list-header'>
+            ${panelTitle({
+              title: '인기 카테고리',
+              subtitle: this.categoryData[this.longestArrayItem.index]?.title,
+              itemLength: this.longestArrayItem.array?.length,
+            })}
+          </div>
+          <ul class='list'>
+            ${this.generateListItem(this.longestArrayItem.array)}
+          </ul>
         </div>
-        <ul class='list'>
-          ${this.generateListItem(this.longestArrayItem())}
-        </ul>
-      </div>
-    `;
+      `;
+      return html;
+    };
 
     const contentPanel = () => {
       const listTemplate = (item, index) => `
         <div class='gallery-list ${galleryList}'> 
           <div class='list-header'>
-            ${panelTitle({ title: this.categoryData[index].title, itemLength: item.length })}
+            ${panelTitle({ title: this.categoryData[index]?.title, itemLength: item?.length })}
             <button type='button' class='${buttonOutlineClass} ${buttonSizeSmall} btn-del-sel'>선택 삭제</button>
           </div>
           <ul class='list'>
@@ -114,7 +156,7 @@ export default class ListView {
       return this.galleryPanelItems.map((item, index) => tabPanel(item, index)).join('');
     };
 
-    return `
+    const html = `
       <div id='el-tab-contents' class='tab-contents'>
         <div class='tab-panel' id='tab-panel-0'>
           ${allContentPanel()}
@@ -122,16 +164,25 @@ export default class ListView {
         ${contentPanel()}
       </div>
     `;
+    return html;
   }
 
   generateListItem(list) {
-    const changeImageSize = (url) => {
+    if (!Array.isArray(list)) {
+      console.error('generateListItem expects an array, but got:', list);
+      return '';
+    }
+
+    function changeImageSize(url) {
       const suffix = 'h';
       return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
-        const [name, extension] = filename.split('.');
-        return `/${name}${suffix}.${extension}`;
+        const parts = filename.split('.');
+        const name = parts[0];
+        const extension = parts[1];
+        const newFileName = `${name}${suffix}.${extension}`;
+        return `/${newFileName}`;
       });
-    };
+    }
 
     return list
       .map(
@@ -158,34 +209,5 @@ export default class ListView {
         </button>
       </div>
     </div>`;
-  }
-
-  handleTabNavClick(e, idx) {
-    e.preventDefault();
-    const tabPanel = this.root.querySelector(`#tab-panel-${idx}`);
-    tabPanel.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  handleItemClick(e) {
-    e.preventDefault();
-    const imgEl = this.detailPanel.querySelector('.img');
-    imgEl.src = e.target.src;
-    this.root.classList.add('show-detail');
-    this.detailPanel.querySelector('.btn-close').addEventListener('click', () => {
-      this.root.classList.remove('show-detail');
-      imgEl.src = '';
-    });
-  }
-
-  handleDelete(e) {
-    // Implement deletion logic if necessary
-  }
-
-  handleEnableImageDeleteToggle(e) {
-    const targetBtn = e.target;
-    const currentPanel = targetBtn.closest('.tab-panel');
-    if (targetBtn.classList.contains('btn-del-sel')) {
-      currentPanel.classList.toggle('is-removable');
-    }
   }
 }
