@@ -1,7 +1,13 @@
 import ListModel from '../models/ListModel';
 import ListView from '../views/ListView';
+import { deleteImageItem } from '@/pin-gallery/assets/js/utils/api';
+import { galleryDetail } from '@/pin-gallery/assets/css/pages.css';
 
 export default class ListController {
+  prevTabIndex = 0;
+
+  currentTabIndex = 0;
+
   constructor(containerId) {
     this.model = new ListModel();
     this.view = new ListView(containerId);
@@ -29,71 +35,28 @@ export default class ListController {
 
   getHandlers() {
     return {
-      handleTabChange: this.handleTabChange.bind(this),
+      handleTabNavClick: this.handleTabNavClick.bind(this),
       handleItemClick: this.handleItemClick.bind(this),
-      handleDelete: this.handleDelete.bind(this),
-      handleEnableImageDeleteToggle: this.handleEnableImageDeleteToggle.bind(this),
+      handleItemDeleteClick: this.handleItemDeleteClick.bind(this),
+      handleToggleDeleteMode: this.handleToggleDeleteMode.bind(this),
       handleScrollTabPanelContainer: this.handleScrollTabPanelContainer.bind(this),
     };
   }
 
-  async handleDelete(e) {
-    const targetBtn = e.target.closest('button');
-    if (targetBtn) {
-      const imageId = targetBtn.dataset.itemId;
-      if (confirm('현재 선택된 아이템을 삭제할까요?')) {
-        try {
-          await this.model.deleteImage(imageId);
-          alert('선택한 이미지가 삭제되었습니다.');
-          await this.initialize(); // Reinitialize to refresh data
-        } catch (error) {
-          console.error('Failed to delete image:', error);
-        }
-      }
+  initGalleryPanel() {
+    // 리스트 닫을때 초기화
+    this.view.tabPanelContainer.scrollTo(0, 0);
+    this.view.tabPanels[0].scrollTo(0, 0);
+    if (this.root.classList.contains('show-detail')) {
+      this.view.detailPanel.querySelector('.btn-close').click();
     }
   }
 
-  handleTabChange(e, idx) {
-    this.changeTabContent(idx);
+  changeTabPanel(idx) {
+    this.view.tabPanelContainer.scrollTo(this.view.tabPanelPositions[idx], 0);
   }
 
-  changeTabContent(idx) {
-    const tabPanel = this.root.querySelector(`#tab-panel-${idx}`);
-    tabPanel.scrollIntoView({ behavior: 'smooth' });
-    this.changeTabState(idx);
-  }
-
-  handleScrollTabPanelContainer() {
-    let isScrolling;
-    const endDelayTime = 60;
-    window.clearTimeout(isScrolling);
-    isScrolling = setTimeout(() => {
-      // prevTabIndex = currentTabIndex;
-      console.log('------ Scrolling has stopped.');
-      this.view.tabPanelPositions.forEach((position, index) => {
-        console.log('position', this.view.tabPanelContainer.scrollLeft, position);
-        if (this.view.tabPanelContainer.scrollLeft === position) {
-          // currentTabIndex = index;
-          this.view.tabNavs.forEach((nav, idx) => {
-            nav.classList.toggle('bg-gray-700', idx === index);
-            nav.classList.toggle('text-white', idx === index);
-
-            if (nav.classList.contains('bg-gray-700')) {
-              nav.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-              });
-            }
-          });
-          // galleryPanelItems[prevTabIndex].scrollTo(0, 0);
-        }
-      });
-
-      isScrolling = null;
-    }, endDelayTime);
-  }
-
-  changeTabState(tabIdx) {
+  setActiveTab(tabIdx) {
     this.view.tabNavs.forEach((nav, idx) => {
       nav.classList.toggle('bg-gray-700', idx === tabIdx);
       nav.classList.toggle('text-white', idx === tabIdx);
@@ -101,15 +64,39 @@ export default class ListController {
       if (nav.classList.contains('bg-gray-700')) {
         nav.scrollIntoView({
           behavior: 'smooth',
-          block: 'center',
         });
       }
     });
   }
 
+  handleTabNavClick(e, idx) {
+    e.preventDefault();
+    this.changeTabPanel(idx);
+    this.setActiveTab(idx);
+  }
+
+  handleScrollTabPanelContainer() {
+    let isScrolling;
+    const endDelayTime = 60;
+    window.clearTimeout(isScrolling);
+    isScrolling = setTimeout(() => {
+      this.prevTabIndex = this.currentTabIndex;
+      // console.log('------ Scrolling has stopped.');
+      this.view.tabPanelPositions.forEach((position, index) => {
+        if (this.view.tabPanelContainer.scrollLeft === position) {
+          this.currentTabIndex = index;
+          this.view.tabPanels[this.prevTabIndex].scrollTo(0, 0);
+          this.setActiveTab(index);
+        }
+      });
+
+      isScrolling = null;
+    }, endDelayTime);
+  }
+
   handleItemClick(e) {
     e.preventDefault();
-    const imgEl = this.detailPanel.querySelector('.img');
+    const imgEl = this.view.detailPanel.querySelector('.img');
     const clickedImage = e.target.closest('a')?.querySelector('img');
 
     if (clickedImage) {
@@ -118,15 +105,35 @@ export default class ListController {
 
       const handleCloseDetail = () => {
         this.root.classList.remove('show-detail');
-        imgEl.src = '';
-        this.detailPanel.querySelector('.btn-close').removeEventListener('click', handleCloseDetail);
+        const handleTransitionend = () => {
+          imgEl.src = '';
+          this.view.container.removeEventListener('transitionend', handleTransitionend);
+        };
+        this.view.container.addEventListener('transitionend', handleTransitionend);
       };
 
-      this.detailPanel.querySelector('.btn-close').addEventListener('click', handleCloseDetail);
+      this.view.detailPanel.querySelector('.btn-close').addEventListener('click', handleCloseDetail);
     }
   }
 
-  handleEnableImageDeleteToggle(e) {
+  handleItemDeleteClick(e) {
+    const targetBtn = e.currentTarget;
+    targetBtn.classList.add('selected');
+    setTimeout(async () => {
+      if (window.confirm('현재 선택된 아이템을 삭제할까요?')) {
+        try {
+          await this.model.deleteImage(targetBtn.dataset.itemId);
+          alert('선택한 이미지가 삭제되었습니다.');
+          await this.initialize(); // Reinitialize to refresh data
+        } catch (error) {
+          console.error('Failed to delete image:', error);
+        }
+      }
+      targetBtn.classList.remove('selected');
+    }, 30);
+  }
+
+  handleToggleDeleteMode(e) {
     const targetBtn = e.target;
     if (targetBtn.classList.contains('btn-del-sel')) {
       const currentPanel = targetBtn.closest('.tab-panel');

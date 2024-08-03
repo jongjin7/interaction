@@ -9,8 +9,6 @@ import {
   primaryColor,
 } from './variables.css';
 
-import { galleryDetail } from './pages.css';
-
 globalStyle('html, body', {
   overflow: 'hidden',
 });
@@ -48,6 +46,7 @@ globalStyle('body', {
     alignItems: 'center',
     gap: '12px',
     userSelect: 'none',
+    cursor: 'pointer',
   },
 
   '.fadein': {

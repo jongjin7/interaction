@@ -22,6 +22,8 @@ export default class ListView {
 
     this.createContentHTML();
 
+    this.tabNavs = this.root.querySelectorAll('.tab-nav a');
+    this.tabPanelContainer = this.root.querySelector('.tab-contents');
     this.tabPanels = this.root.querySelectorAll('.tab-panel');
     this.setOffsetTabPanels();
 
@@ -43,41 +45,40 @@ export default class ListView {
   bindEvents() {
     if (this.eventHandlers) {
       const {
-        handleTabChange,
+        handleTabNavClick,
         handleItemClick,
-        handleDelete,
-        handleEnableImageDeleteToggle,
+        handleItemDeleteClick,
+        handleToggleDeleteMode,
         handleScrollTabPanelContainer,
       } = this.eventHandlers;
 
-      this.tabPanelContainer = this.root.querySelector('.tab-contents');
+      // 탭 메뉴
+      this.tabNavs.forEach((tabNav, idx) => {
+        tabNav.addEventListener('click', (e) => handleTabNavClick(e, idx));
+      });
+      // this.tabNavs[0].classList.add('bg-gray-700', 'text-white');
+      this.tabNavs[0].click();
 
-      if (handleTabChange) {
-        this.tabNavs = this.root.querySelectorAll('.tab-nav a');
-        this.tabNavs.forEach((tabNav, idx) => {
-          tabNav.addEventListener('click', (e) => handleTabChange(e, idx));
-        });
-      }
+      // 상세보기
+      this.root.querySelectorAll('.list-item a').forEach((item) => {
+        item.addEventListener('click', (e) => handleItemClick(e));
+      });
 
-      if (handleItemClick) {
-        this.root.querySelectorAll('.list-item a').forEach((item) => {
-          item.addEventListener('click', (e) => handleItemClick(e));
-        });
-      }
+      // delete Item
+      this.root.querySelectorAll('.btn-delete').forEach((btn) => {
+        btn.addEventListener('click', handleItemDeleteClick);
+      });
 
-      if (handleDelete) {
-        this.root.querySelectorAll('.btn-delete').forEach((btn) => {
-          btn.addEventListener('click', (e) => handleDelete(e));
-        });
-      }
+      // 아이템 삭제 모드 토글
+      this.root.querySelectorAll('.btn-del-sel').forEach((btn) => {
+        btn.addEventListener('click', handleToggleDeleteMode);
+      });
 
-      if (handleEnableImageDeleteToggle) {
-        this.root.querySelectorAll('.btn-del-sel').forEach((btn) => {
-          btn.addEventListener('click', (e) => handleEnableImageDeleteToggle(e));
-        });
-      }
-
+      // 패널 컨테이너 랩퍼
       this.root.querySelector('.tab-contents').addEventListener('scroll', (e) => handleScrollTabPanelContainer(e));
+
+      // 패널 옵셋 위치 정보 재설정
+      window.addEventListener('resize', this.setOffsetTabPanels.bind(this));
     }
   }
 
@@ -89,11 +90,12 @@ export default class ListView {
     this.tabPanelPositions = Array.from(this.tabPanels).map((item) => item.offsetLeft);
   }
 
+  /** ************************* Generate HTML ************************* */
   generateTabMenu() {
-    const menu = this.categoryData.map((item) => `<a href='#' data-index='${item.index}'>${item.title}</a>`).join('');
+    const menu = this.categoryData.map((item) => `<a href='#'>${item.title}</a>`).join('');
     const html = `<div class='tabs'>
       <div class='tab-nav text-gray-400'>
-        <a href='#' data-index='0'>전체</a>
+        <a href='#'>전체</a>
         ${menu}
       </div>
     </div>`;

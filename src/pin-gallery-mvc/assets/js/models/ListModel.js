@@ -20,7 +20,10 @@ export default class ListModel {
   async fetchGalleryData(categoryIds) {
     try {
       const galleryAlbums = await ApiService.fetchGalleryList(categoryIds);
-      this.galleryPanelItems = galleryAlbums.map((item) => item.data);
+      this.galleryPanelItems = galleryAlbums.map((item) => {
+        // if (item.data) console.log('item', item.data);
+        return item.data;
+      });
       return this.galleryPanelItems;
     } catch (error) {
       console.error('Failed to fetch gallery data:', error);
