@@ -74,6 +74,7 @@ class ApiService {
       author: 'access',
       formData,
     });
+    console.log('---- sendImageFile ----');
     return ApiService.moveToAlbum(albumHash, image.data.id);
   }
 

@@ -122,7 +122,7 @@ export default class ListController {
     setTimeout(async () => {
       if (window.confirm('현재 선택된 아이템을 삭제할까요?')) {
         try {
-          await this.model.deleteImage(targetBtn.dataset.itemId);
+          await ListModel.deleteImage(targetBtn.dataset.itemId);
           alert('선택한 이미지가 삭제되었습니다.');
           await this.initialize(); // Reinitialize to refresh data
         } catch (error) {

@@ -31,7 +31,7 @@ export default class ListModel {
     }
   }
 
-  async deleteImage(imageId) {
+  static async deleteImage(imageId) {
     try {
       await ApiService.deleteImageItem(imageId);
     } catch (error) {

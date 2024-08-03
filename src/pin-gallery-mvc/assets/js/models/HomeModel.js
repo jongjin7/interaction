@@ -1,11 +1,14 @@
 import ApiService from '../services/ApiService';
+import geoLocation from '../utils/geoLocation';
 
-class HomeModel {
-  constructor() {
-    this.categories = [];
-    this.selectedAlbumCategory = '';
-    this.uploadFile = null;
-  }
+export default class HomeModel {
+  categories;
+
+  selectedAlbumCategory;
+
+  uploadFile;
+
+  // constructor() {}
 
   async fetchCategories() {
     try {
@@ -22,7 +25,7 @@ class HomeModel {
     try {
       const formData = new FormData();
       formData.append('title', title);
-      formData.append('description', 'This album contains a lot of dank memes. Be prepared.');
+      formData.append('description', `${title} 이름으로 만든 앨범입니다.`);
       await ApiService.addNewCategory(formData);
       return this.fetchCategories();
     } catch (error) {
@@ -39,21 +42,23 @@ class HomeModel {
     this.uploadFile = file;
   }
 
-  async submitImage() {
-    try {
-      const formData = new FormData();
-      formData.append('image', this.uploadFile);
-      formData.append('type', 'image');
-      formData.append('title', 'Upload Image');
-      formData.append('description', 'Uploaded via browser.');
+  async createFormData() {
+    const geoInfo = await geoLocation.init();
+    const formData = new FormData();
+    formData.append('image', this.uploadFile);
+    formData.append('type', 'image');
+    formData.append('title', geoInfo ? geoInfo.time : '제목 없음');
+    formData.append('description', geoInfo ? geoInfo.message : '설명 없음');
+    return formData;
+  }
 
-      const result = await ApiService.sendImageFile(formData, this.selectedAlbumCategory);
-      return result;
+  async sendFileForm() {
+    try {
+      const formData = this.createFormData();
+      return await ApiService.sendImageFile(formData, this.selectedAlbumCategory);
     } catch (error) {
       console.error('Failed to submit image:', error);
       throw error;
     }
   }
 }
-
-export default HomeModel;

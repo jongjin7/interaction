@@ -1,7 +1,10 @@
+import lottie from 'lottie-web';
 import HomeView from '../views/HomeView';
 import HomeModel from '../models/HomeModel';
+import DomParser from '../utils/dom';
+import { LoadingBasic as Loading } from '../components/Loading';
 
-class HomeController {
+export default class HomeController {
   constructor(containerId) {
     this.model = new HomeModel();
     this.view = new HomeView(containerId);
@@ -35,48 +38,117 @@ class HomeController {
         window.URL.revokeObjectURL(uploadFile);
         this.view.setImage(imgUrl);
         this.view.toggleFormDisabled();
+        this.view.stateCenterIcon.stop();
         this.model.setUploadFile(uploadFile);
       };
       reader.readAsDataURL(uploadFile);
       reader.onerror = (err) => {
         console.error('Error reading file:', err);
-        this.model.setUploadFile(uploadFile);
+        alert('파일을 읽는 도중 오류가 발생했습니다. 다시 시도해 주세요.');
       };
     }
   }
 
   handleCategoryChange(event) {
     if (event.target.value === 'user_add') {
-      this.view.root.querySelector('#el-custom-filed').classList.remove('none');
-      this.view.root.querySelector('#add-category').focus();
+      this.view.customField.classList.remove('none');
+      this.view.formsItemInput.focus();
     } else {
-      this.view.root.querySelector('#el-custom-filed').classList.add('none');
+      this.view.customField.classList.add('none');
       this.model.setSelectedAlbumCategory(event.target.value);
     }
   }
 
-  async handleNewCategory(event) {
-    event.preventDefault();
-    const title = event.target.querySelector('#add-category').value;
+  async handleNewCategory() {
+    const title = this.view.formsItemInput.value;
     try {
       await this.model.addCategory(title);
-      const categories = await this.model.fetchCategories();
-      this.view.render(categories);
+      const result = await this.model.fetchCategories();
+      if (result) {
+        this.view.customField.classList.add('none');
+        this.view.formsItemInput.value = '';
+        this.generateAlbumCategory(result);
+      }
     } catch (error) {
       console.error('Error adding new category:', error);
     }
   }
 
-  async handleSubmit(event) {
-    event.preventDefault();
+  generateAlbumCategory(categories) {
+    const lis = categories
+      .map((item) => {
+        return `<option value='${item.id}'>${item.title}</option>`;
+      })
+      .join(' ');
+
+    // 셀렉트박스에 옵션 추가
+    this.view.formsItemSelect.innerHTML = `
+       <option value=''>앨범을 선택하세요</option>
+        ${lis}
+       <option value='user_add'>신규 카테고리 직접 입력</option>
+    `;
+  }
+
+  async handleSubmit() {
+    if (!this.model.selectedAlbumCategory) {
+      alert('카테고리를 선택해 주세요.');
+      this.view.formsItemSelect.focus();
+      return;
+    }
+
     try {
-      await this.model.submitImage();
-      const categories = await this.model.fetchCategories();
-      this.view.render(categories);
+      this.showSubmitProgressIndicator();
+      const result = await this.model.sendFileForm();
+      if (result) {
+        this.handleSuccess();
+      }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error during submission:', error);
     }
   }
-}
 
-export default HomeController;
+  showSubmitProgressIndicator() {
+    this.view.container.classList.add('is-loading');
+    this.view.container.querySelector('.btn-circle').before(DomParser(Loading('uploading')));
+    this.view.container.querySelector('.icon-box').append(DomParser(Loading('btn-loading')));
+    this.view.formsItemSubmit.blur();
+  }
+
+  resetStatePage() {
+    this.view.toggleFormDisabled();
+    this.view.container.classList.remove('is-loading');
+    this.view.stateCenterIcon.play();
+  }
+
+  resetForm() {
+    this.view.formsItemInput.value = '';
+    this.view.formsItemSelect.value = '';
+  }
+
+  handleSuccess() {
+    const iconSubmit = lottie.loadAnimation({
+      container: document.getElementById('el-icon-submit'),
+      renderer: 'canvas',
+      loop: false,
+      autoplay: false,
+      path: '/assets/pin-gallery/lotties/lottie.submit.json',
+    });
+
+    const loading = document.querySelector('#el-uploading');
+    const btnLoading = document.querySelector('#el-btn-loading');
+    loading.remove();
+    setTimeout(() => {
+      btnLoading.remove();
+    }, 200);
+
+    iconSubmit.setSpeed(1.5);
+    iconSubmit.play();
+
+    iconSubmit.addEventListener('complete', () => {
+      this.resetStatePage();
+      this.resetForm();
+      iconSubmit.destroy();
+      window.location.reload();
+    });
+  }
+}

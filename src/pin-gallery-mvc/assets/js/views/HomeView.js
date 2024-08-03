@@ -7,15 +7,27 @@ import {
   mainPreviewCircleButton,
   mainPseudoCircle,
 } from '../../css/pages.css';
+
 import {
   buttonSizeLarge,
   buttonPrimaryClass,
   buttonDisabledClass,
   inputFieldClass,
 } from '../../css/tailwind.component';
+
 import { LoadingBasic as Loading } from '../components/Loading';
 
-class HomeView {
+export default class HomeView {
+  formGroupBox;
+
+  customField;
+
+  formsItemSelect;
+
+  formsItemInput;
+
+  formsItemSubmit;
+
   constructor(containerId) {
     this.root = document.querySelector(containerId);
     this.container = this.root.querySelector('.page-container');
@@ -67,11 +79,11 @@ class HomeView {
                             <option value='user_add'>신규 카테고리 직접 입력</option>
                         </select>
                     </div>
-                     
-                    <div id='el-custom-filed' class='custom-field w-full none'>
-                        <div class='flex'>
-                            <label for='add-category' class='shrink-0 pr-2 text-white/50' style='line-height:3;'>신규 카테고리</label>
-                            <input type='text' id='add-category' class='${inputFieldClass} w-full' placeholder='입력하세요'>
+                    
+                    <div class='custom-field w-full none'>
+                        <div class='flex gap-2'>
+                            <input type='text' id='add-category' class='${inputFieldClass}' placeholder='입력하세요'>
+                            <button class='rounded border border-stroke w-2/4'>확인</button>
                         </div>
                     </div>
                     
@@ -95,10 +107,21 @@ class HomeView {
   }
 
   bindEvents(handlers) {
+    this.formGroupBox = this.root.querySelector(`.${mainFormGroup}`);
+    this.customField = this.root.querySelector('.custom-field');
+    this.formsItemSelect = this.root.querySelector('#category-select');
+    this.formsItemInput = this.root.querySelector('#add-category');
+    this.formsItemSubmit = this.root.querySelector('#submit-upload');
+    // 카테고리 선택
     this.root.querySelector('#input-camera').addEventListener('change', handlers.handleCaptureCamera);
-    this.root.querySelector('#category-select').addEventListener('change', handlers.handleCategoryChange);
-    this.root.querySelector('#add-category').addEventListener('change', handlers.handleNewCategory);
-    this.root.querySelector('#submit-upload').addEventListener('click', handlers.handleSubmit);
+    this.formsItemSelect.addEventListener('change', handlers.handleCategoryChange);
+
+    // 직접입력
+    const customFieldButton = this.formsItemInput.nextElementSibling;
+    customFieldButton.addEventListener('click', handlers.handleNewCategory);
+
+    // 전송
+    this.formsItemSubmit.addEventListener('click', handlers.handleSubmit);
   }
 
   setRandomImage() {
@@ -117,14 +140,18 @@ class HomeView {
   }
 
   toggleFormDisabled() {
-    const formItems = this.root.querySelectorAll('select, button');
+    const formItems = this.formGroupBox.querySelectorAll('select, #submit-upload');
     formItems.forEach((item) => {
-      item.disabled = !item.disabled;
+      if (item.getAttribute('disabled')) {
+        item.removeAttribute('disabled');
+      } else {
+        item.setAttribute('disabled', 'disabled');
+      }
     });
   }
 
   initializeIconShot() {
-    lottie.loadAnimation({
+    this.stateCenterIcon = lottie.loadAnimation({
       container: document.getElementById('el-icon-shot'),
       renderer: 'canvas',
       loop: true,
@@ -153,5 +180,3 @@ class HomeView {
     this.root.querySelector('#el-btn-loading').remove();
   }
 }
-
-export default HomeView;
