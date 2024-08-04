@@ -54,7 +54,7 @@ export default class HomeModel {
 
   async sendFileForm() {
     try {
-      const formData = this.createFormData();
+      const formData = await this.createFormData();
       return await ApiService.sendImageFile(formData, this.selectedAlbumCategory);
     } catch (error) {
       console.error('Failed to submit image:', error);

@@ -37,7 +37,7 @@ export default class HomeController {
         const imgUrl = window.URL.createObjectURL(uploadFile);
         window.URL.revokeObjectURL(uploadFile);
         this.view.setImage(imgUrl);
-        this.view.toggleFormDisabled();
+        this.toggleFormDisabled();
         this.view.stateCenterIcon.stop();
         this.model.setUploadFile(uploadFile);
       };
@@ -59,6 +59,17 @@ export default class HomeController {
     }
   }
 
+  toggleFormDisabled() {
+    const formItems = this.view.formGroupBox.querySelectorAll('select, #submit-upload');
+    formItems.forEach((item) => {
+      if (item.getAttribute('disabled')) {
+        item.removeAttribute('disabled');
+      } else {
+        item.setAttribute('disabled', 'disabled');
+      }
+    });
+  }
+
   async handleNewCategory() {
     const title = this.view.formsItemInput.value;
     try {
@@ -75,7 +86,7 @@ export default class HomeController {
   }
 
   generateAlbumCategory(categories) {
-    const lis = categories
+    const optionItems = categories
       .map((item) => {
         return `<option value='${item.id}'>${item.title}</option>`;
       })
@@ -84,7 +95,7 @@ export default class HomeController {
     // 셀렉트박스에 옵션 추가
     this.view.formsItemSelect.innerHTML = `
        <option value=''>앨범을 선택하세요</option>
-        ${lis}
+        ${optionItems}
        <option value='user_add'>신규 카테고리 직접 입력</option>
     `;
   }
@@ -108,15 +119,15 @@ export default class HomeController {
   }
 
   showSubmitProgressIndicator() {
-    this.view.container.classList.add('is-loading');
-    this.view.container.querySelector('.btn-circle').before(DomParser(Loading('uploading')));
-    this.view.container.querySelector('.icon-box').append(DomParser(Loading('btn-loading')));
+    this.view.root.classList.add('is-loading');
+    this.view.container.querySelector('.btn-circle').before(DomParser(Loading('uploading'))); // 카메라 서클
+    this.view.container.querySelector('.icon-box').append(DomParser(Loading('btn-loading'))); // submit 버튼
     this.view.formsItemSubmit.blur();
   }
 
   resetStatePage() {
-    this.view.toggleFormDisabled();
-    this.view.container.classList.remove('is-loading');
+    this.toggleFormDisabled();
+    this.view.root.classList.remove('is-loading');
     this.view.stateCenterIcon.play();
   }
 
@@ -134,8 +145,8 @@ export default class HomeController {
       path: '/assets/pin-gallery/lotties/lottie.submit.json',
     });
 
-    const loading = document.querySelector('#el-uploading');
-    const btnLoading = document.querySelector('#el-btn-loading');
+    const loading = document.querySelector('#el-uploading'); // 카메라 인풋 영역 로딩 상태
+    const btnLoading = document.querySelector('#el-btn-loading'); // Submit 버튼
     loading.remove();
     setTimeout(() => {
       btnLoading.remove();
@@ -148,7 +159,8 @@ export default class HomeController {
       this.resetStatePage();
       this.resetForm();
       iconSubmit.destroy();
-      window.location.reload();
+      // window.location.reload();
+      this.view.setRandomImage();
     });
   }
 }

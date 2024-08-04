@@ -15,8 +15,6 @@ import {
   inputFieldClass,
 } from '../../css/tailwind.component';
 
-import { LoadingBasic as Loading } from '../components/Loading';
-
 export default class HomeView {
   formGroupBox;
 
@@ -139,17 +137,6 @@ export default class HomeView {
     centerThumbImg.src = imgsrc;
   }
 
-  toggleFormDisabled() {
-    const formItems = this.formGroupBox.querySelectorAll('select, #submit-upload');
-    formItems.forEach((item) => {
-      if (item.getAttribute('disabled')) {
-        item.removeAttribute('disabled');
-      } else {
-        item.setAttribute('disabled', 'disabled');
-      }
-    });
-  }
-
   initializeIconShot() {
     this.stateCenterIcon = lottie.loadAnimation({
       container: document.getElementById('el-icon-shot'),
@@ -158,25 +145,5 @@ export default class HomeView {
       autoplay: true,
       path: '/assets/pin-gallery/lotties/lottie.smile.json',
     });
-  }
-
-  showLoading() {
-    const loading = document.createElement('div');
-    loading.innerHTML = Loading('uploading');
-    this.root.querySelector('.btn-circle').before(loading);
-  }
-
-  removeLoading() {
-    this.root.querySelector('#el-uploading').remove();
-  }
-
-  showButtonLoading() {
-    const btnLoading = document.createElement('div');
-    btnLoading.innerHTML = Loading('btn-loading');
-    this.root.querySelector('.icon-box').append(btnLoading);
-  }
-
-  removeButtonLoading() {
-    this.root.querySelector('#el-btn-loading').remove();
   }
 }
