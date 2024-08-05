@@ -7,22 +7,8 @@ export default class LayoutView {
     this.loadingElement = Loading('app-loading');
   }
 
-  renderLoading() {
+  attachAppLoading() {
     document.body.append(DomParser(this.loadingElement));
-  }
-
-  hideLoading() {
-    const appLoading = document.querySelector('#el-app-loading');
-    if (appLoading) {
-      setTimeout(() => {
-        appLoading.classList.add('fadeout');
-        this.container.classList.remove('fadeout');
-        appLoading.addEventListener('transitionend', () => {
-          appLoading.remove();
-          document.body.dataset.currentPage = 'home';
-        });
-      }, 0);
-    }
   }
 
   createPageFrames(pages) {
@@ -37,7 +23,7 @@ export default class LayoutView {
     });
   }
 
-  updateCurrentPage(currentPage) {
+  static updateCurrentPage(currentPage) {
     document.body.dataset.currentPage = currentPage;
   }
 }

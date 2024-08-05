@@ -1,4 +1,4 @@
-import PageModel from '../models/PageModel';
+import LayoutModel from '../models/LayoutModel';
 import LayoutView from '../views/LayoutView';
 import HomeController from './HomeController';
 import ListController from './ListController';
@@ -7,17 +7,31 @@ import { pageTypeMain, pageTypeList } from '../../css/pages.css';
 
 export default class LayoutController {
   constructor(containerId) {
-    this.model = new PageModel(); // 모델은 페이지 상태를 관리합니다.
+    this.model = new LayoutModel(); // 모델은 페이지 상태를 관리합니다.
     this.view = new LayoutView(containerId); // View는 화면을 구성합니다.
     this.homeController = null;
     this.listController = null;
   }
 
   async init() {
-    this.view.renderLoading(); // 로딩 화면을 먼저 렌더링합니다.
+    this.view.attachAppLoading(); // 로딩 화면을 먼저 렌더링합니다.
     await this.setupLayout(); // 레이아웃을 설정합니다.
-    this.view.hideLoading(); // 로딩 화면을 숨깁니다.
+    this.hideLoading(); // 로딩 화면을 숨깁니다.
     this.bindEvents(); // 이벤트 바인딩을 합니다.
+  }
+
+  hideLoading() {
+    const appLoading = document.querySelector('#el-app-loading');
+    if (appLoading) {
+      setTimeout(() => {
+        appLoading.classList.add('fadeout');
+        this.view.container.classList.remove('fadeout');
+        appLoading.addEventListener('transitionend', () => {
+          appLoading.remove();
+          document.body.dataset.currentPage = 'home';
+        });
+      }, 0);
+    }
   }
 
   async setupLayout() {
@@ -39,7 +53,7 @@ export default class LayoutController {
   bindEvents() {
     const setCurrentPage = () => {
       const currentPage = this.model.togglePage(); // 현재 페이지를 토글합니다.
-      this.view.updateCurrentPage(currentPage); // View를 업데이트합니다.
+      LayoutView.updateCurrentPage(currentPage); // View를 업데이트합니다.
 
       if (currentPage === 'home') {
         this.listController.initGalleryPanel(); // Home 페이지에 대한 처리를 합니다.

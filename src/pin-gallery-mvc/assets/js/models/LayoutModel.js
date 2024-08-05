@@ -1,4 +1,4 @@
-export default class PageModel {
+export default class LayoutModel {
   constructor() {
     this.currentPage = 'home';
   }
