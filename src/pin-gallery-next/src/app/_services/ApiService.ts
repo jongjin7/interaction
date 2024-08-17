@@ -105,19 +105,6 @@ class ApiService {
   //     author: 'access',
   //   });
   // }
-
-  static async getGalleryList() {
-    // ref: https://velog.io/@hamjw0122/Next.js-Next.js%EC%97%90%EC%84%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A5%BC-Fetching%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95
-    const res = await fetch(`https://jsonplaceholder.typicode.com/posts`, {
-      // cache: 'no-store',
-      // SSG 방식을 사용하되 주기적으로 데이터를 새로 불러오기 위해
-      // next: {
-      //   revalidate: 10,
-      // },
-    });
-    const data = await res.json();
-    return { props: { data } };
-  }
 }
 
 export default ApiService;
