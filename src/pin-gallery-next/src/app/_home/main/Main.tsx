@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Image from 'next/image';
+import React, { useState, useEffect, useRef } from 'react';
 import MainInputCamera from './MainInputCamera';
 import MainFormGroup from './MainFormGroup';
 
-const randomImages = (() => {
+const randomImages: string[] = (() => {
   const arrayLength = 10;
   return Array.from({ length: arrayLength }, (_, i) => `/images/@random_${i}.png`);
 })();
 
-const Main = () => {
-  const refMain = useRef(null);
-  const [bgImage, setBgImage] = useState('');
+const Main: React.FC = () => {
+  const refMain = useRef<HTMLDivElement | null>(null);
+  const [bgImage, setBgImage] = useState<string>('');
 
   const setRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
@@ -25,23 +26,13 @@ const Main = () => {
     setRandomImage();
   }, []);
 
-  const clickHandle = () => {
-    console.log('Test', refMain.current);
-  };
-
   return (
     <>
       <main>
-        <button
-          onClick={clickHandle}
-          style={{ position: 'fixed', top: '50vh', left: 0, background: 'white', fontSize: '4em' }}
-        >
-          버튼
-        </button>
         <MainInputCamera image={bgImage} ref={refMain} />
         <MainFormGroup />
       </main>
-      {bgImage && <img className="bg-container" src={bgImage} alt="" />}
+      {bgImage && <Image src={bgImage} width={400} height={400} className="bg-container" alt="" />}
     </>
   );
 };

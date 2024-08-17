@@ -1,7 +1,13 @@
 'use client';
 
-import React, { createContext, ReactNode, useState, useEffect } from 'react';
-import { Category } from '@/app/_types';
+import React, { createContext, ReactNode, useState } from 'react';
+
+// Category 타입 정의
+export interface Category {
+  id: string; // 각 카테고리의 고유 식별자
+  name: string; // 카테고리 이름
+  description?: string; // 카테고리 설명 (선택적)
+}
 
 // 데이터 타입 정의
 interface CategoryContextType {

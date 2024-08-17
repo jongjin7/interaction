@@ -91,5 +91,4 @@ const defLoading = style({
   },
 });
 
-// eslint-disable-next-line import/prefer-default-export
 export const LoadingBasic = defLoading;
