@@ -29,7 +29,7 @@ const Main: React.FC = () => {
   return (
     <>
       <main>
-        <MainInputCamera image={bgImage} ref={refMain} />
+        <MainInputCamera image={bgImage} ref={refMain} setBgImage={setBgImage} />
         <MainFormGroup />
       </main>
       {bgImage && <Image src={bgImage} width={400} height={400} className="bg-container" alt="" />}
