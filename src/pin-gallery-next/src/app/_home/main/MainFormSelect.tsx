@@ -7,9 +7,16 @@ interface Category {
   title: string;
 }
 
-const MainAlbumSelect: React.FC = () => {
-  const { categories } = useContext(CategoryContext);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+interface MainFormSelectProps {
+  selectProps: {
+    selectedCategory: string;
+    setSelectedCategory: (category: string) => void;
+  };
+}
+
+const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
+  const { categories, setCategories } = useContext(CategoryContext);
+  const { selectedCategory, setSelectedCategory } = selectProps;
   const [customCategory, setCustomCategory] = useState<string>('');
   const [customCategoryEnabled, setCustomCategoryEnabled] = useState<boolean>(false);
 
@@ -25,7 +32,8 @@ const MainAlbumSelect: React.FC = () => {
 
   const handleAddCategory = () => {
     if (customCategory.trim()) {
-      categories.push({ id: customCategory, title: customCategory });
+      const newCategory = { id: customCategory, title: customCategory };
+      setCategories([...categories, newCategory]); // 기존 카테고리에 새 카테고리를 추가
       setSelectedCategory(customCategory);
       setCustomCategory('');
       setCustomCategoryEnabled(false);
@@ -35,7 +43,7 @@ const MainAlbumSelect: React.FC = () => {
   return (
     <>
       <div className="flex w-full gap-2">
-        <select id="category-select" className={inputFieldClass} onChange={handleSelectChange} value={selectedCategory}>
+        <select className={inputFieldClass} onChange={handleSelectChange} value={selectedCategory || ''}>
           <option value="">앨범을 선택하세요</option>
           {categories.map((category: Category) => (
             <option value={category.id} key={category.id}>
@@ -51,7 +59,6 @@ const MainAlbumSelect: React.FC = () => {
           <div className="flex gap-2">
             <input
               type="text"
-              id="add-category"
               className={inputFieldClass}
               placeholder="입력하세요"
               value={customCategory}
@@ -67,4 +74,4 @@ const MainAlbumSelect: React.FC = () => {
   );
 };
 
-export default MainAlbumSelect;
+export default MainFormSelect;

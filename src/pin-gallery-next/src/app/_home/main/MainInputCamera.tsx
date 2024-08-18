@@ -3,20 +3,24 @@ import Image from 'next/image';
 import React, { useEffect, useState, useRef, forwardRef } from 'react';
 import { mainPreviewCircleButton, mainPseudoCircle } from '@/styles/pages.css';
 
-import lottieSmileJson from '@/app/_components/lotties/lottie.smile.json';
-import lottieSubmitJson from '@/app/_components/lotties/lottie.submit.json';
+import lottieJsonSmile from '@/app/_components/lotties/lottie.smile.json';
+import lottieJsonSubmit from '@/app/_components/lotties/lottie.submit.json';
 
 const Lottie = dynamic(() => import('react-lottie-player'), {
   ssr: false,
 });
 
 interface MainInputCameraProps {
-  image: string;
-  setBgImage: (image: string) => void;
+  cameraProps: {
+    bgImage: string;
+    setBgImage: (bgImage: string) => void;
+    setDisabledForm: (disabledForm: boolean) => void;
+  };
 }
 
-const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ image, setBgImage }, ref) => {
+const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ cameraProps }, ref) => {
   const loadLottieRef = useRef<any>(null); // LottiePlayer 타입을 사용해도 됩니다.
+  const { bgImage, setBgImage, setDisabledForm } = cameraProps;
   const [loaded, setLoaded] = useState<boolean>(false);
 
   console.log('MainInputCamera==>');
@@ -28,8 +32,8 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ imag
       reader.onload = () => {
         const imgUrl = window.URL.createObjectURL(uploadFile);
         setBgImage(imgUrl);
+        setDisabledForm();
         window.URL.revokeObjectURL(uploadFile);
-        // 이 부분은 인스턴스 메서드를 사용할 때 'this'를 적절히 바꿔야 합니다.
         // 아래 주석처럼 필요에 따라 변환하세요.
         // this.toggleFormDisabled();
         // this.view.stateCenterIcon.stop();
@@ -48,7 +52,7 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ imag
       <div className={`btn-circle ${mainPseudoCircle}`}>
         <div className={`img-circle ${mainPseudoCircle}`}>
           <label htmlFor="input-camera">
-            <Image src={image} width={400} height={400} alt="Captured Image" priority />
+            {bgImage && <Image src={bgImage} width={400} height={400} alt="Captured Image" priority />}
           </label>
           <input
             id="input-camera"
@@ -60,8 +64,8 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ imag
         </div>
 
         {/* 상태 애니메이션 아이콘 */}
-        <Lottie className="icon icon-shot" loop animationData={lottieSmileJson} play />
-        {/* <Lottie className="icon icon-submit" loop animationData={lottieSubmitJson} play /> */}
+        <Lottie className="icon icon-shot" loop animationData={lottieJsonSmile} play />
+        {/* <Lottie className="icon icon-submit" loop animationData={lottieJsonSubmit} play /> */}
       </div>
     </div>
   );
