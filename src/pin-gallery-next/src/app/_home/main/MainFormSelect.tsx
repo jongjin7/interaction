@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import ApiService from '@/app/_services/ApiService';
 import { CategoryContext } from '@/app/_data/CategoryProvider';
 import { inputFieldClass } from '@/styles/tailwind.component';
 
@@ -27,9 +28,18 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
     setCustomCategoryEnabled(selectedValue === 'user_add');
   };
 
-  const handleAddCategory = () => {
+  const handleChangeCategoryInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomCategory(e.target.value);
+  };
+
+  const handleAddCategory = async () => {
     if (customCategory.trim()) {
-      const newCategory = { id: customCategory, title: customCategory };
+      const formData = new FormData();
+      formData.append('title', customCategory);
+      formData.append('description', `${customCategory} 이름으로 만든 앨범입니다.`);
+      const res = await ApiService.addNewCategory(formData);
+      console.log('add Category', res);
+      const newCategory = { id: res.id, title: customCategory };
       setCategories([...categories, newCategory]); // 기존 카테고리에 새 카테고리를 추가
       setSelectedCategory(customCategory);
       setCustomCategory('');
@@ -59,7 +69,13 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
       {customCategoryEnabled && (
         <div className="custom-field w-full mt-2">
           <div className="flex gap-2">
-            <input type="text" className={inputFieldClass} placeholder="입력하세요" value={customCategory} />
+            <input
+              type="text"
+              className={inputFieldClass}
+              placeholder="입력하세요"
+              value={customCategory}
+              onChange={handleChangeCategoryInput}
+            />
             <button className="rounded border border-stroke w-2/4" onClick={handleAddCategory}>
               확인
             </button>
