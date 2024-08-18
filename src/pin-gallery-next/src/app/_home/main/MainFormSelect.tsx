@@ -38,10 +38,9 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
       formData.append('title', customCategory);
       formData.append('description', `${customCategory} 이름으로 만든 앨범입니다.`);
       const res = await ApiService.addNewCategory(formData);
-      console.log('add Category', res);
-      const newCategory = { id: res.id, title: customCategory };
+      const newCategory = { id: res.data.id, title: customCategory };
       setCategories([...categories, newCategory]); // 기존 카테고리에 새 카테고리를 추가
-      setSelectedCategory(customCategory);
+      setSelectedCategory(newCategory.id);
       setCustomCategory('');
       setCustomCategoryEnabled(false);
     }
@@ -53,7 +52,7 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
         <select
           className={inputFieldClass}
           onChange={handleSelectChange}
-          value={selectedCategory || ''}
+          value={selectedCategory ?? ''}
           disabled={disabledForm}
         >
           <option value="">앨범을 선택하세요</option>
