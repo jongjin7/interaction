@@ -10,13 +10,14 @@ interface Category {
 interface MainFormSelectProps {
   selectProps: {
     selectedCategory: string;
+    disabledForm: boolean;
     setSelectedCategory: (category: string) => void;
   };
 }
 
 const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
   const { categories, setCategories } = useContext(CategoryContext);
-  const { selectedCategory, setSelectedCategory } = selectProps;
+  const { selectedCategory, setSelectedCategory, disabledForm } = selectProps;
   const [customCategory, setCustomCategory] = useState<string>('');
   const [customCategoryEnabled, setCustomCategoryEnabled] = useState<boolean>(false);
 
@@ -24,10 +25,6 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
     const selectedValue = e.target.value;
     setSelectedCategory(selectedValue);
     setCustomCategoryEnabled(selectedValue === 'user_add');
-  };
-
-  const handleCustomCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCustomCategory(e.target.value);
   };
 
   const handleAddCategory = () => {
@@ -43,7 +40,12 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
   return (
     <>
       <div className="flex w-full gap-2">
-        <select className={inputFieldClass} onChange={handleSelectChange} value={selectedCategory || ''}>
+        <select
+          className={inputFieldClass}
+          onChange={handleSelectChange}
+          value={selectedCategory || ''}
+          disabled={disabledForm}
+        >
           <option value="">앨범을 선택하세요</option>
           {categories.map((category: Category) => (
             <option value={category.id} key={category.id}>
@@ -57,13 +59,7 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
       {customCategoryEnabled && (
         <div className="custom-field w-full mt-2">
           <div className="flex gap-2">
-            <input
-              type="text"
-              className={inputFieldClass}
-              placeholder="입력하세요"
-              value={customCategory}
-              onChange={handleCustomCategoryChange}
-            />
+            <input type="text" className={inputFieldClass} placeholder="입력하세요" value={customCategory} />
             <button className="rounded border border-stroke w-2/4" onClick={handleAddCategory}>
               확인
             </button>

@@ -1,17 +1,21 @@
 import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
 import ApiService from '@/app/_services/ApiService';
-import { buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
+import { buttonPrimaryClass, buttonSizeLarge, buttonDisabledClass } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import React from 'react';
 
 interface MainFormSubmitProps {
   submitProps: {
     selectedCategory: string;
+    disabledForm: boolean;
+    uploadFile: object;
+    setUploadFile: (file) => void;
+    setSubmitPlay: (submit) => void;
   };
 }
 
 const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
-  const { selectedCategory } = submitProps;
+  const { selectedCategory, disabledForm, setSubmitPlay } = submitProps;
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
     const formData = new FormData();
@@ -25,7 +29,7 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const sendFileForm = async () => {
     try {
       const formData = await createFormData();
-      return await ApiService.sendImageFile(formData, this.selectedAlbumCategory);
+      return await ApiService.sendImageFile(formData, selectedCategory);
     } catch (error) {
       console.error('Failed to submit image:', error);
       throw error;
@@ -35,27 +39,12 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const handleSubmit = async () => {
     if (selectedCategory) {
       try {
-        if (selectedCategory === 'user_add') {
-          // 신규 카테고리 추가 로직
-          const response = await ApiService.addNewCategory({ title: formData.customCategory });
-
-          // 서버로부터 받은 응답에서 신규 카테고리의 ID를 추출
-          const newCategoryId = response.data.id;
-
-          // 추가된 카테고리로 selectedCategory 업데이트
-          setSelectedCategory(newCategoryId);
-
-          // 나머지 폼 데이터 전송
-          sendFileForm();
-
-          // 카테고리 목록 업데이트
-          const updatedCategories = await ApiService.fetchCategory();
-          setCategories(updatedCategories.data);
-        } else {
-          sendFileForm();
+        setSubmitPlay(true);
+        const result = sendFileForm();
+        if (result) {
+          console.log('폼 제출 성공', result, selectedCategory);
+          setSubmitPlay(false);
         }
-
-        console.log('폼 제출 성공');
       } catch (error) {
         console.error('폼 제출 실패:', error);
       }
@@ -64,16 +53,21 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     }
   };
 
+  const handleSuccess = () => {};
+
   return (
     <button
       type="button"
-      className={`${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center`}
+      className={`${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center 
+        ${disabledForm ? buttonDisabledClass : ''}
+      `}
       onClick={handleSubmit}
+      disabled={disabledForm}
     >
       <div className="icon-box">
         <IconCloud />
       </div>
-      <span>이미지 업로드 {selectedCategory}</span>
+      <span>이미지 업로드</span>
     </button>
   );
 };

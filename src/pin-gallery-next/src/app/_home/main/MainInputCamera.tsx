@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import React, { useEffect, useState, useRef, forwardRef } from 'react';
+import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { mainPreviewCircleButton, mainPseudoCircle } from '@/styles/pages.css';
 
 import lottieJsonSmile from '@/app/_components/lotties/lottie.smile.json';
@@ -15,15 +15,19 @@ interface MainInputCameraProps {
     bgImage: string;
     setBgImage: (bgImage: string) => void;
     setDisabledForm: (disabledForm: boolean) => void;
+    shotPlay: boolean;
+    setShotPlay: (shotPlay) => void;
+    submitPlay: boolean;
+    setUploadFile: (file) => void;
   };
 }
 
 const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ cameraProps }, ref) => {
-  const loadLottieRef = useRef<any>(null); // LottiePlayer 타입을 사용해도 됩니다.
-  const { bgImage, setBgImage, setDisabledForm } = cameraProps;
+  const refShotPlay = useRef<HTMLDivElement | null>(null);
+  const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile } = cameraProps;
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  console.log('MainInputCamera==>');
+  console.log('MainInputCamera==>', shotPlay);
 
   const handleCaptureCamera = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadFile = event.target.files?.[0];
@@ -32,12 +36,10 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ came
       reader.onload = () => {
         const imgUrl = window.URL.createObjectURL(uploadFile);
         setBgImage(imgUrl);
-        setDisabledForm();
+        setDisabledForm(false);
         window.URL.revokeObjectURL(uploadFile);
-        // 아래 주석처럼 필요에 따라 변환하세요.
-        // this.toggleFormDisabled();
-        // this.view.stateCenterIcon.stop();
-        // this.model.setUploadFile(uploadFile);
+        setShotPlay(false);
+        setUploadFile(uploadFile);
       };
       reader.readAsDataURL(uploadFile);
       reader.onerror = (err) => {
@@ -48,7 +50,7 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ came
   };
 
   return (
-    <div className={mainPreviewCircleButton} ref={ref}>
+    <div className={mainPreviewCircleButton}>
       <div className={`btn-circle ${mainPseudoCircle}`}>
         <div className={`img-circle ${mainPseudoCircle}`}>
           <label htmlFor="input-camera">
@@ -64,8 +66,8 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ came
         </div>
 
         {/* 상태 애니메이션 아이콘 */}
-        <Lottie className="icon icon-shot" loop animationData={lottieJsonSmile} play />
-        {/* <Lottie className="icon icon-submit" loop animationData={lottieJsonSubmit} play /> */}
+        <Lottie className="icon icon-shot" loop animationData={lottieJsonSmile} play={shotPlay} />
+        {submitPlay && <Lottie className="icon icon-submit" animationData={lottieJsonSubmit} play={submitPlay} />}
       </div>
     </div>
   );

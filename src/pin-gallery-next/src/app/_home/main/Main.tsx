@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import MainInputCamera from './MainInputCamera';
 import MainFormGroup from './MainFormGroup';
 
@@ -9,9 +9,11 @@ const randomImages: string[] = (() => {
 })();
 
 const Main: React.FC = () => {
-  const refMain = useRef<HTMLDivElement | null>(null);
+  const [shotPlay, setShotPlay] = useState<boolean>(true);
+  const [submitPlay, setSubmitPlay] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string>('');
   const [disabledForm, setDisabledForm] = useState<boolean>(true);
+  const [uploadFile, setUploadFile] = useState<object>(null);
 
   const setRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
@@ -30,9 +32,28 @@ const Main: React.FC = () => {
   return (
     <>
       <main>
-        <MainInputCamera ref={refMain} cameraProps={{ bgImage, setBgImage, setDisabledForm }} />
-        <MainFormGroup formProps={{ disabledForm, setDisabledForm }} />
-        {disabledForm ? '비활성' : '활성'}
+        <MainInputCamera
+          cameraProps={{
+            bgImage,
+            setBgImage,
+            setDisabledForm,
+            shotPlay,
+            setShotPlay,
+            submitPlay,
+            setUploadFile,
+          }}
+        />
+        <MainFormGroup
+          formProps={{
+            disabledForm,
+            setDisabledForm,
+            shotPlay,
+            setShotPlay,
+            setSubmitPlay,
+            uploadFile,
+            setUploadFile,
+          }}
+        />
       </main>
       {bgImage && <Image src={bgImage} width={400} height={400} className="bg-container" alt="" />}
     </>
