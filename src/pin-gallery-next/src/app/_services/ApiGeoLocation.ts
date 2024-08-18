@@ -1,9 +1,10 @@
 export default class ApiGeoLocation {
-  init() {
+  static async init() {
     if ('geolocation' in navigator) {
       return ApiGeoLocation.getLocation();
     }
     console.warn('navigator.geolocation 사용 불가능');
+    return null;
   }
 
   static getCurrentPositionAsync() {
@@ -23,7 +24,6 @@ export default class ApiGeoLocation {
 
       // 항상 가져올 수 있는 필드들이다. timestamp는 coords 객체 내부에 있지 않고 외부에서 가져오는 필드이다.
       let msg =
-        // `현재 위치는 대략 ${new Date(pos.timestamp).toLocaleString()}에 ` +
         `위도 ${position.coords.latitude} 경도 ${position.coords.longitude}에서 ` +
         `약 ${position.coords.accuracy}미터 떨어진 곳에 있습니다.`;
 
@@ -68,6 +68,7 @@ export default class ApiGeoLocation {
       }
 
       console.error(`ERROR(${error.code}): ${msg}`);
+      return { error: msg }; // 오류 메시지를 반환합니다.
     }
   }
 }
