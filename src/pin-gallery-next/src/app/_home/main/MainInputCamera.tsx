@@ -5,6 +5,7 @@ import { mainPreviewCircleButton, mainPseudoCircle } from '@/styles/pages.css';
 
 import lottieJsonSmile from '@/app/_components/lotties/lottie.smile.json';
 import lottieJsonSubmit from '@/app/_components/lotties/lottie.submit.json';
+import Loading from '@/app/_components/loading/Loading';
 
 const Lottie = dynamic(() => import('react-lottie-player'), {
   ssr: false,
@@ -19,12 +20,14 @@ interface MainInputCameraProps {
     setShotPlay: (shotPlay) => void;
     submitPlay: boolean;
     setUploadFile: (file) => void;
+    uploading: boolean;
   };
 }
 
 const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ cameraProps }, ref) => {
   const refShotPlay = useRef<HTMLDivElement | null>(null);
-  const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile } = cameraProps;
+  const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile, uploading } =
+    cameraProps;
   const [loaded, setLoaded] = useState<boolean>(false);
 
   console.log('MainInputCamera==>', shotPlay);
@@ -68,6 +71,9 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ came
         {/* 상태 애니메이션 아이콘 */}
         <Lottie className="icon icon-shot" loop animationData={lottieJsonSmile} play={shotPlay} />
         {submitPlay && <Lottie className="icon icon-submit" animationData={lottieJsonSubmit} play={submitPlay} />}
+
+        {/* 로딩 */}
+        {uploading && <Loading name="uploading" />}
       </div>
     </div>
   );

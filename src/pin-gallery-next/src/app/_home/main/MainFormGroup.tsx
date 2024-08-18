@@ -4,13 +4,15 @@ import MainFormSelect from '@/app/_home/main/MainFormSelect';
 import MainFormSubmit from '@/app/_home/main/mainFormSubmit';
 
 const MainFormGroup: React.FC = ({ formProps }) => {
-  const { disabledForm, setSubmitPlay, uploadFile, setUploadFile } = formProps;
+  const { disabledForm, setSubmitPlay, uploadFile, setUploadFile, setUploading } = formProps;
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   return (
     <div className={mainFormGroup}>
       <MainFormSelect selectProps={{ selectedCategory, setSelectedCategory, disabledForm }} />
-      <MainFormSubmit submitProps={{ selectedCategory, disabledForm, uploadFile, setUploadFile, setSubmitPlay }} />
+      <MainFormSubmit
+        submitProps={{ selectedCategory, disabledForm, uploadFile, setUploadFile, setSubmitPlay, setUploading }}
+      />
       <div className="copyright">Copyright © 2024 ttl2875. All rights reserved.</div>
     </div>
   );
