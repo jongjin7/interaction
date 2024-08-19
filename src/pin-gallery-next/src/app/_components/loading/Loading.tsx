@@ -3,12 +3,11 @@ import { LoadingBasic as LoadingStyle } from '@/styles/loading.css';
 
 type LoadingProps = {
   name?: string;
-  className?: string;
 };
 
-const Loading: React.FC<LoadingProps> = ({ name = '', className = '' }) => {
+const Loading: React.FC<LoadingProps> = ({ name = '' }) => {
   return (
-    <div className={`${LoadingStyle} ${name} ${className}`}>
+    <div className={`${LoadingStyle} ${name}`}>
       <div className="ripple"></div>
     </div>
   );

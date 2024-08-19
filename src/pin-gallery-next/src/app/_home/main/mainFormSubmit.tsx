@@ -2,6 +2,7 @@ import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
 import ApiService from '@/app/_services/ApiService';
 import { buttonPrimaryClass, buttonSizeLarge, buttonDisabledClass } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
+import Loading from '@/app/_components/loading/Loading';
 import React from 'react';
 
 interface MainFormSubmitProps {
@@ -11,12 +12,13 @@ interface MainFormSubmitProps {
     uploadFile: string;
     setUploadFile: (file) => void;
     setSubmitPlay: (submit) => void;
+    uploading: boolean;
     setUploading: (upload) => void;
   };
 }
 
 const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
-  const { selectedCategory, disabledForm, uploadFile, setSubmitPlay, setUploading } = submitProps;
+  const { selectedCategory, disabledForm, uploadFile, uploading, setUploading, setSubmitPlay } = submitProps;
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
     console.log('ageoInfo', geoInfo);
@@ -41,14 +43,17 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const handleSubmit = async () => {
     if (selectedCategory) {
       try {
-        // 카메라 인풋과 버튼에 로딩 컴포넌트 추가
-        setUploading(true);
-        // const result = sendFileForm();
-        // if (result) {
-        // setSubmitPlay(true);
-        //   console.log('폼 제출 성공', result, selectedCategory);
-        //   setSubmitPlay(false);
-        // }
+        const homePanel = document.querySelector('#home');
+        homePanel.classList.add('is-loading');
+        setUploading(true); // 상태값을 변경하여 카메라 인풋과 버튼에 로딩 컴포넌트 활성
+        const result = await sendFileForm();
+        if (result) {
+          setUploading(false);
+          setSubmitPlay(true);
+          setTimeout(() => {
+            homePanel.classList.remove('is-loading');
+          }, 3000);
+        }
       } catch (error) {
         console.error('폼 제출 실패:', error);
       }
@@ -56,8 +61,6 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
       alert('카테고리를 선택하세요.');
     }
   };
-
-  const handleSuccess = () => {};
 
   return (
     <button
@@ -70,6 +73,7 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     >
       <div className="icon-box">
         <IconCloud />
+        {uploading && <Loading name="btn-loading" />}
       </div>
       <span>이미지 업로드</span>
     </button>

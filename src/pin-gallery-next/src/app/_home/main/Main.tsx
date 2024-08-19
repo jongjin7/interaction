@@ -9,6 +9,7 @@ const randomImages: string[] = (() => {
 })();
 
 const Main: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [shotPlay, setShotPlay] = useState<boolean>(true);
   const [submitPlay, setSubmitPlay] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string>('');
@@ -19,7 +20,6 @@ const Main: React.FC = () => {
   const setRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
     const newImage = randomImages[randomIndex];
-    console.log('newImage', bgImage, newImage);
     // 상태가 변경된 경우에만 업데이트
     if (newImage !== bgImage) {
       setBgImage(newImage);
@@ -30,10 +30,19 @@ const Main: React.FC = () => {
     setRandomImage();
   }, []);
 
+  const completedSubmit = () => {
+    setSelectedCategory('');
+    setSubmitPlay(false);
+    setRandomImage();
+    setShotPlay(true);
+    setDisabledForm(true);
+  };
+
   return (
     <>
       <main>
         <MainInputCamera
+          onCompletedSubmit={completedSubmit}
           cameraProps={{
             bgImage,
             setBgImage,
@@ -54,7 +63,10 @@ const Main: React.FC = () => {
             setSubmitPlay,
             uploadFile,
             setUploadFile,
+            uploading,
             setUploading,
+            selectedCategory,
+            setSelectedCategory,
           }}
         />
       </main>

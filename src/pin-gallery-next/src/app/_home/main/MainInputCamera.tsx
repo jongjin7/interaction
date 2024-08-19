@@ -22,13 +22,12 @@ interface MainInputCameraProps {
     setUploadFile: (file) => void;
     uploading: boolean;
   };
+  onCompletedSubmit: () => void;
 }
 
-const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ cameraProps }, ref) => {
-  const refShotPlay = useRef<HTMLDivElement | null>(null);
+const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onCompletedSubmit }) => {
   const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile, uploading } =
     cameraProps;
-  const [loaded, setLoaded] = useState<boolean>(false);
 
   console.log('MainInputCamera==>', shotPlay);
 
@@ -40,9 +39,9 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ came
         const imgUrl = window.URL.createObjectURL(uploadFile);
         setBgImage(imgUrl);
         setDisabledForm(false);
-        window.URL.revokeObjectURL(uploadFile);
         setShotPlay(false);
         setUploadFile(uploadFile);
+        window.URL.revokeObjectURL(uploadFile);
       };
       reader.readAsDataURL(uploadFile);
       reader.onerror = (err) => {
@@ -70,13 +69,21 @@ const MainInputCamera = forwardRef<HTMLDivElement, MainInputCameraProps>(({ came
 
         {/* 상태 애니메이션 아이콘 */}
         <Lottie className="icon icon-shot" loop animationData={lottieJsonSmile} play={shotPlay} />
-        {submitPlay && <Lottie className="icon icon-submit" animationData={lottieJsonSubmit} play={submitPlay} />}
+        {submitPlay && (
+          <Lottie
+            className="icon icon-submit"
+            loop={false}
+            animationData={lottieJsonSubmit}
+            play={submitPlay}
+            onComplete={onCompletedSubmit}
+          />
+        )}
 
         {/* 로딩 */}
         {uploading && <Loading name="uploading" />}
       </div>
     </div>
   );
-});
+};
 
 export default MainInputCamera;
