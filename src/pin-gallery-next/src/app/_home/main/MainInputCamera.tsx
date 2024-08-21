@@ -20,13 +20,13 @@ interface MainInputCameraProps {
     setShotPlay: (shotPlay) => void;
     submitPlay: boolean;
     setUploadFile: (file) => void;
-    uploading: boolean;
+    isUploading: boolean;
   };
   onCompletedSubmit: () => void;
 }
 
 const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onCompletedSubmit }) => {
-  const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile, uploading } =
+  const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile, isUploading } =
     cameraProps;
 
   console.log('MainInputCamera==>', shotPlay);
@@ -80,7 +80,7 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
         )}
 
         {/* 로딩 */}
-        {uploading && <Loading name="uploading" />}
+        {isUploading && <Loading name="uploading" />}
       </div>
     </div>
   );

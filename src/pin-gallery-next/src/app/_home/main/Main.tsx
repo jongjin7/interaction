@@ -15,7 +15,7 @@ const Main: React.FC = () => {
   const [bgImage, setBgImage] = useState<string>('');
   const [disabledForm, setDisabledForm] = useState<boolean>(true);
   const [uploadFile, setUploadFile] = useState<object>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const setRandomImage = () => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
@@ -51,7 +51,7 @@ const Main: React.FC = () => {
             setShotPlay,
             submitPlay,
             setUploadFile,
-            uploading,
+            isUploading,
           }}
         />
         <MainFormGroup
@@ -63,8 +63,8 @@ const Main: React.FC = () => {
             setSubmitPlay,
             uploadFile,
             setUploadFile,
-            uploading,
-            setUploading,
+            isUploading,
+            setIsUploading,
             selectedCategory,
             setSelectedCategory,
           }}
