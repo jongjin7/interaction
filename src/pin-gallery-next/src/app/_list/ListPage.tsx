@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Tabs from './Tabs';
 import TabContent from './TabContent';

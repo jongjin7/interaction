@@ -1,7 +1,6 @@
-'use client';
-
 import React, { useContext } from 'react';
-import { CategoryContext } from '@/app/_data/CategoryProvider';
+import { AlbumContext } from '@/app/_data/CategoryProvider';
+import Link from 'next/link';
 
 interface Category {
   id: string;
@@ -9,8 +8,7 @@ interface Category {
 }
 
 const Tabs: React.FC = () => {
-  const context = useContext(CategoryContext);
-  const { categories } = context;
+  const { categories } = useContext(AlbumContext);
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, category: Category) => {
     event.preventDefault();
@@ -21,13 +19,13 @@ const Tabs: React.FC = () => {
   return (
     <div className="tabs">
       <div className="tab-nav text-gray-400">
-        <a href="#all" onClick={(e) => handleClick(e, { id: 'all', title: '전체' })}>
+        <Link href="#all" onClick={(e) => handleClick(e, { id: 'all', title: '전체' })}>
           전체
-        </a>
+        </Link>
         {categories.map((category) => (
-          <a href={`#${category.id}`} key={category.id} onClick={(e) => handleClick(e, category)}>
+          <Link href={`#${category.id}`} key={category.id} onClick={(e) => handleClick(e, category)}>
             {category.title}
-          </a>
+          </Link>
         ))}
       </div>
     </div>

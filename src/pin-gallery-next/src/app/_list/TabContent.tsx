@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { CategoryContext } from '@/app/_data/CategoryProvider';
+import { AlbumContext } from '@/app/_data/CategoryProvider';
 import { galleryDetail, galleryList } from '@/styles/pages.css';
 import { buttonOutlineClass, buttonSizeSmall } from '@/styles/tailwind.component';
 
@@ -96,6 +96,7 @@ const ListDetailPanel = () => {
 };
 
 const TabContent: React.FC = async () => {
+  const { albumImages } = useContext(AlbumContext);
   return (
     <div id="el-tab-contents" className="tab-contents">
       <TabContentPanel>

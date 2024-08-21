@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import ApiService from '@/app/_services/ApiService';
-import { CategoryContext } from '@/app/_data/CategoryProvider';
+import { AlbumContext } from '@/app/_data/CategoryProvider';
 import { inputFieldClass } from '@/styles/tailwind.component';
 
 interface Category {
@@ -17,7 +17,7 @@ interface MainFormSelectProps {
 }
 
 const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
-  const { categories, setCategories } = useContext(CategoryContext);
+  const { categories, setCategories } = useContext(AlbumContext);
   const { selectedCategory, setSelectedCategory, disabledForm } = selectProps;
   const [customCategory, setCustomCategory] = useState<string>('');
   const [customCategoryEnabled, setCustomCategoryEnabled] = useState<boolean>(false);
