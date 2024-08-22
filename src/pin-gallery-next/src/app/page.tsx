@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 
 import Home from '@/app/_home/HomePage';
 import List from '@/app/_list/ListPage';
-import { pageTypeMain, pageTypeList } from '@/styles/pages.css';
+import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
 import { AlbumProvider } from '@/app/_data/CategoryProvider';
 import ApiService from '@/app/_services/ApiService';
 import ListDetail from '@/app/_list/ListDetail';
@@ -28,17 +28,11 @@ const CreatePageFrames: React.FC = async () => {
 
 export default async function Layout() {
   const resAlbums = await ApiService.fetchCategory();
-  const categories = await resAlbums.data;
-  // const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.data));
-  console.log(
-    'aaa',
-    categories.map((album) => album.data),
-  );
-  const albumImages = categories;
-
+  const categories = resAlbums.data;
+  const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
   return (
     <div id="app">
-      <AlbumProvider initialCategories={categories} initialAlbumImages={albumImages}>
+      <AlbumProvider initialCategories={categories} initialAlbumImages={resAlbumImages}>
         <Suspense fallback={<Loading name="app-loading" />}>
           <CreatePageFrames />
         </Suspense>
