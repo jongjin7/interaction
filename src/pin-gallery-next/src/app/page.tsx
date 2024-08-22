@@ -7,6 +7,7 @@ import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
 import { AlbumProvider } from '@/app/_data/CategoryProvider';
 import ApiService from '@/app/_services/ApiService';
 import ListDetail from '@/app/_list/ListDetail';
+import PageFrame from '@/app/_components/layout/PageFrame';
 
 const CreatePageFrames: React.FC = async () => {
   const pageList = [
@@ -34,7 +35,12 @@ export default async function Layout() {
     <div id="app">
       <AlbumProvider initialCategories={categories} initialAlbumImages={resAlbumImages}>
         <Suspense fallback={<Loading name="app-loading" />}>
-          <CreatePageFrames />
+          <PageFrame id="home" className={pageTypeMain}>
+            <Home />
+          </PageFrame>
+          <PageFrame id="list" className={pageTypeList}>
+            <List />
+          </PageFrame>
         </Suspense>
       </AlbumProvider>
     </div>

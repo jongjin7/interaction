@@ -11,7 +11,6 @@ import {
 // 메인
 export const pageTypeMain = style([
   {
-    // display:'none',
     position: 'fixed',
     zIndex: 100,
     transition: 'transform 0.5s ease-in-out',
@@ -636,6 +635,16 @@ export const galleryList = style({
       width: '100%',
       height: '100%',
       objectFit: 'contain',
+    },
+  },
+  '.none-data': {
+    padding: '25vh 0',
+    textAlign: 'center',
+    opacity: 0.5,
+    svg: {
+      width: '16px',
+      margin: '0 auto 8px',
+      opacity: 0.4,
     },
   },
 });

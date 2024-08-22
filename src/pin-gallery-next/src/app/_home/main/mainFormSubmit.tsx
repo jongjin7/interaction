@@ -12,13 +12,13 @@ interface MainFormSubmitProps {
     uploadFile: string;
     setUploadFile: (file) => void;
     setSubmitPlay: (submit) => void;
-    uploading: boolean;
-    setUploading: (upload) => void;
+    isUploading: boolean;
+    setIsUploading: (upload) => void;
   };
 }
 
 const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
-  const { selectedCategory, disabledForm, uploadFile, uploading, setUploading, setSubmitPlay } = submitProps;
+  const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
     console.log('ageoInfo', geoInfo);
@@ -45,10 +45,10 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
       try {
         const homePanel = document.querySelector('#home');
         homePanel.classList.add('is-loading');
-        setUploading(true); // 상태값을 변경하여 카메라 인풋과 버튼에 로딩 컴포넌트 활성
+        setIsUploading(true); // 상태값을 변경하여 카메라 인풋과 버튼에 로딩 컴포넌트 활성
         const result = await sendFileForm();
         if (result) {
-          setUploading(false);
+          setIsUploading(false);
           setSubmitPlay(true);
           setTimeout(() => {
             homePanel.classList.remove('is-loading');
@@ -73,7 +73,7 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     >
       <div className="icon-box">
         <IconCloud />
-        {uploading && <Loading name="btn-loading" />}
+        {isUploading && <Loading name="btn-loading" />}
       </div>
       <span>이미지 업로드</span>
     </button>

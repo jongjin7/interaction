@@ -9,8 +9,8 @@ const MainFormGroup: React.FC = ({ formProps }) => {
     setSubmitPlay,
     uploadFile,
     setUploadFile,
-    uploading,
-    setUploading,
+    isUploading,
+    setIsUploading,
     selectedCategory,
     setSelectedCategory,
   } = formProps;
@@ -25,8 +25,8 @@ const MainFormGroup: React.FC = ({ formProps }) => {
           uploadFile,
           setUploadFile,
           setSubmitPlay,
-          uploading,
-          setUploading,
+          isUploading,
+          setIsUploading,
         }}
       />
       <div className="copyright">Copyright © 2024 ttl2875. All rights reserved.</div>

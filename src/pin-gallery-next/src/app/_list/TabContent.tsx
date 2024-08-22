@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { AlbumContext } from '@/app/_data/CategoryProvider';
 import { galleryDetail, galleryList } from '@/styles/pages.css';
 import { buttonOutlineClass, buttonSizeSmall } from '@/styles/tailwind.component';
+import NoneData from '@/app/_components/layout/NoneData';
 
 const PanelTitle = (props) => {
   return (
@@ -50,24 +51,26 @@ const GalleryList = ({ data }) => {
 
   console.log('isData', data.length);
   return (
-    <ul className="list">
+    <>
       {data.length ? (
-        data.map((item, index) => (
-          <li className="list-item" key={index}>
-            <DeleteItemButton />
-            <Link
-              href="#"
-              title={item.title ?? new Date(data.datetime * 1000).toDateString()}
-              data-item-id="${item.id}"
-            >
-              <img src={changeImageSize(item.link)} title={data.description} />
-            </Link>
-          </li>
-        ))
+        <ul className="list">
+          {data.map((item, index) => (
+            <li className="list-item" key={index}>
+              <DeleteItemButton />
+              <Link
+                href="#"
+                title={item.title ?? new Date(data.datetime * 1000).toDateString()}
+                data-item-id="${item.id}"
+              >
+                <img src={changeImageSize(item.link)} title={data.description} />
+              </Link>
+            </li>
+          ))}
+        </ul>
       ) : (
-        <div>빈 것</div>
+        <NoneData />
       )}
-    </ul>
+    </>
   );
 };
 
@@ -108,7 +111,7 @@ const TabContent: React.FC = async () => {
   const { albumImages } = useContext(AlbumContext);
 
   return (
-    <div id="el-tab-contents" className="tab-contents">
+    <div className="tab-contents">
       <TabContentPanel>
         <TabContentFirst />
       </TabContentPanel>

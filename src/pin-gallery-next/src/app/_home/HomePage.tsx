@@ -6,10 +6,10 @@ import Main from '@/app/_home/main/Main';
 
 const HomePage: React.FC = () => {
   return (
-    <>
+    <div className="page-container">
       <Header />
       <Main />
-    </>
+    </div>
   );
 };
 
