@@ -10,9 +10,9 @@ const PanelTitle = (props) => {
   return (
     <div className="list-header">
       <div className="title">
-        <h2>{props.title}</h2>
-        {/* <h2 */}
-        {/*  className='font-semibold'>${info.title} ${!info.subtitle && info.itemLength ? `(${info.itemLength})` : ''}</h2> */}
+        <h2 className="font-semibold">
+          {props.title} {!props.subtitle && props.itemLength ? `(${props.itemLength})` : ''}
+        </h2>
         {/* ${info.subtitle ? `<small class='text-gray-500'>${info.subtitle}(${info.itemLength})</small>` : ''} */}
       </div>
     </div>
@@ -98,16 +98,17 @@ const TabContentFirst = ({ children }) => {
   );
 };
 
-const TabContentList = ({ dataItem }) => {
+const TabContentList = ({ title, dataItem }) => {
   return (
     <TabContentListWrapper>
-      <PanelTitle title="" itemLength={dataItem?.length} />
+      <PanelTitle title={title} itemLength={dataItem?.length} />
       <GalleryList data={dataItem} />
     </TabContentListWrapper>
   );
 };
 
 const TabContent: React.FC = async () => {
+  const { categories } = useContext(AlbumContext);
   const { albumImages } = useContext(AlbumContext);
 
   return (
@@ -118,7 +119,7 @@ const TabContent: React.FC = async () => {
       {albumImages.map((item, index) => {
         return (
           <TabContentPanel key={index} index={index + 1}>
-            <TabContentList dataItem={item.data} />
+            <TabContentList dataItem={item.data} title={categories[index].title} />
           </TabContentPanel>
         );
       })}
