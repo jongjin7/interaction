@@ -1,16 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import ListDetail from '@/app/_list/ListDetail';
-import Tabs from './Tabs';
-import TabContent from './TabContent';
+import Tabs from './tab-nav/Tabs';
+import TabContent from './tab-content/TabContent';
 
-const ListPage: React.FC = async () => {
+const ListPage: React.FC = () => {
+  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   return (
     <>
       <div className="page-container">
-        <Tabs />
-        <TabContent />
+        <Tabs tabControl={{ currentTabIndex, setCurrentTabIndex }} />
+        <TabContent tabControl={{ currentTabIndex, setCurrentTabIndex }} />
       </div>
       <ListDetail />
     </>
