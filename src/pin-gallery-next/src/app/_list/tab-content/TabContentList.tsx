@@ -5,6 +5,11 @@ import TabContentListTitle from '@/app/_list/tab-content/TabContentListTitle';
 import TabContentListWrapper from '@/app/_list/tab-content/TabContentListWrapper';
 import { ShowDetailContext } from '@/app/_data/ShowDetailProvider';
 
+interface tabContentListProps {
+  title: string;
+  subTitle?: string;
+  dataItem: [];
+}
 const DeleteItemButton = () => {
   const IconDeleteFile = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -20,7 +25,7 @@ const DeleteItemButton = () => {
 };
 
 const GalleryList = ({ data }) => {
-  const { showDetail, setShowDetail } = useContext(ShowDetailContext);
+  const { setShowDetail } = useContext(ShowDetailContext);
   function changeImageSize(url) {
     const suffix = 'h';
     return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
@@ -61,10 +66,10 @@ const GalleryList = ({ data }) => {
   );
 };
 
-const TabContentList = ({ title, dataItem }) => {
+const TabContentList: React.FC<tabContentListProps> = ({ title, subTitle, dataItem }) => {
   return (
     <TabContentListWrapper>
-      <TabContentListTitle title={title} itemLength={dataItem?.length} />
+      <TabContentListTitle title={title} subTitle={subTitle} itemLength={dataItem?.length} />
       <GalleryList data={dataItem} />
     </TabContentListWrapper>
   );

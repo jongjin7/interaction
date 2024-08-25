@@ -1,20 +1,27 @@
 import React from 'react';
 
-interface PanelTitleProps {
+interface ListTitleProps {
   title: string;
-  subtitle?: string;
+  subTitle: string | undefined;
   itemLength?: number;
 }
 
-const TabContentListTitle: React.FC<PanelTitleProps> = ({ ...props }) => {
-  const { title, subtitle, itemLength } = props;
+const TabContentListTitle: React.FC<ListTitleProps> = ({ ...props }) => {
+  const { title, subTitle, itemLength } = props;
   return (
     <div className="list-header">
       <div className="title">
         <h2 className="font-semibold">
-          {title} {!subtitle && itemLength ? `(${itemLength})` : ''}
+          {title} {!subTitle && itemLength ? `(${itemLength})` : ''}
         </h2>
-        {/* ${info.subtitle ? `<small class='text-gray-500'>${info.subtitle}(${info.itemLength})</small>` : ''} */}
+        {subTitle ? (
+          <small className="text-gray-500">
+            {subTitle}
+            {` (${itemLength})`}
+          </small>
+        ) : (
+          ''
+        )}
       </div>
     </div>
   );

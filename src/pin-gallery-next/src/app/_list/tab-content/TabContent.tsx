@@ -87,7 +87,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
 
   return (
     <div ref={tabPanelContainerRef} className="tab-contents">
-      <TabContentFirstPanel />
+      <TabContentFirstPanel categories={categories} dataItem={albumImages} />
       {albumImages.map((item, index) => {
         return (
           <TabContentPanel key={index} index={index + 1}>
