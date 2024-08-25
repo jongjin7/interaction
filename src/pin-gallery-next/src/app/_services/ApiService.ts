@@ -98,13 +98,13 @@ class ApiService {
     return fetchMultipleAlbums(albumHashes);
   }
 
-  // static async deleteImageItem(imageHash) {
-  //   return ApiService.clientFetchAPI({
-  //     type: 'delete',
-  //     url: `${API_BASE_URL}/image/${imageHash}`,
-  //     author: 'access',
-  //   });
-  // }
+  static async deleteImageItem(imageHash) {
+    return ApiService.clientFetchAPI({
+      type: 'delete',
+      url: `${API_BASE_URL}/image/${imageHash}`,
+      author: 'access',
+    });
+  }
 }
 
 export default ApiService;

@@ -512,7 +512,9 @@ export const pageTypeList = style({
       },
 
       '&.is-removable': {
-        '.btn-del-sel': {},
+        '.btn-del-sel': {
+          borderColor: 'rgb(249 115 22)',
+        },
         '.btn-delete': {
           visibility: 'visible',
           pointerEvents: 'auto',

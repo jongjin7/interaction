@@ -91,7 +91,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       {albumImages.map((item, index) => {
         return (
           <TabContentPanel key={index} index={index + 1}>
-            <TabContentList dataItem={item.data} title={categories[index].title} />
+            <TabContentList dataItem={item.data} title={categories[index].title} useToggleDel />
           </TabContentPanel>
         );
       })}
