@@ -38,7 +38,7 @@ const ListPage: React.FC = () => {
         <Tabs tabControl={{ currentTabIndex, setCurrentTabIndex }} />
         <TabContent tabControl={{ currentTabIndex, setCurrentTabIndex }} />
       </div>
-      {showDetail && <ListDetail imageSrc={showDetail} />}
+      <ListDetail imageSrc={showDetail} />
     </>
   );
 };
