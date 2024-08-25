@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import React from 'react';
+import React, { useContext } from 'react';
 import NoneData from '@/app/_components/layout/NoneData';
 import TabContentListTitle from '@/app/_list/tab-content/TabContentListTitle';
 import TabContentListWrapper from '@/app/_list/tab-content/TabContentListWrapper';
+import { ShowDetailContext } from '@/app/_data/ShowDetailProvider';
 
 const DeleteItemButton = () => {
   const IconDeleteFile = () => (
@@ -19,6 +20,7 @@ const DeleteItemButton = () => {
 };
 
 const GalleryList = ({ data }) => {
+  const { showDetail, setShowDetail } = useContext(ShowDetailContext);
   function changeImageSize(url) {
     const suffix = 'h';
     return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
@@ -30,6 +32,10 @@ const GalleryList = ({ data }) => {
     });
   }
 
+  const clickHandle = (e, value) => {
+    setShowDetail(value);
+  };
+
   return (
     <>
       {data.length ? (
@@ -37,7 +43,12 @@ const GalleryList = ({ data }) => {
           {data.map((item, index) => (
             <li className="list-item" key={index}>
               <DeleteItemButton />
-              <Link href="#" title={item.title ?? new Date(data.datetime * 1000).toDateString()} data-item-id={item.id}>
+              <Link
+                href="#"
+                title={item.title ?? new Date(data.datetime * 1000).toDateString()}
+                data-item-id={item.id}
+                onClick={(e) => clickHandle(e, changeImageSize(item.link))}
+              >
                 <img src={changeImageSize(item.link)} title={data.description} alt={''} />
               </Link>
             </li>

@@ -2,12 +2,8 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AlbumContext } from '@/app/_data/CategoryProvider';
-import { galleryDetail, galleryList } from '@/styles/pages.css';
-import { buttonOutlineClass, buttonSizeSmall } from '@/styles/tailwind.component';
 import TabContentPanel from '@/app/_list/tab-content/TabContentPanel';
-import TabContentListTitle from '@/app/_list/tab-content/TabContentListTitle';
 import TabContentList from '@/app/_list/tab-content/TabContentList';
-import TabContentListWrapper from '@/app/_list/tab-content/TabContentListWrapper';
 import TabContentFirstPanel from '@/app/_list/tab-content/TabContentFirstPanel';
 
 interface TabContentProps {

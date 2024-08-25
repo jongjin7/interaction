@@ -4,9 +4,11 @@ import React, { Suspense } from 'react';
 import Home from '@/app/_home/HomePage';
 import List from '@/app/_list/ListPage';
 import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
-import { AlbumProvider } from '@/app/_data/CategoryProvider';
 import ApiService from '@/app/_services/ApiService';
 import PageFrame from '@/app/_components/layout/PageFrame';
+
+import { AlbumProvider } from '@/app/_data/CategoryProvider';
+import { ShowDetailProvider } from '@/app/_data/ShowDetailProvider';
 
 export default async function Layout() {
   const resAlbums = await ApiService.fetchCategory();
@@ -20,7 +22,9 @@ export default async function Layout() {
             <Home />
           </PageFrame>
           <PageFrame id="list" className={pageTypeList}>
-            <List />
+            <ShowDetailProvider>
+              <List />
+            </ShowDetailProvider>
           </PageFrame>
         </Suspense>
       </AlbumProvider>
