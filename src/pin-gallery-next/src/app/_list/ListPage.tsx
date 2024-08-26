@@ -7,22 +7,22 @@ import Tabs from './tab-nav/Tabs';
 import TabContent from './tab-content/TabContent';
 
 const ListPage: React.FC = () => {
-  const activeShowClass = 'show-detail';
-  const pageRef = useRef<HTMLElement | null>(null);
+  const showDetailClass = 'show-detail';
+  const pageRef = useRef<HTMLDivElement | null>(null);
   const { showDetail } = useContext(ShowDetailContext);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
 
   useEffect(() => {
     if (pageRef.current) {
-      const parentElement = pageRef.current.parentElement as HTMLElement | null;
+      const parentElement = pageRef.current?.parentElement as HTMLElement | null;
 
       if (parentElement) {
         const pageFrame = parentElement;
 
         if (showDetail) {
-          pageFrame.classList.add(activeShowClass);
+          pageFrame.classList.add(showDetailClass);
         } else {
-          pageFrame.classList.remove(activeShowClass);
+          pageFrame.classList.remove(showDetailClass);
         }
       } else {
         console.warn('Parent element is null.');
