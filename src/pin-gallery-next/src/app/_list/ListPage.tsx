@@ -11,7 +11,6 @@ const ListPage: React.FC = () => {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { showDetail } = useContext(ShowDetailContext);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-
   useEffect(() => {
     if (pageRef.current) {
       const parentElement = pageRef.current?.parentElement as HTMLElement | null;

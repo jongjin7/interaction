@@ -31,14 +31,25 @@ interface AlbumProviderProps {
   children: ReactNode;
   initialCategories: Category[];
   initialAlbumImages: AlbumImages[];
+  initialRandomImage: [];
+  initialLargestAlbum: [];
 }
 
-export const AlbumProvider: React.FC<AlbumProviderProps> = ({ children, initialCategories, initialAlbumImages }) => {
+export const AlbumProvider: React.FC<AlbumProviderProps> = ({
+  children,
+  initialCategories,
+  initialAlbumImages,
+  initialRandomImage,
+  initialLargestAlbum,
+}) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [albumImages, setAlbumImages] = useState<AlbumImages[]>(initialAlbumImages);
-
+  const randomImages = initialRandomImage;
+  const largestAlbum = initialLargestAlbum;
   return (
-    <AlbumContext.Provider value={{ categories, setCategories, albumImages, setAlbumImages }}>
+    <AlbumContext.Provider
+      value={{ categories, setCategories, albumImages, setAlbumImages, randomImages, largestAlbum }}
+    >
       {children}
     </AlbumContext.Provider>
   );
