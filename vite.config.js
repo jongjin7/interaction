@@ -66,11 +66,6 @@ export default ({command, mode}) => {
             outDir: path.join(__dirname, '/build'),
             rollupOptions: {
                 input: useDirArr,
-                // input: './src',
-                // external: [
-                //   // 번들링에서 제외할 경로를 지정
-                //   ...excludeWorkDirs.map(item => `src/${item}`)
-                // ],
                 output: (() => {
                     return {
                         chunkFileNames: 'assets/[name].[hash].js',
