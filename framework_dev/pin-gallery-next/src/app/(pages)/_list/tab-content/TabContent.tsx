@@ -73,7 +73,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
     return () => {
       container?.removeEventListener('scroll', handleScrollTabPanelContainer);
     };
-  }, [tabPanelPositions]);
+  }, [currentTabIndex, tabPanelPositions]);
 
   useEffect(() => {
     console.log('currentTabIndex');

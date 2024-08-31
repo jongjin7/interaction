@@ -1,14 +1,8 @@
 'use client';
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AlbumContext } from '@/app/_providers/AlbumProvider';
 import Link from 'next/link';
-
-interface Category {
-  id: string;
-  title: string;
-  index: number;
-}
 
 interface TabProps {
   tabControl: {
@@ -20,36 +14,51 @@ interface TabProps {
 const Tabs: React.FC<TabProps> = ({ tabControl }) => {
   const { currentTabIndex, setCurrentTabIndex } = tabControl;
   const { categories } = useContext(AlbumContext);
+  const tabRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const activeClass = `bg-gray-700 text-white`;
+
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>, index: number) => {
     event.preventDefault();
     setCurrentTabIndex(index);
+  };
 
-    const target = event.target as HTMLAnchorElement;
-
-    if (target && 'scrollIntoView' in target) {
-      target.scrollIntoView({
+  useEffect(() => {
+    if (tabRefs.current[currentTabIndex]) {
+      tabRefs.current[currentTabIndex]?.scrollIntoView({
         behavior: 'smooth',
+        block: 'end',
+        inline: 'nearest',
       });
     }
-  };
+  }, [currentTabIndex]);
+
+  const getClassNames = (index: number) => (currentTabIndex === index ? activeClass : '');
 
   return (
     <div className="tabs">
       <div className="tab-nav text-gray-400">
-        <Link className={currentTabIndex === 0 ? activeClass : ''} href={'#all'} onClick={(e) => handleClick(e, 0)}>
+        <Link
+          href="#all"
+          className={getClassNames(0)}
+          ref={(el) => (tabRefs.current[0] = el)}
+          onClick={(e) => handleClick(e, 0)}
+        >
           전체
         </Link>
-        {categories.map((category, index) => (
-          <Link
-            href={`#${category.id}`}
-            key={category.id}
-            className={currentTabIndex === index + 1 ? activeClass : ''}
-            onClick={(e) => handleClick(e, index + 1)}
-          >
-            {category.title}
-          </Link>
-        ))}
+        {categories.map((category, index) => {
+          const tabIndex = index + 1;
+          return (
+            <Link
+              href={`#${category.id}`}
+              key={category.id}
+              className={getClassNames(tabIndex)}
+              ref={(el) => (tabRefs.current[tabIndex] = el)}
+              onClick={(e) => handleClick(e, tabIndex)}
+            >
+              {category.title}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

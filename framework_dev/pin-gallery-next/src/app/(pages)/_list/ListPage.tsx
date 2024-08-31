@@ -31,15 +31,6 @@ const ListPage: React.FC = () => {
     }
   }, [currentDetailLink]);
 
-  // initGalleryPanel() {
-  //   // 리스트 닫을때 초기화
-  //   this.view.tabPanelContainer.scrollTo(0, 0);
-  //   this.view.tabPanels[0].scrollTo(0, 0);
-  //   if (this.root.classList.contains('show-detail')) {
-  //     this.view.detailPanel.querySelector('.btn-close').click();
-  //   }
-  // }
-
   return (
     <>
       <div ref={pageRef} className="page-container">
