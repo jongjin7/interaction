@@ -64,6 +64,8 @@ export default class ListController {
       if (nav.classList.contains('bg-gray-700')) {
         nav.scrollIntoView({
           behavior: 'smooth',
+          block: 'end',
+          inline: 'nearest',
         });
       }
     });
