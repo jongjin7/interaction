@@ -13,7 +13,7 @@ interface TabProps {
 
 const Tabs: React.FC<TabProps> = ({ tabControl }) => {
   const { currentTabIndex, setCurrentTabIndex } = tabControl;
-  const { categories } = useContext(AlbumContext);
+  const { categories, tabNavContainerRef } = useContext(AlbumContext);
   const tabRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const activeClass = `bg-gray-700 text-white`;
 
@@ -36,7 +36,7 @@ const Tabs: React.FC<TabProps> = ({ tabControl }) => {
 
   return (
     <div className="tabs">
-      <div className="tab-nav text-gray-400">
+      <div ref={tabNavContainerRef} className="tab-nav text-gray-400">
         <Link
           href="#all"
           className={getClassNames(0)}

@@ -47,11 +47,13 @@ export const AlbumProvider: React.FC<AlbumProviderProps> = ({
   const randomImages = initialRandomImage;
   const largestAlbum = initialLargestAlbum;
   const tabPanelContainerRef = useRef(null);
+  const tabNavContainerRef = useRef(null);
 
   const resetGalleryPanel = () => {
     if (tabPanelContainerRef.current) {
       tabPanelContainerRef.current.scrollTo(0, 0);
       tabPanelContainerRef.current.children[0].scrollTo(0, 0);
+      tabNavContainerRef.current.scrollTo(0, 0);
     }
   };
   return (
@@ -65,6 +67,7 @@ export const AlbumProvider: React.FC<AlbumProviderProps> = ({
         largestAlbum,
         resetGalleryPanel,
         tabPanelContainerRef,
+        tabNavContainerRef,
       }}
     >
       {children}

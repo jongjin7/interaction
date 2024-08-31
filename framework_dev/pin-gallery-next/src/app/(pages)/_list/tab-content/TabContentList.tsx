@@ -65,11 +65,11 @@ const GalleryList = ({ data, isToggleDel }) => {
           await ApiService.deleteImageItem(imageId);
           alert('선택한 이미지가 삭제되었습니다.');
           refreshData();
-          targetBtn.classList.remove('selected');
         } catch (error) {
           console.error('Failed to delete image:', error);
         }
       }
+      targetBtn.classList.remove('selected');
     }, 30);
   };
 
