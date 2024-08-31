@@ -1,12 +1,13 @@
 import Loading from '@/app/_components/loading/Loading';
 import React, { Suspense } from 'react';
 
+import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
+
 import Home from '@/app/(pages)/_home/HomePage';
 import List from '@/app/(pages)/_list/ListPage';
-import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
-import ApiService from '@/app/_services/ApiService';
 import PageFrame from '@/app/_components/layout/PageFrame';
 
+import ApiService from '@/app/_services/ApiService';
 import { AlbumProvider } from '@/app/_providers/AlbumProvider';
 import { ShowDetailProvider } from '@/app/_providers/ShowDetailProvider';
 import { randomArrayItem, largestArrayItem } from '@/app/_utils/RandomAndLongest';

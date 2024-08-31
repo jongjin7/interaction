@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { AlbumContext } from '@/app/_providers/AlbumProvider';
 import Link from 'next/link';
 

@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import React, { useEffect, useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import React from 'react';
 import { mainPreviewCircleButton, mainPseudoCircle } from '@/styles/pages.css';
 
 import lottieJsonSmile from '@/app/_components/lotties/lottie.smile.json';
@@ -28,8 +28,6 @@ interface MainInputCameraProps {
 const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onCompletedSubmit }) => {
   const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile, isUploading } =
     cameraProps;
-
-  console.log('MainInputCamera==>', shotPlay);
 
   const handleCaptureCamera = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadFile = event.target.files?.[0];

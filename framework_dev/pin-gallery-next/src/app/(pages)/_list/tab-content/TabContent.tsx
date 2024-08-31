@@ -43,7 +43,6 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
   }, []);
 
   useEffect(() => {
-    console.log('handleScrollTabPanelContainer');
     const handleScrollTabPanelContainer = () => {
       let isScrolling;
       const endDelayTime = 60;
@@ -76,7 +75,6 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
   }, [currentTabIndex, tabPanelPositions]);
 
   useEffect(() => {
-    console.log('currentTabIndex');
     const container = tabPanelContainerRef.current;
 
     if (container && tabPanelPositions.length > 0) {

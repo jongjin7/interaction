@@ -1,5 +1,5 @@
 import { galleryDetail } from '@/styles/pages.css';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
 
 interface ListDetailProps {
