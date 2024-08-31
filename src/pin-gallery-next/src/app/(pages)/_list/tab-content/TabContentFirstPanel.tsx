@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import TabContentPanel from '@/app/_list/tab-content/TabContentPanel';
-import TabContentList from '@/app/_list/tab-content/TabContentList';
-import { AlbumContext } from '@/app/_data/CategoryProvider';
+import TabContentPanel from '@/app/(pages)/_list/tab-content/TabContentPanel';
+import TabContentList from '@/app/(pages)/_list/tab-content/TabContentList';
+import { AlbumContext } from '@/app/_providers/AlbumProvider';
 
 const TabContentFirstPanel: React.FC = () => {
   const { randomImages, largestAlbum } = useContext(AlbumContext);

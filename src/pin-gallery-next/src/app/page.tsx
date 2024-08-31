@@ -1,15 +1,15 @@
 import Loading from '@/app/_components/loading/Loading';
 import React, { Suspense } from 'react';
 
-import Home from '@/app/_home/HomePage';
-import List from '@/app/_list/ListPage';
+import Home from '@/app/(pages)/_home/HomePage';
+import List from '@/app/(pages)/_list/ListPage';
 import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
 import ApiService from '@/app/_services/ApiService';
 import PageFrame from '@/app/_components/layout/PageFrame';
 
-import { AlbumProvider } from '@/app/_data/CategoryProvider';
-import { ShowDetailProvider } from '@/app/_data/ShowDetailProvider';
-import { randomArrayItem, largestArrayItem } from '@/app/_data/RandomAndLongest';
+import { AlbumProvider } from '@/app/_providers/AlbumProvider';
+import { ShowDetailProvider } from '@/app/_providers/ShowDetailProvider';
+import { randomArrayItem, largestArrayItem } from '@/app/_utils/RandomAndLongest';
 
 export default async function Layout() {
   const resAlbums = await ApiService.fetchCategory();
@@ -26,14 +26,14 @@ export default async function Layout() {
         initialLargestAlbum={largestAlbum}
       >
         <Suspense fallback={<Loading name="app-loading" />}>
-          <PageFrame id="home" className={pageTypeMain}>
-            <Home />
-          </PageFrame>
-          <PageFrame id="list" className={pageTypeList}>
-            <ShowDetailProvider>
+          <ShowDetailProvider>
+            <PageFrame id="home" className={pageTypeMain}>
+              <Home />
+            </PageFrame>
+            <PageFrame id="list" className={pageTypeList}>
               <List />
-            </ShowDetailProvider>
-          </PageFrame>
+            </PageFrame>
+          </ShowDetailProvider>
         </Suspense>
       </AlbumProvider>
     </div>

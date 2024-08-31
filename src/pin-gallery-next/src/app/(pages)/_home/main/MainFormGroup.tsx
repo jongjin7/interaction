@@ -1,7 +1,7 @@
 import React from 'react';
 import { mainFormGroup } from '@/styles/pages.css';
-import MainFormSelect from '@/app/_home/main/MainFormSelect';
-import MainFormSubmit from '@/app/_home/main/mainFormSubmit';
+import MainFormSelect from '@/app/(pages)/_home/main/MainFormSelect';
+import MainFormSubmit from '@/app/(pages)/_home/main/mainFormSubmit';
 
 const MainFormGroup: React.FC = ({ formProps }) => {
   const {

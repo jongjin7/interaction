@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useContext } from 'react';
-import { AlbumContext } from '@/app/_data/CategoryProvider';
+import { AlbumContext } from '@/app/_providers/AlbumProvider';
 import Link from 'next/link';
 
 interface Category {

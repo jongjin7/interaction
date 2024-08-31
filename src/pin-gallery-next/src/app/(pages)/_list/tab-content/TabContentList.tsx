@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import React, { useContext, useRef, useState } from 'react';
 import NoneData from '@/app/_components/layout/NoneData';
-import TabContentListTitle from '@/app/_list/tab-content/TabContentListTitle';
-import TabContentListWrapper from '@/app/_list/tab-content/TabContentListWrapper';
-import { ShowDetailContext } from '@/app/_data/ShowDetailProvider';
+import TabContentListTitle from '@/app/(pages)/_list/tab-content/TabContentListTitle';
+import TabContentListWrapper from '@/app/(pages)/_list/tab-content/TabContentListWrapper';
+import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
 import ApiService from '@/app/_services/ApiService';
 import { buttonOutlineClass, buttonSizeSmall } from '@/styles/tailwind.component';
-import { AlbumContext } from '@/app/_data/CategoryProvider';
+import { AlbumContext } from '@/app/_providers/AlbumProvider';
 
 interface tabContentListProps {
   title: string;
@@ -29,7 +29,7 @@ const DeleteItemButton = ({ clickHandleDelete }) => {
 };
 
 const GalleryList = ({ data, isToggleDel }) => {
-  const { setShowDetail } = useContext(ShowDetailContext);
+  const { setCurrentDetailLink } = useContext(ShowDetailContext);
   const { categories, setAlbumImages } = useContext(AlbumContext);
 
   function changeImageSize(url) {
@@ -44,7 +44,7 @@ const GalleryList = ({ data, isToggleDel }) => {
   }
 
   const clickHandleDetail = (e, value) => {
-    setShowDetail(value);
+    setCurrentDetailLink(value);
   };
 
   const refreshData = async () => {

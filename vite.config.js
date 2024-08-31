@@ -28,11 +28,15 @@ export default ({command, mode}) => {
         base: '/', // Public Base Path
         publicDir: path.resolve(__dirname, './public'),
         server: {
-            https: {
-                // key: path.resolve(__dirname, 'localhost-key.pem'),
-                // cert: path.resolve(__dirname, 'localhost.pem')
-                key: fs.readFileSync('localhost-key.pem'),
-                cert: fs.readFileSync('localhost.pem'),
+            // https: {
+            //     key: fs.readFileSync('localhost-key.pem'),
+            //     cert: fs.readFileSync('localhost.pem'),
+            // },
+            watch: {
+              ignored: [
+                // 무시하고 싶은 폴더 경로를 지정합니다.
+                ...excludeWorkDirs.map(item => `src/${item}/**`),
+              ]
             },
             port: 3900
         },
@@ -62,6 +66,11 @@ export default ({command, mode}) => {
             outDir: path.join(__dirname, '/build'),
             rollupOptions: {
                 input: useDirArr,
+                // input: './src',
+                // external: [
+                //   // 번들링에서 제외할 경로를 지정
+                //   ...excludeWorkDirs.map(item => `src/${item}`)
+                // ],
                 output: (() => {
                     return {
                         chunkFileNames: 'assets/[name].[hash].js',

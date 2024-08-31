@@ -1,17 +1,17 @@
-import Image from 'next/image';
-import { galleryDetail, galleryList } from '@/styles/pages.css';
+import { galleryDetail } from '@/styles/pages.css';
 import { useContext } from 'react';
-import { ShowDetailContext } from '@/app/_data/ShowDetailProvider';
+import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
 
 interface ListDetailProps {
   imageSrc?: string;
 }
 
 const ListDetail: React.FC<ListDetailProps> = ({ imageSrc }) => {
-  const { setShowDetail } = useContext(ShowDetailContext);
+  const { setCurrentDetailLink } = useContext(ShowDetailContext);
   const clickHandle = () => {
-    setShowDetail(null);
+    setCurrentDetailLink(null);
   };
+
   return (
     <div className={`gallery-detail ${galleryDetail}`}>
       <div className="inner">

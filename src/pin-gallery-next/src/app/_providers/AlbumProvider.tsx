@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, ReactNode, useState } from 'react';
+import React, { createContext, ReactNode, useRef, useState } from 'react';
 
 // Category 타입 정의
 export interface Category {
@@ -46,9 +46,26 @@ export const AlbumProvider: React.FC<AlbumProviderProps> = ({
   const [albumImages, setAlbumImages] = useState<AlbumImages[]>(initialAlbumImages);
   const randomImages = initialRandomImage;
   const largestAlbum = initialLargestAlbum;
+  const tabPanelContainerRef = useRef(null);
+
+  const resetGalleryPanel = () => {
+    if (tabPanelContainerRef.current) {
+      tabPanelContainerRef.current.scrollTo(0, 0);
+      tabPanelContainerRef.current.children[0].scrollTo(0, 0);
+    }
+  };
   return (
     <AlbumContext.Provider
-      value={{ categories, setCategories, albumImages, setAlbumImages, randomImages, largestAlbum }}
+      value={{
+        categories,
+        setCategories,
+        albumImages,
+        setAlbumImages,
+        randomImages,
+        largestAlbum,
+        resetGalleryPanel,
+        tabPanelContainerRef,
+      }}
     >
       {children}
     </AlbumContext.Provider>

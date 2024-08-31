@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import ApiService from '@/app/_services/ApiService';
-import { AlbumContext } from '@/app/_data/CategoryProvider';
+import { AlbumContext } from '@/app/_providers/AlbumProvider';
 import { inputFieldClass } from '@/styles/tailwind.component';
 
 interface Category {

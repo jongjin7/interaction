@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AlbumContext } from '@/app/_data/CategoryProvider';
-import TabContentPanel from '@/app/_list/tab-content/TabContentPanel';
-import TabContentList from '@/app/_list/tab-content/TabContentList';
-import TabContentFirstPanel from '@/app/_list/tab-content/TabContentFirstPanel';
+import { AlbumContext } from '@/app/_providers/AlbumProvider';
+import TabContentPanel from '@/app/(pages)/_list/tab-content/TabContentPanel';
+import TabContentList from '@/app/(pages)/_list/tab-content/TabContentList';
+import TabContentFirstPanel from '@/app/(pages)/_list/tab-content/TabContentFirstPanel';
 
 interface TabContentProps {
   tabControl: {
@@ -14,10 +14,10 @@ interface TabContentProps {
 }
 
 const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
-  const { categories, albumImages } = useContext(AlbumContext);
+  const { categories, albumImages, tabPanelContainerRef } = useContext(AlbumContext);
   const { currentTabIndex, setCurrentTabIndex } = tabControl;
 
-  const tabPanelContainerRef = useRef<HTMLDivElement>(null);
+  // const tabPanelContainerRef = useRef<HTMLDivElement>(null);
   const [tabPanelPositions, setTabPanelPositions] = useState<number[]>([]);
   const prevTabIndexRef = useRef(0);
 
@@ -43,6 +43,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
   }, []);
 
   useEffect(() => {
+    console.log('handleScrollTabPanelContainer');
     const handleScrollTabPanelContainer = () => {
       let isScrolling;
       const endDelayTime = 60;
@@ -57,7 +58,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
             setCurrentTabIndex(index);
             const prevTabPanel = tabPanelContainerRef.current?.children[prevTabIndexRef.current] as HTMLElement;
             if (prevTabPanel) {
-              prevTabPanel.scrollTo(0, 0);
+              prevTabPanel.scrollTo({ top: 0, left: 0 });
             }
           }
         });
@@ -72,9 +73,10 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
     return () => {
       container?.removeEventListener('scroll', handleScrollTabPanelContainer);
     };
-  }, [currentTabIndex, tabPanelPositions]);
+  }, [tabPanelPositions]);
 
   useEffect(() => {
+    console.log('currentTabIndex');
     const container = tabPanelContainerRef.current;
 
     if (container && tabPanelPositions.length > 0) {
