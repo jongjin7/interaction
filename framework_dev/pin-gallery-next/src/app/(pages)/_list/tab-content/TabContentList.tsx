@@ -34,7 +34,7 @@ const GalleryList = ({ data, isToggleDel }) => {
 
   function changeImageSize(url) {
     const suffix = 'h';
-    return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
+    return url.replace(/\/([^/?#]+)(?=[^/]*$)/, (match, filename) => {
       const parts = filename.split('.');
       const name = parts[0];
       const extension = parts[1];
@@ -60,11 +60,13 @@ const GalleryList = ({ data, isToggleDel }) => {
     const targetBtn = e.currentTarget;
     targetBtn.classList.add('selected');
     setTimeout(async () => {
+      // eslint-disable-next-line no-alert
       if (window.confirm('현재 선택된 아이템을 삭제할까요?')) {
         try {
           await ApiService.deleteImageItem(imageId);
+          // eslint-disable-next-line no-alert
           alert('선택한 이미지가 삭제되었습니다.');
-          refreshData();
+          await refreshData();
         } catch (error) {
           console.error('Failed to delete image:', error);
         }

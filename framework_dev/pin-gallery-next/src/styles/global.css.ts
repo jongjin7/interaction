@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { globalStyle } from '@vanilla-extract/css';
 import {
   bodyBgColorEnd,

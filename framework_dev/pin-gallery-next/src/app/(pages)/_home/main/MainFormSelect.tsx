@@ -10,9 +10,9 @@ interface Category {
 
 interface MainFormSelectProps {
   selectProps: {
-    selectedCategory: string;
+    selectedCategory: string | null;
+    setSelectedCategory: React.Dispatch<React.SetStateAction<string | null>>;
     disabledForm: boolean;
-    setSelectedCategory: (category: string) => void;
   };
 }
 
@@ -22,8 +22,8 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
   const [customCategory, setCustomCategory] = useState<string>('');
   const [customCategoryEnabled, setCustomCategoryEnabled] = useState<boolean>(false);
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
     setSelectedCategory(selectedValue);
     setCustomCategoryEnabled(selectedValue === 'user_add');
   };

@@ -7,13 +7,12 @@ import React from 'react';
 
 interface MainFormSubmitProps {
   submitProps: {
-    selectedCategory: string;
-    disabledForm: boolean;
-    uploadFile: string;
-    setUploadFile: (file) => void;
-    setSubmitPlay: (submit) => void;
-    isUploading: boolean;
-    setIsUploading: (upload) => void;
+    selectedCategory: string | undefined; // 선택된 카테고리, 없을 수도 있음
+    disabledForm: boolean; // 폼이 비활성화된 상태인지 여부
+    uploadFile: File | null; // 업로드할 파일, 없을 수도 있음
+    setSubmitPlay: React.Dispatch<React.SetStateAction<boolean>>; // 제출 상태를 설정하는 함수
+    isUploading: boolean; // 업로드 중인지 여부
+    setIsUploading: React.Dispatch<React.SetStateAction<boolean>>; // 업로드 중 상태를 설정하는 함수
   };
 }
 
@@ -21,9 +20,10 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
-    console.log('ageoInfo', geoInfo);
     const formData = new FormData();
-    formData.append('image', uploadFile);
+    if (uploadFile) {
+      formData.append('image', uploadFile); // 'File | null' 타입을 'Blob'으로 처리
+    }
     formData.append('type', 'image');
     formData.append('title', geoInfo.time ?? '제목 없음');
     formData.append('description', geoInfo.message ?? (geoInfo.error ? geoInfo.error : '설명 없음'));
@@ -58,6 +58,7 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
         console.error('폼 제출 실패:', error);
       }
     } else {
+      // eslint-disable-next-line no-alert
       alert('카테고리를 선택하세요.');
     }
   };

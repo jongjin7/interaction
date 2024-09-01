@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { style, globalKeyframes } from '@vanilla-extract/css';
 import { primaryColor } from './variables.css';
 
@@ -40,7 +41,7 @@ globalKeyframes(spin, {
   },
 });
 
-const defLoading = style({
+const LoadingBasic = style({
   position: 'absolute',
   left: 0,
   top: 0,
@@ -91,4 +92,4 @@ const defLoading = style({
   },
 });
 
-export const LoadingBasic = defLoading;
+export default LoadingBasic;

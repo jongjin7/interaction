@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import MainInputCamera from './MainInputCamera';
 import MainFormGroup from './MainFormGroup';
 
@@ -9,7 +9,7 @@ const randomImages: string[] = (() => {
 })();
 
 const Main: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [shotPlay, setShotPlay] = useState<boolean>(true);
   const [submitPlay, setSubmitPlay] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string>('');
@@ -17,18 +17,18 @@ const Main: React.FC = () => {
   const [uploadFile, setUploadFile] = useState<object>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const setRandomImage = () => {
+  const setRandomImage = useCallback(() => {
     const randomIndex = Math.floor(Math.random() * randomImages.length);
     const newImage = randomImages[randomIndex];
     // 상태가 변경된 경우에만 업데이트
     if (newImage !== bgImage) {
       setBgImage(newImage);
     }
-  };
+  }, [bgImage]);
 
   useEffect(() => {
     setRandomImage();
-  }, []);
+  }, [setRandomImage]);
 
   const completedSubmit = () => {
     setSelectedCategory('');

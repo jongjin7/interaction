@@ -13,16 +13,16 @@ const Lottie = dynamic(() => import('react-lottie-player'), {
 
 interface MainInputCameraProps {
   cameraProps: {
-    bgImage: string;
-    setBgImage: (bgImage: string) => void;
-    setDisabledForm: (disabledForm: boolean) => void;
-    shotPlay: boolean;
-    setShotPlay: (shotPlay) => void;
-    submitPlay: boolean;
-    setUploadFile: (file) => void;
-    isUploading: boolean;
+    bgImage: string; // 배경 이미지 URL 또는 경로
+    shotPlay: boolean; // 촬영 중인지 여부를 나타내는 상태
+    submitPlay: boolean; // 제출 중인지 여부를 나타내는 상태
+    isUploading: boolean; // 파일 업로드 중인지 여부를 나타내는 상태
+    setBgImage: React.Dispatch<React.SetStateAction<string>>;
+    setDisabledForm: React.Dispatch<React.SetStateAction<boolean>>;
+    setShotPlay: React.Dispatch<React.SetStateAction<boolean>>;
+    setUploadFile: React.Dispatch<React.SetStateAction<File | null>>;
   };
-  onCompletedSubmit: () => void;
+  onCompletedSubmit: () => void; // 제출 완료 시 호출되는 함수
 }
 
 const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onCompletedSubmit }) => {
@@ -44,6 +44,7 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
       reader.readAsDataURL(uploadFile);
       reader.onerror = (err) => {
         console.error('Error reading file:', err);
+        // eslint-disable-next-line no-alert
         alert('파일을 읽는 도중 오류가 발생했습니다. 다시 시도해 주세요.');
       };
     }

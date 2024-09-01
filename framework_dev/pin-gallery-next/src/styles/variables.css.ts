@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { createContainer, createVar } from '@vanilla-extract/css';
 
 export const bodyMinWidth = createVar();
