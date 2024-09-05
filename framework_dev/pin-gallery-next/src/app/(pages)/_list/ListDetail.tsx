@@ -3,11 +3,18 @@ import React, { useContext } from 'react';
 import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
 
 interface ListDetailProps {
-  imageSrc?: string;
+  imageSrc: string | null;
 }
 
 const ListDetail: React.FC<ListDetailProps> = ({ imageSrc }) => {
-  const { setCurrentDetailLink } = useContext(ShowDetailContext);
+  const detailContext = useContext(ShowDetailContext);
+
+  if (!detailContext) {
+    throw new Error('detailContext must be used within an ShowDetailContext');
+  }
+
+  const { setCurrentDetailLink } = detailContext;
+
   const clickHandle = () => {
     setCurrentDetailLink(null);
   };

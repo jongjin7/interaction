@@ -5,8 +5,17 @@ import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
 
 const HeaderButtonToggle = () => {
   const [currentPage, setCurrentPage] = useState<string>('home');
-  const { resetGalleryPanel } = useContext(AlbumContext);
-  const { currentDetailLink, setCurrentDetailLink } = useContext(ShowDetailContext);
+
+  const albumContext = useContext(AlbumContext);
+  const detailContext = useContext(ShowDetailContext);
+
+  if (!albumContext || !detailContext) {
+    // AlbumContext가 undefined인 경우에 대한 처리
+    throw new Error('useContext must be used within an AlbumProvider');
+  }
+
+  const { resetGalleryPanel } = albumContext;
+  const { currentDetailLink, setCurrentDetailLink } = detailContext;
 
   const clickHandleToggle = () => {
     if (currentPage === 'home') {

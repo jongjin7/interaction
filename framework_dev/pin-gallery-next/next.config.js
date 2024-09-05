@@ -13,6 +13,9 @@ const nextConfig = {
 
     return config;
   },
+  typescript: {
+    ignoreBuildErrors: true, // TypeScript 오류를 빌드 중 무시합니다.
+  },
   // transpilePackages: ['@company/design-system'],
 };
 

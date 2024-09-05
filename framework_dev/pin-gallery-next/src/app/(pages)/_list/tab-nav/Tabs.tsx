@@ -12,8 +12,14 @@ interface TabProps {
 }
 
 const Tabs: React.FC<TabProps> = ({ tabControl }) => {
+  const albumContext = useContext(AlbumContext);
+
+  if (!albumContext) {
+    throw new Error('AlbumContext must be used within an AlbumProvider');
+  }
+  const { categories, tabNavContainerRef } = albumContext;
+
   const { currentTabIndex, setCurrentTabIndex } = tabControl;
-  const { categories, tabNavContainerRef } = useContext(AlbumContext);
   const tabRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const activeClass = `bg-gray-700 text-white`;
 
@@ -40,7 +46,9 @@ const Tabs: React.FC<TabProps> = ({ tabControl }) => {
         <Link
           href="#all"
           className={getClassNames(0)}
-          ref={(el) => (tabRefs.current[0] = el)}
+          ref={(el) => {
+            if (el) tabRefs.current[0] = el;
+          }}
           onClick={(e) => handleClick(e, 0)}
         >
           전체
@@ -52,7 +60,9 @@ const Tabs: React.FC<TabProps> = ({ tabControl }) => {
               href={`#${category.id}`}
               key={category.id}
               className={getClassNames(tabIndex)}
-              ref={(el) => (tabRefs.current[tabIndex] = el)}
+              ref={(el) => {
+                if (el) tabRefs.current[tabIndex] = el;
+              }}
               onClick={(e) => handleClick(e, tabIndex)}
             >
               {category.title}

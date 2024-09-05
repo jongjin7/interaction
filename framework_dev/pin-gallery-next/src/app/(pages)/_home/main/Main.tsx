@@ -9,12 +9,12 @@ const randomImages: string[] = (() => {
 })();
 
 const Main: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
   const [shotPlay, setShotPlay] = useState<boolean>(true);
   const [submitPlay, setSubmitPlay] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string>('');
   const [disabledForm, setDisabledForm] = useState<boolean>(true);
-  const [uploadFile, setUploadFile] = useState<object>(null);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const setRandomImage = useCallback(() => {
@@ -57,12 +57,8 @@ const Main: React.FC = () => {
         <MainFormGroup
           formProps={{
             disabledForm,
-            setDisabledForm,
-            shotPlay,
-            setShotPlay,
             setSubmitPlay,
             uploadFile,
-            setUploadFile,
             isUploading,
             setIsUploading,
             selectedCategory,

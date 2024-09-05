@@ -1,17 +1,13 @@
-'use client' // Error components must be Client Components
+'use client';
 
-import { useEffect } from 'react'
+// Error components must be Client Components
 
-export default function Error({
-                                error,
-                                reset,
-                              }: {
-  error: Error & { digest?: string }
-  reset: () => void
-}) {
+import { useEffect } from 'react';
+
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error(error)
-  }, [error])
+    console.error(error);
+  }, [error]);
 
   return (
     <div>
@@ -24,5 +20,5 @@ export default function Error({
         에러났네.다시 눌러.
       </button>
     </div>
-  )
+  );
 }

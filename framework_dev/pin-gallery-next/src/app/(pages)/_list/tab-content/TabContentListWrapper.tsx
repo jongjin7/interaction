@@ -1,7 +1,11 @@
 import { galleryList } from '@/styles/pages.css';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-const TabContentListWrapper: React.FC = ({ children }) => {
+interface TabContentListWrapperProps {
+  children: ReactNode;
+}
+
+const TabContentListWrapper: React.FC<TabContentListWrapperProps> = ({ children }) => {
   return <div className={`gallery-list ${galleryList}`}>{children}</div>;
 };
 

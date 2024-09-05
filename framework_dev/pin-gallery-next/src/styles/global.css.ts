@@ -58,6 +58,10 @@ globalStyle('body', {
   },
 });
 
+globalStyle('#app', {
+  overflow: 'hidden',
+});
+
 globalStyle('[data-current-page=home]', {
   '#home': {
     transform: 'translateY(0)',

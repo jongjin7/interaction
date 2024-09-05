@@ -39,7 +39,7 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
         setDisabledForm(false);
         setShotPlay(false);
         setUploadFile(uploadFile);
-        window.URL.revokeObjectURL(uploadFile);
+        window.URL.revokeObjectURL(imgUrl);
       };
       reader.readAsDataURL(uploadFile);
       reader.onerror = (err) => {

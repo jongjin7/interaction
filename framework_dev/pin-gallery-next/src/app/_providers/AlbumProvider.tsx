@@ -1,27 +1,22 @@
 'use client';
 
-import React, { createContext, ReactNode, useRef, useState } from 'react';
-
-// Category 타입 정의
-export interface Category {
-  id: string; // 각 카테고리의 고유 식별자
-  name: string; // 카테고리 이름
-  description?: string; // 카테고리 설명 (선택적)
-}
-
-// AlbumImages 타입 정의
-export interface AlbumImages {
-  id: string;
-  name: string;
-  description?: string;
-}
+import React, { createContext, ReactNode, RefObject, useRef, useState } from 'react';
+import { AlbumImage, Category } from '@/app/_types/galleryType';
 
 // 데이터 타입 정의
 interface AlbumContextType {
+  resetGalleryPanel: () => void;
   categories: Category[];
   setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
-  albumImages: AlbumImages[];
-  setAlbumImages: React.Dispatch<React.SetStateAction<AlbumImages[]>>;
+  albumImages: AlbumImage[][];
+  setAlbumImages: React.Dispatch<React.SetStateAction<AlbumImage[][]>>;
+  tabPanelContainerRef: RefObject<HTMLDivElement>;
+  tabNavContainerRef: RefObject<HTMLDivElement>;
+  randomImages: AlbumImage[];
+  largestAlbum: {
+    data: AlbumImage[];
+    subTitle: string;
+  };
 }
 
 // 컨텍스트 생성
@@ -30,9 +25,12 @@ export const AlbumContext = createContext<AlbumContextType | undefined>(undefine
 interface AlbumProviderProps {
   children: ReactNode;
   initialCategories: Category[];
-  initialAlbumImages: AlbumImages[];
-  initialRandomImage: [];
-  initialLargestAlbum: [];
+  initialAlbumImages: AlbumImage[][];
+  initialRandomImage: AlbumImage[];
+  initialLargestAlbum: {
+    data: AlbumImage[];
+    subTitle: string;
+  };
 }
 
 export const AlbumProvider: React.FC<AlbumProviderProps> = ({
@@ -43,18 +41,18 @@ export const AlbumProvider: React.FC<AlbumProviderProps> = ({
   initialLargestAlbum,
 }) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
-  const [albumImages, setAlbumImages] = useState<AlbumImages[]>(initialAlbumImages);
-  const randomImages = initialRandomImage;
-  const largestAlbum = initialLargestAlbum;
-  const tabPanelContainerRef = useRef(null);
-  const tabNavContainerRef = useRef(null);
+  const [albumImages, setAlbumImages] = useState<AlbumImage[][]>(initialAlbumImages);
+  const [randomImages] = useState<AlbumImage[]>(initialRandomImage);
+  const [largestAlbum] = useState<{ data: AlbumImage[]; subTitle: string }>(initialLargestAlbum);
+  const tabPanelContainerRef = useRef<HTMLDivElement | null>(null);
+  const tabNavContainerRef = useRef<HTMLDivElement | null>(null);
 
   const resetGalleryPanel = () => {
-    if (tabPanelContainerRef.current) {
-      tabPanelContainerRef.current.scrollTo(0, 0);
+    tabPanelContainerRef.current?.scrollTo(0, 0);
+    if (tabPanelContainerRef.current?.children[0] instanceof HTMLElement) {
       tabPanelContainerRef.current.children[0].scrollTo(0, 0);
-      tabNavContainerRef.current.scrollTo(0, 0);
     }
+    tabNavContainerRef.current?.scrollTo(0, 0);
   };
   return (
     <AlbumContext.Provider

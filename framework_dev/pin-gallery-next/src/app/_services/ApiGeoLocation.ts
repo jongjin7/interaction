@@ -1,5 +1,14 @@
+interface GeoInfo {
+  time: string; // 시간
+  x: number; // 위도
+  y: number; // 경도
+  correction: number; // 정확도
+  message: string; // 메시지
+  error?: string; // 오류 메시지 (선택적)
+}
+
 export default class ApiGeoLocation {
-  static async init() {
+  static async init(): Promise<GeoInfo | null> {
     if ('geolocation' in navigator) {
       return ApiGeoLocation.getLocation();
     }
@@ -7,14 +16,23 @@ export default class ApiGeoLocation {
     return null;
   }
 
-  static getCurrentPositionAsync() {
+  // eslint-disable-next-line no-undef
+  static getCurrentPositionAsync(): Promise<GeolocationPosition> {
     return new Promise((resolve, reject) => {
-      const options = {
+      // eslint-disable-next-line no-undef
+      const options: PositionOptions = {
         // enableHighAccuracy: true,
         // maximumAge: 30000,
         timeout: 1500,
       };
-      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+
+      navigator.geolocation.getCurrentPosition(
+        // eslint-disable-next-line no-undef
+        (position) => resolve(position as GeolocationPosition),
+        // eslint-disable-next-line no-undef,prefer-promise-reject-errors
+        (error) => reject(error as GeolocationPositionError),
+        options,
+      );
     });
   }
 
@@ -47,28 +65,29 @@ export default class ApiGeoLocation {
     } catch (error) {
       // 실패했을때 실행
       let msg = '';
-
+      // eslint-disable-next-line no-undef
+      const geoError = error as GeolocationPositionError;
       // eslint-disable-next-line default-case
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
+      switch (geoError.code) {
+        case geoError.PERMISSION_DENIED:
           msg = '사용자가 Geolocation API의 사용 요청을 거부했습니다.';
           break;
 
-        case error.POSITION_UNAVAILABLE:
+        case geoError.POSITION_UNAVAILABLE:
           msg = '가져온 위치 정보를 사용할 수 없습니다.';
           break;
 
-        case error.TIMEOUT:
+        case geoError.TIMEOUT:
           msg = '위치 정보를 가져오기 위한 요청이 허용 시간을 초과했습니다.';
           break;
 
-        case error.UNKNOWN_ERROR:
+        default:
           msg = '알 수 없는 오류가 발생했습니다.';
           break;
       }
 
-      console.error(`ERROR(${error.code}): ${msg}`);
-      return { error: msg }; // 오류 메시지를 반환합니다.
+      console.error(`ERROR(${geoError.code}): ${msg}`);
+      return { error: msg, time: '', x: 0, y: 0, correction: 0, message: '' };
     }
   }
 }

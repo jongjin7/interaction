@@ -14,13 +14,16 @@ interface TabContentProps {
 }
 
 const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
-  const { categories, albumImages, tabPanelContainerRef } = useContext(AlbumContext);
+  const albumContext = useContext(AlbumContext);
+
+  if (!albumContext) {
+    throw new Error('AlbumContext must be used within an AlbumProvider');
+  }
+  const { categories, albumImages, tabPanelContainerRef } = albumContext;
   const { currentTabIndex, setCurrentTabIndex } = tabControl;
 
-  // const tabPanelContainerRef = useRef<HTMLDivElement>(null);
   const [tabPanelPositions, setTabPanelPositions] = useState<number[]>([]);
   const prevTabIndexRef = useRef(0);
-
   useEffect(() => {
     const updateTabPanelPositions = () => {
       const container = tabPanelContainerRef.current;
@@ -84,14 +87,13 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       });
     }
   }, [currentTabIndex]);
-
   return (
     <div ref={tabPanelContainerRef} className="tab-contents">
       <TabContentFirstPanel />
       {albumImages.map((item, index) => {
         return (
           <TabContentPanel key={index} index={index + 1}>
-            <TabContentList dataItem={item.data} title={categories[index].title} useToggleDel />
+            <TabContentList dataItem={item} title={categories[index].title} useToggleDel />
           </TabContentPanel>
         );
       })}

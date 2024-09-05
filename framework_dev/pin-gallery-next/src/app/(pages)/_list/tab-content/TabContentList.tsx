@@ -1,20 +1,28 @@
 import Link from 'next/link';
 import React, { useContext, useRef, useState } from 'react';
+import ApiService from '@/app/_services/ApiService';
 import NoneData from '@/app/_components/layout/NoneData';
 import TabContentListTitle from '@/app/(pages)/_list/tab-content/TabContentListTitle';
 import TabContentListWrapper from '@/app/(pages)/_list/tab-content/TabContentListWrapper';
 import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
-import ApiService from '@/app/_services/ApiService';
 import { buttonOutlineClass, buttonSizeSmall } from '@/styles/tailwind.component';
 import { AlbumContext } from '@/app/_providers/AlbumProvider';
+import { AlbumImage } from '@/app/_types/galleryType';
 
 interface tabContentListProps {
   title: string;
   subTitle?: string;
-  dataItem: [];
+  dataItem: AlbumImage[];
   useToggleDel?: boolean;
+  url?: string;
+  datetime?: number;
 }
-const DeleteItemButton = ({ clickHandleDelete }) => {
+
+interface DeleteItemButtonProps {
+  clickHandleDelete: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+const DeleteItemButton: React.FC<DeleteItemButtonProps> = ({ clickHandleDelete }) => {
   const IconDeleteFile = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -28,11 +36,27 @@ const DeleteItemButton = ({ clickHandleDelete }) => {
   );
 };
 
-const GalleryList = ({ data, isToggleDel }) => {
-  const { setCurrentDetailLink } = useContext(ShowDetailContext);
-  const { categories, setAlbumImages } = useContext(AlbumContext);
+interface GalleryListProps {
+  data: AlbumImage[];
+  isToggleDel?: boolean;
+}
 
-  function changeImageSize(url) {
+const GalleryList: React.FC<GalleryListProps> = ({ data, isToggleDel }) => {
+  const albumContext = useContext(AlbumContext);
+  const detailContext = useContext(ShowDetailContext);
+
+  if (!albumContext) {
+    throw new Error('AlbumContext must be used within an AlbumProvider');
+  }
+
+  if (!detailContext) {
+    throw new Error('detailContext must be used within an ShowDetailContext');
+  }
+
+  const { setCurrentDetailLink } = detailContext;
+  const { categories, setAlbumImages } = albumContext;
+
+  function changeImageSize(url: string) {
     const suffix = 'h';
     return url.replace(/\/([^/?#]+)(?=[^/]*$)/, (match, filename) => {
       const parts = filename.split('.');
@@ -43,21 +67,22 @@ const GalleryList = ({ data, isToggleDel }) => {
     });
   }
 
-  const clickHandleDetail = (e, value) => {
+  const clickHandleDetail = (event: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     setCurrentDetailLink(value);
   };
 
   const refreshData = async () => {
     try {
       const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
+      console.log('resAlbumImages', resAlbumImages);
       setAlbumImages(resAlbumImages);
     } catch (error) {
       console.error('Failed to refresh data:', error);
     }
   };
 
-  const clickHandleDelete = async (e, imageId) => {
-    const targetBtn = e.currentTarget;
+  const clickHandleDelete = async (event: React.MouseEvent<HTMLButtonElement>, imageId: string) => {
+    const targetBtn = event.currentTarget;
     targetBtn.classList.add('selected');
     setTimeout(async () => {
       // eslint-disable-next-line no-alert
@@ -81,13 +106,19 @@ const GalleryList = ({ data, isToggleDel }) => {
         <ul className="list">
           {data.map((item, index) => (
             <li className="list-item" key={index}>
-              {isToggleDel && <DeleteItemButton clickHandleDelete={(e) => clickHandleDelete(e, item.id)} />}
+              {isToggleDel && (
+                <DeleteItemButton
+                  clickHandleDelete={(event: React.MouseEvent<HTMLButtonElement>) => clickHandleDelete(event, item.id)}
+                />
+              )}
               <Link
                 href="#"
-                title={item.title ?? new Date(data.datetime * 1000).toDateString()}
-                onClick={(e) => clickHandleDetail(e, changeImageSize(item.link))}
+                title={(item as any).title ?? new Date(item.datetime * 1000).toDateString()} // 타입 단언 사용
+                onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
+                  clickHandleDetail(event, changeImageSize(item.link))
+                } // onClick 핸들러의 타입 자동 추론
               >
-                <img src={changeImageSize(item.link)} title={data.description} alt={''} />
+                <img src={changeImageSize(item.link)} title={item.description ?? ''} alt="" />
               </Link>
             </li>
           ))}
@@ -99,8 +130,13 @@ const GalleryList = ({ data, isToggleDel }) => {
   );
 };
 
+// Props 인터페이스 정의
+interface ToggleModeDeleteButtonProps {
+  isToggleDel: boolean;
+  clickHandleToggleMode: () => void;
+}
 // 삭제 모드 토글
-const ToggleModeDeleteButton = ({ isToggleDel, clickHandleToggleMode }) => {
+const ToggleModeDeleteButton: React.FC<ToggleModeDeleteButtonProps> = ({ isToggleDel, clickHandleToggleMode }) => {
   return (
     <button
       type="button"
@@ -116,14 +152,13 @@ const ToggleModeDeleteButton = ({ isToggleDel, clickHandleToggleMode }) => {
 
 const TabContentList: React.FC<tabContentListProps> = ({ title, subTitle, dataItem, useToggleDel = false }) => {
   const [isToggleDel, setIsToggleDel] = useState<boolean>(false);
-  const listRef = useRef<HTMLElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
 
   const clickHandleToggleDeleteMode = () => {
-    const currentPanel = listRef.current.closest('.tab-panel');
-    currentPanel.classList.toggle('is-removable');
+    const currentPanel = listRef.current?.closest('.tab-panel');
+    currentPanel?.classList.toggle('is-removable');
     setIsToggleDel(!isToggleDel);
   };
-
   return (
     <TabContentListWrapper>
       <div className="list-header" ref={listRef}>

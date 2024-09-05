@@ -25,14 +25,17 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
       formData.append('image', uploadFile); // 'File | null' 타입을 'Blob'으로 처리
     }
     formData.append('type', 'image');
-    formData.append('title', geoInfo.time ?? '제목 없음');
-    formData.append('description', geoInfo.message ?? (geoInfo.error ? geoInfo.error : '설명 없음'));
+    formData.append('title', geoInfo?.time ?? '제목 없음');
+    formData.append('description', geoInfo?.message ?? (geoInfo?.error ? geoInfo?.error : '설명 없음'));
     return formData;
   };
 
   const sendFileForm = async () => {
     try {
       const formData = await createFormData();
+      if (!selectedCategory) {
+        throw new Error('Category must be selected');
+      }
       return await ApiService.sendImageFile(formData, selectedCategory);
     } catch (error) {
       console.error('Failed to submit image:', error);
@@ -43,15 +46,15 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const handleSubmit = async () => {
     if (selectedCategory) {
       try {
-        const homePanel = document.querySelector('#home');
-        homePanel.classList.add('is-loading');
+        const homePanel = document.querySelector<HTMLElement>('#home');
+        homePanel?.classList.add('is-loading');
         setIsUploading(true); // 상태값을 변경하여 카메라 인풋과 버튼에 로딩 컴포넌트 활성
         const result = await sendFileForm();
         if (result) {
           setIsUploading(false);
           setSubmitPlay(true);
           setTimeout(() => {
-            homePanel.classList.remove('is-loading');
+            homePanel?.classList.remove('is-loading');
           }, 3000);
         }
       } catch (error) {

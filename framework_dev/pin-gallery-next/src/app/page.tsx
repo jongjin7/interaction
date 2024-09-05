@@ -13,10 +13,9 @@ import { ShowDetailProvider } from '@/app/_providers/ShowDetailProvider';
 import { randomArrayItem, largestArrayItem } from '@/app/_utils/RandomAndLongest';
 
 export default async function Layout() {
-  const resAlbums = await ApiService.fetchCategory();
-  const categories = resAlbums.data;
+  const categories = await ApiService.fetchCategory();
   const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
-  const randomImages = randomArrayItem(resAlbumImages) as [];
+  const randomImages = randomArrayItem(resAlbumImages);
   const largestAlbum = largestArrayItem(resAlbumImages, categories);
   return (
     <div id="app">
