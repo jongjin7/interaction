@@ -30,18 +30,18 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
     cameraProps;
 
   const handleCaptureCamera = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadFile = event.target.files?.[0];
-    if (uploadFile) {
+    const fileInfo = event.target.files?.[0];
+    if (fileInfo) {
       const reader = new FileReader();
+      const imgUrl = window.URL.createObjectURL(fileInfo);
+      setBgImage(imgUrl);
+      setDisabledForm(false);
+      setShotPlay(false);
+      setUploadFile(fileInfo);
       reader.onload = () => {
-        const imgUrl = window.URL.createObjectURL(uploadFile);
-        setBgImage(imgUrl);
-        setDisabledForm(false);
-        setShotPlay(false);
-        setUploadFile(uploadFile);
         window.URL.revokeObjectURL(imgUrl);
       };
-      reader.readAsDataURL(uploadFile);
+      reader.readAsDataURL(fileInfo);
       reader.onerror = (err) => {
         console.error('Error reading file:', err);
         // eslint-disable-next-line no-alert
