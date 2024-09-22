@@ -5,10 +5,10 @@ const withVanillaExtract = createVanillaExtractPlugin();
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // output: 'export',
-  trailingSlash: true,
   // images: {
-  //   unoptimized: true
+  //   unoptimized: true,
   // },
+  trailingSlash: true,
   reactStrictMode: false,
   webpack: (config) => {
     config.module.rules.push({

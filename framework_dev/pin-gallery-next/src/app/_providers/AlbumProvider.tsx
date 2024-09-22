@@ -42,8 +42,8 @@ export const AlbumProvider: React.FC<AlbumProviderProps> = ({
 }) => {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [albumImages, setAlbumImages] = useState<AlbumImage[][]>(initialAlbumImages);
-  const [randomImages] = useState<AlbumImage[]>(initialRandomImage);
-  const [largestAlbum] = useState<{ data: AlbumImage[]; subTitle: string }>(initialLargestAlbum);
+  const [randomImages, setRandomImages] = useState<AlbumImage[]>(initialRandomImage);
+  const [largestAlbum, setLargestAlbum] = useState<{ data: AlbumImage[]; subTitle: string }>(initialLargestAlbum);
   const tabPanelContainerRef = useRef<HTMLDivElement | null>(null);
   const tabNavContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -62,7 +62,9 @@ export const AlbumProvider: React.FC<AlbumProviderProps> = ({
         albumImages,
         setAlbumImages,
         randomImages,
+        setRandomImages,
         largestAlbum,
+        setLargestAlbum,
         resetGalleryPanel,
         tabPanelContainerRef,
         tabNavContainerRef,
