@@ -29,8 +29,11 @@ const getRandomItems = <T>(arr: T[]): T[] => {
 
 // getLongestArrayItem
 export const largestArrayItem = (albumImages: AlbumImage[][], categories: Category[]) => {
+  if (albumImages.length === 0 || !albumImages.some((array) => array.length > 0)) {
+    throw new Error('Input must be a non-empty 2D array');
+  }
   const resData = findLargestArrayWithIndex(albumImages);
-  // console.log('최대앨범', resData, ' 이미지갯수:', resData.length);
+  // console.log('최대앨범', resData, ' 이미지갯수:', resData.data.length);
   return {
     subTitle: categories[resData.index].title,
     data: resData.data.slice(0, 12),

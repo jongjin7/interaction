@@ -1,5 +1,6 @@
-import Loading from '@/app/_components/loading/Loading';
-import React, { Suspense } from 'react';
+'use client';
+
+import React, { useEffect, useState, Suspense } from 'react';
 
 import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
 
@@ -12,11 +13,47 @@ import { AlbumProvider } from '@/app/_providers/AlbumProvider';
 import { ShowDetailProvider } from '@/app/_providers/ShowDetailProvider';
 import { randomArrayItem, largestArrayItem } from '@/app/_utils/RandomAndLongest';
 
-export default async function Layout() {
-  const categories = await ApiService.fetchCategory();
-  const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
-  const randomImages = randomArrayItem(resAlbumImages);
-  const largestAlbum = largestArrayItem(resAlbumImages, categories);
+import Loading from '@/app/_components/loading/Loading';
+import { AlbumImage } from '@/app/_types/galleryType';
+
+export default function Layout() {
+  const [categories, setCategories] = useState([]);
+  const [resAlbumImages, setResAlbumImages] = useState([]);
+  const [randomImages, setRandomImages] = useState<AlbumImage[]>([]);
+  const [largestAlbum, setLargestAlbum] = useState<{ data: AlbumImage[]; subTitle: string }>({
+    data: [],
+    subTitle: '',
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const fetchedCategories = await ApiService.fetchCategory();
+        const fetchAlbumImages = await ApiService.fetchGalleryList(fetchedCategories.map((album) => album.id));
+
+        setCategories(fetchedCategories);
+        setResAlbumImages(fetchAlbumImages);
+
+        const randomImagesData = randomArrayItem(fetchAlbumImages);
+        const largestAlbumData = largestArrayItem(fetchAlbumImages, fetchedCategories);
+
+        setRandomImages(randomImagesData);
+        setLargestAlbum(largestAlbumData);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <Loading name="app-loading" />;
+  }
+
   return (
     <div id="app">
       <AlbumProvider
