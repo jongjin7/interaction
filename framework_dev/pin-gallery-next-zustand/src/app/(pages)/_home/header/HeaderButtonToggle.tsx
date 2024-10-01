@@ -1,20 +1,10 @@
 import { mainToggleBtnArea } from '@/styles/pages.css';
-import React, { useContext, useEffect, useState } from 'react';
-import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
+import React, { useEffect, useState } from 'react';
 import useUIStore from '@/app/_stores/useUIStore';
 
 const HeaderButtonToggle = () => {
   const { resetGalleryPanel } = useUIStore();
   const [currentPage, setCurrentPage] = useState<string>('home');
-
-  const detailContext = useContext(ShowDetailContext);
-
-  if (!detailContext) {
-    // AlbumContext가 undefined인 경우에 대한 처리
-    throw new Error('useContext must be used within an AlbumProvider');
-  }
-
-  const { currentDetailLink, setCurrentDetailLink } = detailContext;
 
   const clickHandleToggle = () => {
     if (currentPage === 'home') {
@@ -23,7 +13,6 @@ const HeaderButtonToggle = () => {
     } else {
       setCurrentPage('home');
       resetGalleryPanel();
-      if (currentDetailLink) setCurrentDetailLink(null);
     }
   };
 

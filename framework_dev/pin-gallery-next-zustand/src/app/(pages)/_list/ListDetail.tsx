@@ -1,19 +1,13 @@
+import React from 'react';
 import { galleryDetail } from '@/styles/pages.css';
-import React, { useContext } from 'react';
-import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
+import useUIStore from '@/app/_stores/useUIStore';
 
 interface ListDetailProps {
   imageSrc: string | null;
 }
 
 const ListDetail: React.FC<ListDetailProps> = ({ imageSrc }) => {
-  const detailContext = useContext(ShowDetailContext);
-
-  if (!detailContext) {
-    throw new Error('detailContext must be used within an ShowDetailContext');
-  }
-
-  const { setCurrentDetailLink } = detailContext;
+  const { setCurrentDetailLink } = useUIStore();
 
   const clickHandle = () => {
     setCurrentDetailLink(null);

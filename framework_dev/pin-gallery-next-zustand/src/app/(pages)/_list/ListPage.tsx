@@ -1,19 +1,13 @@
 'use client';
 
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ListDetail from '@/app/(pages)/_list/ListDetail';
-import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
+import useUIStore from '@/app/_stores/useUIStore';
 import Tabs from './tab-nav/Tabs';
 import TabContent from './tab-content/TabContent';
 
 const ListPage: React.FC = () => {
-  const detailContext = useContext(ShowDetailContext);
-  if (!detailContext) {
-    throw new Error(
-      'ShowDetailContext를 찾을 수 없습니다. 컴포넌트가 ShowDetailProvider 내에서 사용되는지 확인하세요.',
-    );
-  }
-  const { currentDetailLink } = detailContext;
+  const { currentDetailLink } = useUIStore();
 
   const pageRef = useRef<HTMLDivElement | null>(null);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);

@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/skeleton": "^2.0.32",
     "@vanilla-extract/next-plugin": "^2.4.3",
     "next": "14.2.5",
     "react": "^18",
