@@ -1,0 +1,33 @@
+{
+  "name": "pin-gallery-next-zustand",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3011",
+    "devHttps": "local-ssl-proxy --source 3012 --target 3011",
+    "build": "next build",
+    "start": "next start -p 4011",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@nextui-org/skeleton": "^2.0.32",
+    "@vanilla-extract/next-plugin": "^2.4.3",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-lottie-player": "^2.1.0",
+    "zustand": "^5.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "postcss": "^8",
+    "sass": "^1.78.0",
+    "tailwindcss": "^3.4.1",
+    "typescript": "5.4.x"
+  }
+}
