@@ -23,8 +23,9 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
 
   const [tabPanelPositions, setTabPanelPositions] = useState<number[]>([]);
   const prevTabIndexRef = useRef(0);
+
   useEffect(() => {
-    setTabPanelContainerRef(tabPanelContainerRef.current);
+    setTabPanelContainerRef(tabPanelContainerRef.current); // 컨테이너 요소 담기
 
     const updateTabPanelPositions = () => {
       const container = tabPanelContainerRef.current;
@@ -34,7 +35,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       }
     };
 
-    console.log('TabPanelPositions=>', tabPanelPositions);
+    console.log('TabPanelPositions=> 고쳐야해:', tabPanelPositions);
 
     // 처음 로드될 때 한 번 실행
     updateTabPanelPositions();
