@@ -3,10 +3,8 @@ import React from 'react';
 
 interface UIState {
   TabPanelContainerRef: React.RefObject<HTMLDivElement> | null; // HTMLDivElement 참조를 저장
-  setTabPanelContainerRef: (ref: HTMLDivElement | null) => void; // 참조를 설정하는 함수
-  tabContainerPosition: number;
-  setTabContainerPosition: (newPosition: number) => void;
-  currentDetailLink: string | null; // null 허용
+  setTabPanelContainerRef: () => void; // 참조를 설정하는 함수
+  currentDetailLink: string | null;
   setCurrentDetailLink: React.Dispatch<React.SetStateAction<string | null>>;
   resetGalleryPanel: () => void;
 }
@@ -14,11 +12,9 @@ interface UIState {
 const useUIStore = create<UIState>((set) => {
   return {
     TabPanelContainerRef: null,
-    setTabPanelContainerRef: (ref) => {
+    setTabPanelContainerRef: (ref: HTMLDivElement | null) => {
       set({ TabPanelContainerRef: ref });
     },
-    tabContainerPosition: 0,
-    setTabContainerPosition: (newPosition: number) => set({ tabContainerPosition: newPosition }),
     currentDetailLink: null,
     setCurrentDetailLink: (link) => set({ currentDetailLink: link }),
     resetGalleryPanel: () => {
@@ -32,7 +28,6 @@ const useUIStore = create<UIState>((set) => {
         }
 
         if (currentDetailLink) setCurrentDetailLink(null);
-        // tabNavContainerRef.current?.scrollTo(0, 0);
       } else {
         console.log('tabPanelContainerRef가 설정되지 않았습니다.');
       }

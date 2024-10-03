@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
-import { ShowDetailContext } from '@/app/_providers/ShowDetailProvider';
 import ApiService from '@/app/_services/ApiService';
 import { AlbumImage } from '@/app/_types/galleryType';
 import SkeletonImage from '@/app/_components/skeleton/SkeletonImage';

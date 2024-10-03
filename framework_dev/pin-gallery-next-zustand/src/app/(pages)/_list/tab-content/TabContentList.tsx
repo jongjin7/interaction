@@ -24,7 +24,6 @@ const TabContentList: React.FC<tabContentListProps> = ({ title, subTitle, dataIt
     setIsToggleDel(!isToggleDel);
   };
 
-  // console.log('tabContentList==>', dataItem);
   return (
     <TabContentListWrapper>
       <div className="list-header" ref={listRef}>
