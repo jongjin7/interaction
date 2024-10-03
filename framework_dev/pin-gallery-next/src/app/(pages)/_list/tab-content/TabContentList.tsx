@@ -74,7 +74,7 @@ const GalleryList: React.FC<GalleryListProps> = ({ data, isToggleDel }) => {
   const refreshData = async () => {
     try {
       const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
-      console.log('resAlbumImages', resAlbumImages);
+      // console.log('resAlbumImages', resAlbumImages);
       setAlbumImages(resAlbumImages);
     } catch (error) {
       console.error('Failed to refresh data:', error);

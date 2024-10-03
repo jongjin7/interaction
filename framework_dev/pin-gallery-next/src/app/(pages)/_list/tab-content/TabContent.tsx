@@ -43,7 +43,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
     return () => {
       window.removeEventListener('resize', updateTabPanelPositions);
     };
-  }, []);
+  }, [albumImages]);
 
   useEffect(() => {
     const handleScrollTabPanelContainer = () => {
@@ -69,7 +69,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       }, endDelayTime);
     };
 
-    const container = tabPanelContainerRef.current;
+    const container = tabPanelContainerRef.current as HTMLElement;
     container?.addEventListener('scroll', handleScrollTabPanelContainer);
 
     return () => {
