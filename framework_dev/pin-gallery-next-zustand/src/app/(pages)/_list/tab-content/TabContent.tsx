@@ -35,8 +35,6 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       }
     };
 
-    console.log('TabPanelPositions=> 고쳐야해:', tabPanelPositions);
-
     // 처음 로드될 때 한 번 실행
     updateTabPanelPositions();
 
@@ -47,7 +45,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
     return () => {
       window.removeEventListener('resize', updateTabPanelPositions);
     };
-  }, []);
+  }, [albumImages]);
 
   useEffect(() => {
     const handleScrollTabPanelContainer = () => {
@@ -73,7 +71,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       }, endDelayTime);
     };
 
-    const container = tabPanelContainerRef.current;
+    const container = tabPanelContainerRef.current as HTMLDivElement;
     container?.addEventListener('scroll', handleScrollTabPanelContainer);
 
     return () => {
