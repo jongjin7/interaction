@@ -3,7 +3,7 @@ import React from 'react';
 
 interface UIState {
   TabPanelContainerRef: React.RefObject<HTMLDivElement> | null; // HTMLDivElement 참조를 저장
-  setTabPanelContainerRef: () => void; // 참조를 설정하는 함수
+  setTabPanelContainerRef: (current: HTMLDivElement | null) => void; // 참조를 설정하는 함수
   currentDetailLink: string | null;
   setCurrentDetailLink: React.Dispatch<React.SetStateAction<string | null>>;
   resetGalleryPanel: () => void;
