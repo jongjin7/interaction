@@ -2,8 +2,9 @@ import React from 'react';
 
 interface DeleteButtonProps {
   clickHandleDelete: React.MouseEventHandler<HTMLButtonElement>;
+  className?: string;
 }
-const DeleteButton: React.FC<DeleteButtonProps> = ({ clickHandleDelete }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ clickHandleDelete, className: customClass }, ...props) => {
   const IconDeleteFile = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
@@ -11,7 +12,12 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ clickHandleDelete }) => {
     </svg>
   );
   return (
-    <button type="button" title="삭제" className="btn-delete text-rose-500" onClick={clickHandleDelete}>
+    <button
+      type="button"
+      title="삭제"
+      className={`btn-delete text-rose-500 ${customClass}`}
+      onClick={clickHandleDelete}
+    >
       <IconDeleteFile />
     </button>
   );

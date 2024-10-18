@@ -1,5 +1,5 @@
-import { mainToggleBtnArea } from '@/styles/pages.css';
 import React, { useEffect, useState } from 'react';
+import { mainToggleBtnArea } from '@/styles/pages.css';
 import useUIStore from '@/app/_stores/useUIStore';
 
 const HeaderButtonToggle = () => {

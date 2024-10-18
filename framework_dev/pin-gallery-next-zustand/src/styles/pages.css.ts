@@ -303,6 +303,15 @@ export const mainPreviewCircleButton = style([
         '&.icon-submit': {
           '--icon-width': '100% * 0.8',
         },
+        '&.icon-touch': {
+          backgroundColor: 'rgba(255,255,255, 0.5)',
+          borderRadius: '50%',
+          transform: 'scale(1.2)',
+          zIndex: 10,
+          '& + .icon-shot': {
+            filter: 'grayscale(1)',
+          },
+        },
       },
     },
   },
@@ -567,20 +576,23 @@ export const galleryList = style({
       },
     },
   },
+
   '.list': {
-    display: 'block',
+    display: 'grid',
+    'grid-template-columns': 'repeat(2, 1fr)',
+    'grid-auto-rows': 1,
     gap: '12px',
     width: '100%',
     padding: '0 16px',
-    columnCount: 2,
   },
   '.list-item': {
     position: 'relative',
-    flexShrink: 0,
+    // flexShrink: 0,
+    // flex: '1 1 50%',
     borderRadius: '8px',
     boxShadow: '0 0 6px rgba(0,0,0, 0.05)',
     overflow: 'hidden',
-    marginBottom: '12px',
+    // marginBottom: '12px',
     '.btn-delete': {
       '--del-color': '#f43f5e',
       display: 'flex',
@@ -633,11 +645,12 @@ export const galleryList = style({
     },
     a: {
       display: 'block',
+      height: '100%',
     },
     img: {
       width: '100%',
       height: '100%',
-      objectFit: 'contain',
+      objectFit: 'cover',
     },
   },
   '.none-data': {

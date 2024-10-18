@@ -1,11 +1,13 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { mainPreviewCircleButton, mainPseudoCircle } from '@/styles/pages.css';
 
 import lottieJsonSmile from '@/app/_components/lotties/lottie.smile.json';
 import lottieJsonSubmit from '@/app/_components/lotties/lottie.submit.json';
+import lottieTouch from '@/app/_components/lotties/lottie.touch.json';
 import Loading from '@/app/_components/loading/Loading';
+import useUIStore from '@/app/_stores/useUIStore';
 
 const Lottie = dynamic(() => import('react-lottie-player'), {
   ssr: false,
@@ -29,7 +31,12 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
   const { bgImage, setBgImage, setDisabledForm, shotPlay, setShotPlay, submitPlay, setUploadFile, isUploading } =
     cameraProps;
 
+  const { isFirstView, setIsFirstView } = useUIStore();
+
   const handleCaptureCamera = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isFirstView) {
+      setIsFirstView();
+    }
     const fileInfo = event.target.files?.[0];
     if (fileInfo) {
       const reader = new FileReader();
@@ -51,7 +58,7 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
   };
 
   return (
-    <div className={mainPreviewCircleButton}>
+    <div className={`${mainPreviewCircleButton} ${isFirstView}`}>
       <div className={`btn-circle ${mainPseudoCircle}`}>
         <div className={`img-circle ${mainPseudoCircle}`}>
           <label htmlFor="input-camera">
@@ -67,7 +74,9 @@ const MainInputCamera: React.FC<MainInputCameraProps> = ({ cameraProps, onComple
         </div>
 
         {/* 상태 애니메이션 아이콘 */}
+        {isFirstView && <Lottie className="icon icon-touch" loop animationData={lottieTouch} play={true} />}
         <Lottie className="icon icon-shot" loop animationData={lottieJsonSmile} play={shotPlay} />
+
         {submitPlay && (
           <Lottie
             className="icon icon-submit"

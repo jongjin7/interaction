@@ -1,15 +1,20 @@
+'use client';
+
 import React, { Suspense } from 'react';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { pageTypeList, pageTypeMain } from '@/styles/pages.css';
-
 import Home from '@/app/(pages)/_home/HomePage';
 import List from '@/app/(pages)/_list/ListPage';
 import PageFrame from '@/app/_components/layout/PageFrame';
+
 import Loading from '@/app/_components/loading/Loading';
 
-export default async function RootPage() {
+// QueryClient 생성
+const queryClient = new QueryClient();
+
+export default function RootPage() {
   return (
-    <div id="app">
+    <QueryClientProvider client={queryClient}>
       <Suspense fallback={<Loading name="app-loading" />}>
         <PageFrame id="home" className={pageTypeMain}>
           <Home />
@@ -18,6 +23,6 @@ export default async function RootPage() {
           <List />
         </PageFrame>
       </Suspense>
-    </div>
+    </QueryClientProvider>
   );
 }

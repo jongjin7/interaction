@@ -15,12 +15,10 @@ interface TabContentProps {
 }
 
 const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
-  const { categories, albumImages } = useAlbumStore();
+  const { categories, albumImages, isLoading, error } = useAlbumStore();
   const { setTabPanelContainerRef } = useUIStore();
   const { currentTabIndex, setCurrentTabIndex } = tabControl;
-
   const tabPanelContainerRef = useRef<HTMLDivElement | null>(null);
-
   const [tabPanelPositions, setTabPanelPositions] = useState<number[]>([]);
   const prevTabIndexRef = useRef(0);
 
@@ -45,7 +43,7 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
     return () => {
       window.removeEventListener('resize', updateTabPanelPositions);
     };
-  }, [albumImages]);
+  }, [isLoading]);
 
   useEffect(() => {
     const handleScrollTabPanelContainer = () => {
@@ -89,6 +87,11 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       });
     }
   }, [currentTabIndex]);
+
+  if (error) {
+    return <div>Error: {error.message}</div>; // 에러 처리
+  }
+
   return (
     <div ref={tabPanelContainerRef} className="tab-contents">
       <TabContentFirstPanel />

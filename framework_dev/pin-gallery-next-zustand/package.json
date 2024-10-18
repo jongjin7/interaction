@@ -11,6 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.59.15",
     "@vanilla-extract/next-plugin": "^2.4.3",
     "next": "14.2.5",
     "react": "^18",
