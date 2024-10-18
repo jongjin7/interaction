@@ -14,11 +14,12 @@ interface UIState {
 
 const useUIStore = create<UIState>((set) => {
   return {
-    isFirstView: !(localStorage.getItem('endOnboard') && localStorage.getItem('endOnboard') === 'true'),
+    isFirstView: typeof window !== 'undefined' ? !(window.localStorage.getItem('endOnboard') === 'true') : true,
     setIsFirstView: () => {
-      localStorage.setItem('endOnboard', 'true');
-      const isFirstView = useUIStore.getState();
-      set(!isFirstView);
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('endOnboard', 'true');
+      }
+      set({ isFirstView: false });
     },
     TabPanelContainerRef: null,
     setTabPanelContainerRef: (ref: HTMLDivElement | null) => {
