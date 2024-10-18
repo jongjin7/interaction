@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React from 'react';
 import { mainPreviewCircleButton, mainPseudoCircle } from '@/styles/pages.css';
 
 import lottieJsonSmile from '@/app/_components/lotties/lottie.smile.json';

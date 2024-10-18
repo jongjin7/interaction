@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import React, { useState, useEffect, useCallback } from 'react';
+import useUIStore from '@/app/_stores/useUIStore';
 import MainInputCamera from './MainInputCamera';
 import MainFormGroup from './MainFormGroup';
-import useUIStore from '@/app/_stores/useUIStore';
 
 const randomImages: string[] = (() => {
   const arrayLength = 10;
