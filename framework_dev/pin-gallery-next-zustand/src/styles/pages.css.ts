@@ -344,14 +344,20 @@ export const mainFormGroup = style({
   },
 
   'input, select': {
-    color: 'rgba(255,255,255,0.8)',
-    borderColor: 'rgba(255,255,255,0.3)',
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backdropFilter: 'blur(1px)',
+    border: '1px solid white',
+    backgroundColor: 'rgba(255,255,255,0.6)',
     '&::placeholder': {
-      color: 'rgba(255,255,255,0.5)',
+      color: 'rgba(0,0,0,0.3)',
     },
-    '&:focus': {
-      borderColor: 'white',
+    '&:focus-visible': {
+      boxShadow: '0 0 3px 1px inset white',
+      outline: 'none',
+    },
+    '&[disabled]': {
+      color: 'rgba(255,255,255,0.35)',
+      borderColor: 'rgba(255,255,255,0.35)',
+      backgroundColor: 'transparent',
     },
   },
   '.divide-box': {
@@ -378,9 +384,9 @@ export const mainFormGroup = style({
       display: 'none',
     },
 
-    'input:not(:placeholder-shown) + button': {
-      borderColor: 'white',
-      color: 'white',
+    /* 'input:not(:placeholder-shown) + button': {
+      backgroundColor: '#fafafa',
+
       pointerEvents: 'auto',
     },
 
@@ -388,7 +394,7 @@ export const mainFormGroup = style({
       color: 'rgba(255,255,255,0.5)',
       borderColor: 'rgba(255,255,255,0.3)',
       pointerEvents: 'none',
-    },
+    }, */
   },
 
   '.copyright': {

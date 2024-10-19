@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
 import ApiService from '@/app/_services/ApiService';
-import { buttonPrimaryClass, buttonSizeLarge, buttonDisabledClass } from '@/styles/tailwind.component';
+import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
 
@@ -16,8 +16,10 @@ interface MainFormSubmitProps {
   };
 }
 
-const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
+const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
     const formData = new FormData();
@@ -66,14 +68,20 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     }
   };
 
+  useEffect(() => {
+    setIsDisabled(() => {
+      return (selectedCategory?.length ?? 0) < 1 || selectedCategory === 'user_add';
+    });
+  }, [selectedCategory]);
+
   return (
     <button
       type="button"
       className={`${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center 
-        ${disabledForm ? buttonDisabledClass : ''}
+        ${disabledForm || isDisabled ? buttonDisabledClass : ''}
       `}
       onClick={handleSubmit}
-      disabled={disabledForm}
+      disabled={disabledForm || isDisabled}
     >
       <div className="icon-box">
         <IconCloud />
@@ -83,4 +91,4 @@ const mainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     </button>
   );
 };
-export default mainFormSubmit;
+export default MainFormSubmit;
