@@ -46,7 +46,7 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
       const newCategory = { id: res.data.id, title: customCategory, name: '' };
       // 새로운 카테고리 추가
       queryClient.setQueryData(['albums'], (oldData) => {
-        if (!oldData) return;
+        if (!oldData) return oldData;
         return {
           ...oldData,
           categories: [...oldData.categories, newCategory],
