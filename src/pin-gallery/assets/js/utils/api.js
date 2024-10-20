@@ -121,3 +121,57 @@ export async function deleteImageItem(imageHash) {
     author: 'access',
   });
 }
+
+export async function deleteAllAlbums() {
+  // 각 앨범을 삭제하는 비동기 작업 배열 생성
+  const categories = await fetchCategory();
+  console.log('all', categories);
+  categories.data.map((category) => {
+    clientFetchAPI({
+      type: 'delete',
+      url: `${API_ALBUM_URL}/${category.id}`,
+      author: 'access',
+    }).then((res) => {
+      console.log(`${res} 앨범이 삭제되었습니다.`);
+    });
+  });
+}
+
+export async function deleteAllImages() {
+  // 각 앨범을 삭제하는 비동기 작업 배열 생성
+  const categorise = await fetchCategory();
+  const allImages = categorise.data.map((category) => {
+    return clientFetchAPI({
+      url: `${API_ALBUM_URL}/${category.id}/images`,
+      author: 'access',
+    }).then(async (album) => {
+      // console.log('가져온 앨범 이미지', album);
+
+      // 이미지 삭제 작업 배열 생성
+      const deletePromises = album.data.map((image) => {
+        return deleteImageItem(image.id).then((r) => {
+          console.log(r, '이미지가 제거되었다.');
+        });
+      });
+
+      // 모든 이미지 삭제 작업이 완료될 때까지 대기
+      try {
+        await Promise.all(deletePromises);
+        console.log('현재 앨범의 포함된 이미지가 모두 제거되었다.');
+        // 모든 이미지가 제거된 후 앨범 삭제
+        await clientFetchAPI({
+          type: 'delete',
+          url: `${API_ALBUM_URL}/${category.id}`,
+          author: 'access',
+        });
+        console.log(`현재 앨범이 삭제되었습니다.`);
+      } catch (error) {
+        console.error('이미지 삭제 중 오류 발생:', error);
+      }
+    });
+  });
+
+  // 모든 삭제 작업이 완료될 때까지 대기
+  await Promise.all(allImages);
+  console.log('All albums deleted successfully.');
+}

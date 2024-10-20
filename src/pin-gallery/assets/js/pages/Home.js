@@ -4,11 +4,17 @@ import {
   mainToggleBtnArea,
   mainPreviewCircleButton,
   mainPseudoCircle,
+  adminArea,
 } from '../../css/pages.css';
 
-import { buttonSizeLarge, buttonPrimaryClass, buttonDisabledClass, inputFieldClass } from '../../css/tailwind.component';
-
-import geoLocation from '../utils/geoLocation';
+import {
+  buttonSizeLarge,
+  buttonPrimaryClass,
+  buttonDisabledClass,
+  buttonDangerClass,
+  inputFieldClass,
+  buttonSizeSmall,
+} from '../../css/tailwind.component';
 
 import {
   getElements,
@@ -18,9 +24,9 @@ import {
   handleNewCategory,
   handleSubmit,
   getAlbumCategory,
+  handleDeleteAlbums,
+  handleDeleteImages,
 } from './HomeEventHandler';
-
-import { LoadingBasic as Loading } from '../components/Loading';
 
 export default class HomeFrame {
   constructor(containerId) {
@@ -97,6 +103,14 @@ export default class HomeFrame {
             </main>
             <!-- 배경 이미지 -->
             <img class='bg-container' src='' alt=''>
+            ${
+              /^127|^192|local/.test(window.location?.hostname)
+                ? `
+                <div class="${adminArea}">
+                    <button id="delete-all-images" class="${buttonSizeSmall} ${buttonDangerClass}">이미지 전체 삭제</button>
+                </div>`
+                : ''
+            }
         `;
     this.container.innerHTML = htmlData;
   }
@@ -127,5 +141,13 @@ export default class HomeFrame {
     // 이미지 전송
     const btnSubmit = this.root.querySelector('#submit-upload');
     btnSubmit.addEventListener('click', handleSubmit);
+
+    // 어드민
+    if (/^127|^192|local/.test(window.location?.hostname)) {
+      // const adminDeleteAlbums = this.root.querySelector('#delete-all-albums');
+      // adminDeleteAlbums.addEventListener('click', handleDeleteAlbums);
+      const adminDeleteImages = this.root.querySelector('#delete-all-images');
+      adminDeleteImages.addEventListener('click', handleDeleteImages);
+    }
   }
 }

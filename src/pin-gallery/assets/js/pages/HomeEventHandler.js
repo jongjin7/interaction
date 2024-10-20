@@ -2,7 +2,7 @@ import lottie from 'lottie-web';
 import { mainFormGroup } from '../../css/pages.css';
 import DomParser from '../utils/dom';
 import { LoadingBasic as Loading } from '../components/Loading';
-import { addNewCategory, fetchCategory, sendImageFile } from '../utils/api';
+import { addNewCategory, deleteAllAlbums, deleteAllImages, fetchCategory, sendImageFile } from '../utils/api';
 import geoLocation from '../utils/geoLocation';
 
 let root;
@@ -198,4 +198,11 @@ export async function handleSubmit() {
       });
     }
   }
+}
+
+export async function handleDeleteAlbums() {
+  deleteAllAlbums();
+}
+export async function handleDeleteImages() {
+  deleteAllImages();
 }

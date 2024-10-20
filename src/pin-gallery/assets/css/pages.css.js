@@ -9,6 +9,29 @@ import {
 } from './variables.css';
 
 // 메인
+export const adminArea = style([
+  {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+    zIndex: 1000,
+    padding: 4,
+    background: '#fff',
+    '&:hover': {
+      button: {
+        filter: 'blur(1px)',
+      },
+    },
+    button: {
+      // '&:first-child': {
+      //   backgroundColor: '#ff7700',
+      // },
+      '&:hover': {
+        filter: 'blur(0)',
+      },
+    },
+  },
+]);
 export const pageTypeMain = style([
   {
     // display:'none',
