@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import ApiService from '@/app/_services/ApiService';
 import { inputFieldClass, selectClass, buttonSecondaryClass, buttonDisabledClass } from '@/styles/tailwind.component';
 import { Category } from '@/app/_types/galleryType';
@@ -13,12 +14,13 @@ interface MainFormSelectProps {
 }
 
 const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
-  const { categories, setCategories } = useAlbumStore();
+  const { categories } = useAlbumStore();
   const { selectedCategory, setSelectedCategory, disabledForm } = selectProps;
   const [customCategory, setCustomCategory] = useState<string>('');
   const [customCategoryEnabled, setCustomCategoryEnabled] = useState<boolean>(false);
   const selectRef = useRef<HTMLSelectElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -42,7 +44,15 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
       formData.append('description', `${customCategory} 이름으로 만든 앨범입니다.`);
       const res = await ApiService.addNewCategory(formData);
       const newCategory = { id: res.data.id, title: customCategory, name: '' };
-      setCategories([...categories, newCategory]); // 기존 카테고리에 새 카테고리를 추가
+      // 새로운 카테고리 추가
+      queryClient.setQueryData(['albums'], (oldData) => {
+        if (!oldData) return;
+        return {
+          ...oldData,
+          categories: [...oldData.categories, newCategory],
+        };
+      });
+
       setSelectedCategory(newCategory.id);
       setCustomCategory('');
       setCustomCategoryEnabled(false);
