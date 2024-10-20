@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import React, { useState, useEffect, useCallback } from 'react';
-import useUIStore from '@/app/_stores/useUIStore';
 import MainInputCamera from './MainInputCamera';
 import MainFormGroup from './MainFormGroup';
 
@@ -10,9 +9,8 @@ const randomImages: string[] = (() => {
 })();
 
 const Main: React.FC = () => {
-  const { isFirstView } = useUIStore();
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
-  const [shotPlay, setShotPlay] = useState<boolean>(!isFirstView);
+  const [shotPlay, setShotPlay] = useState<boolean>(false);
   const [submitPlay, setSubmitPlay] = useState<boolean>(false);
   const [bgImage, setBgImage] = useState<string>('');
   const [disabledForm, setDisabledForm] = useState<boolean>(true);

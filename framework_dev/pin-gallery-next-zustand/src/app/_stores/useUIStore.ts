@@ -1,9 +1,10 @@
 import { create } from 'zustand';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 interface UIState {
-  isFirstView: boolean;
-  setFirstView: () => void;
+  isFirstTimeUser: boolean;
+  // eslint-disable-next-line no-unused-vars
+  setIsFirstTimeUser: (value: boolean) => void;
   TabPanelContainerRef: React.RefObject<HTMLDivElement> | null; // HTMLDivElement 참조를 저장
   // eslint-disable-next-line no-unused-vars
   setTabPanelContainerRef: (current: HTMLDivElement | null) => void; // 참조를 설정하는 함수
@@ -14,12 +15,12 @@ interface UIState {
 
 const useUIStore = create<UIState>((set) => {
   return {
-    isFirstView: typeof window !== 'undefined' ? !(window.localStorage.getItem('endOnboard') === 'true') : true,
-    setIsFirstView: () => {
+    isFirstTimeUser: true, // 서버 렌더링 시 기본값 (클라이언트에서 초기화 예정)
+    setIsFirstTimeUser: (value) => {
       if (typeof window !== 'undefined') {
-        window.localStorage.setItem('endOnboard', 'true');
+        window.localStorage.setItem('isFirstTimeUser', value ? 'true' : 'false');
       }
-      set({ isFirstView: false });
+      set({ isFirstTimeUser: value });
     },
     TabPanelContainerRef: null,
     setTabPanelContainerRef: (ref: HTMLDivElement | null) => {
@@ -48,5 +49,21 @@ const useUIStore = create<UIState>((set) => {
     },
   };
 });
+
+// 클라이언트 측에서 상태 초기화
+export const useInitializeUIStore = () => {
+  const setIsFirstUsed = useUIStore((state) => state.setIsFirstTimeUser);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const firstView = window.localStorage.getItem('isFirstTimeUser');
+      if (firstView === 'null' || firstView === null || firstView === 'true') {
+        setIsFirstUsed(true);
+      } else if (firstView === 'false') {
+        setIsFirstUsed(false);
+      }
+    }
+  }, []);
+};
 
 export default useUIStore;

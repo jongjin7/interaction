@@ -18,7 +18,6 @@ interface MainFormSubmitProps {
 
 const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();

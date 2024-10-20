@@ -383,18 +383,6 @@ export const mainFormGroup = style({
     '&.none': {
       display: 'none',
     },
-
-    /* 'input:not(:placeholder-shown) + button': {
-      backgroundColor: '#fafafa',
-
-      pointerEvents: 'auto',
-    },
-
-    button: {
-      color: 'rgba(255,255,255,0.5)',
-      borderColor: 'rgba(255,255,255,0.3)',
-      pointerEvents: 'none',
-    }, */
   },
 
   '.copyright': {
