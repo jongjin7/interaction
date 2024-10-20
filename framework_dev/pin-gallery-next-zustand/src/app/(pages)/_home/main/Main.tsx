@@ -28,7 +28,7 @@ const Main: React.FC = () => {
 
   useEffect(() => {
     setRandomImage();
-  }, [setRandomImage]);
+  }, []);
 
   const completedSubmit = () => {
     setSelectedCategory('');
