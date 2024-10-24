@@ -1,0 +1,60 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f3f3f3;
+}
+
+.wheel {
+    --rotate-angle: 0;
+    position: relative;
+    width: 300px; /* 큰 원의 크기 */
+    height: 300px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transform: rotate(calc(var(--rotate-angle) * 1deg)); /* 큰 원의 회전 각도 */
+    touch-action:none
+}
+
+.center-circle {
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    width: 100px; /* 중앙 원 크기 */
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(to bottom, #00d084, #00a66c);
+}
+
+.option {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #00d084;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: center center; /* 공전 원점 */
+    /* 아이템 위치와 공전 */
+    transform: rotate(calc(360deg / 7 * var(--i))) translateX(-120px);
+    transition: transform 0.5s ease;
+    font-size: 10px;
+    margin-left: 125px;
+    margin-top: 125px;
+    font-weight: normal;
+    user-select: none;
+
+    &:nth-child(2){
+        color: red;
+    }
+
+    & > div {
+        transform: rotate(calc((var(--rotate-angle) + 52 * var(--i)) * -1deg))
+    }
+}

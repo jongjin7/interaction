@@ -28,10 +28,10 @@ export default ({command, mode}) => {
         base: '/', // Public Base Path
         publicDir: path.resolve(__dirname, './public'),
         server: {
-            https: {
-                key: fs.readFileSync('localhost-key.pem'),
-                cert: fs.readFileSync('localhost.pem'),
-            },
+            // https: {
+            //     key: fs.readFileSync('localhost-key.pem'),
+            //     cert: fs.readFileSync('localhost.pem'),
+            // },
             watch: {
               ignored: [
                 // 무시하고 싶은 폴더 경로를 지정합니다.
