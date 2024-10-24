@@ -7,9 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Gyro Sensor</title>
     <style>
-        *, *:before, *:after{
+        *, *:before, *:after {
             box-sizing: border-box;
         }
+
         body {
             height: 100vh;
             font-family: Arial, sans-serif;
@@ -41,7 +42,7 @@
             padding: 20px;
             font-size: 1.2em;
             border-radius: 16px;
-            box-shadow: 0 0 8px rgba(0,0,0, 0.2)
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2)
         }
 
         #permission-button {
@@ -68,8 +69,13 @@
             height: 100%;
             margin: 0;
         }
-        video{
-            position: absolute; left:0; top:0; width: 100px; height: 100px;
+
+        video {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
             border: 2px dotted red;
         }
     </style>
@@ -92,12 +98,16 @@
 <video muted autoplay playsinline loop></video>
 
 <script type='module'>
-import testInit from './type2.js';
-function init(){
-  testInit();
-}
+    import Wave from './wave.js';
+    import testInit from './type2.js';
 
-document.addEventListener('DOMContentLoaded', init)
+    function init() {
+        testInit();
+        const canvas = document.querySelector('canvas')
+        const wave = new Wave(canvas);
+    }
+
+    document.addEventListener('DOMContentLoaded', init)
 </script>
 
 

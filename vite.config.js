@@ -7,7 +7,7 @@ import tailwindcss from 'tailwindcss';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const manifest = require('./public/webmanifest.json');
-const excludeWorkDirs = ['pin-gallery-next']; //번들링 제외
+const excludeWorkDirs = ['react-ui']; //번들링 제외
 
 export default ({command, mode}) => {
     const tempDirArr = [
