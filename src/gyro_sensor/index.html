@@ -12,11 +12,10 @@
         }
 
         body {
-            height: 100vh;
+            overflow:hidden;
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f0f0f0;
-            border: 3px solid green;
         }
 
         h2 {
@@ -33,7 +32,7 @@
             right: 0;
             bottom: 0;
             z-index: 1;
-
+            display: none;
         }
 
         .sensor-data > div {
@@ -65,8 +64,6 @@
         }
 
         canvas {
-            width: 100vw;
-            height: 100%;
             margin: 0;
         }
 
@@ -98,13 +95,120 @@
 <video muted autoplay playsinline loop></video>
 
 <script type='module'>
-    import Wave from './wave.js';
+    import Valve from './valve.js';
     import testInit from './type2.js';
 
+
+
     function init() {
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+        let isDragging = false;
+        let startAngle = 0;
+        let rotation = 0;
+        const radius = 100;
+        const dpr = window.devicePixelRatio || 1;
+        let centerX, centerY;
+
+        function checkCircleArea(isInside) {
+            // ctx.clearRect(0, 0, canvas.width, canvas.height); // 이전 그림 삭제
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+
+            if (isInside) {
+                ctx.fillStyle = 'lightblue'; // 마우스가 원 내부에 있을 때 색상
+            } else {
+                ctx.fillStyle = 'gray'; // 기본 색상
+            }
+            ctx.fill();
+
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'black';
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        const handleResize = ()=>{
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            centerX = canvas.width / 2 / 2;
+            centerY = canvas.height / 2 / 2;
+
+            console.log('canvasInfo', canvas.width, canvas.height, centerX, centerY)
+        }
+        handleResize();
+        window.addEventListener('resize', handleResize)
+
+
+
         testInit();
-        const canvas = document.querySelector('canvas')
-        const wave = new Wave(canvas);
+        const valve = new Valve(canvas);
+        function getAngle( clientX, clientY, target) {
+            const { left, top, width, height } = target.getBoundingClientRect();
+            const centerX = left + width / 2;
+            const centerY = top + height / 2;
+            const dx = clientX - centerX;
+            const dy = clientY - centerY;
+            return Math.atan2(dy, dx) * (180 / Math.PI);
+        }
+
+        canvas.addEventListener('pointerdown', (e)=>{
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            // 마우스 위치와 원의 중심 사이의 거리 계산
+            const distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+            // 반지름 내에 있는 경우만 이벤트 처리
+            checkCircleArea(distance <= radius/dpr);
+            if (distance <= radius/dpr) {
+                startAngle = getAngle(mouseX, mouseY, canvas) - rotation;
+                console.log('마우스가 원 내부에 있습니다.', distance, startAngle);
+                // 이곳에 원하는 이벤트 동작 추가 (예: 색상 변경, 그림 그리기 등)
+                isDragging = true;
+            }
+        })
+
+        canvas.addEventListener('pointerover', (e)=>{
+            console.log('pointerOver')
+
+        })
+        canvas.addEventListener('pointerup', ()=>{
+            isDragging = false;
+        })
+        canvas.addEventListener('pointermove', (e)=>{
+            if (isDragging) {
+                const currentAngle = getAngle(e.clientX, e.clientY, canvas);
+                valve.update(currentAngle)
+
+            }
+        })
+
+        let waterLevel = 0; // 물 높이
+        const maxWaterLevel = canvas.height - 100; // 수조 내 물이 찰 수 있는 최대 높이
+        function drawTank() {
+            // 수조 틀 그리기
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 5;
+            ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100); // 300x300 캔버스 중앙에 수조 배치
+
+            // 수조에 채워진 물 그리기
+            ctx.fillStyle = 'lightblue';
+            ctx.fillRect(50, canvas.height - waterLevel -50, canvas.width - 100, waterLevel); // 물 높이 증가에 따라 채움
+        }
+
+        // 애니메이션 업데이트
+        function updateAnimation() {
+            if (waterLevel < maxWaterLevel) {
+                waterLevel += 1; // 물 높이를 증가시킴 (속도 조절 가능)
+                drawTank();
+                requestAnimationFrame(updateAnimation); // 애니메이션 계속
+            }
+        }
+
+        updateAnimation();
     }
 
     document.addEventListener('DOMContentLoaded', init)
