@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Gyro Sensor</title>
     <style>
         *, *:before, *:after {
@@ -12,7 +12,7 @@
         }
 
         body {
-            overflow:hidden;
+            overflow: hidden;
             font-family: Arial, sans-serif;
             margin: 0;
             background-color: #f0f0f0;
@@ -65,6 +65,7 @@
 
         canvas {
             margin: 0;
+            filter: url('#gooey');
         }
 
         video {
@@ -86,299 +87,351 @@
         <div>Gamma (Y-axis): <span id="gamma">0</span>°</div>
         <div>RGB Color: <span id="rgb">rgb(0, 0, 0)</span> ::: <span class='alert'></span></div>
         <button id="permission-button">자이로센서 사용하기</button>
-        <input type="file" id="fileInput" accept="image/*,video/*">
+        <input accept="image/*,video/*" id="fileInput" type="file">
     </div>
 </div>
 
 
-<canvas id="canvas" width="640" height="480"></canvas>
-<video muted autoplay playsinline loop></video>
-
+<canvas height="480" id="canvas" width="640"></canvas>
+<video autoplay loop muted playsinline></video>
+<svg>
+    <defs>
+        <filter id="gooey">
+            <feGaussianBlur in="SourceGraphic" result="blur1" stdDeviation="40" />
+            <feColorMatrix in="blur1" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 100 -23"/>
+        </filter>
+    </defs>
+</svg>
 <script type='module'>
-    import CanvasAngle from './assets/js/canvas_angle.js';
+  import CanvasAngle from './assets/js/canvas_angle.js';
 
-    function init() {
-        const canvasAngle = new CanvasAngle();
-        const canvas = document.querySelector('canvas');
-        const ctx = canvas.getContext('2d');
-        let isDragging = false;
-        let startAngle = 0;
-        let rotation = 0;
-        const dpr = window.devicePixelRatio || 1;
-        let centerX, centerY;
-        const radius = 100;
+  function init() {
+    const canvasAngle = new CanvasAngle();
+    const canvas = document.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    let isDragging = false;
+    let startAngle = 0;
+    let rotation = 0;
+    const dpr = window.devicePixelRatio || 1;
+    let centerX, centerY;
+    const radius = 100;
 
 
-        // 물멍, 오일멍
-        let waterParticles = [];
-        let oilParticles = [];
-        let waterHeight = 0; // 현재 물 높이
-        let oilLayerHeight = 0; // 현재 기름 높이
-        const waterMaxHeight = 100; // 최대 물 높이
-        const oilLayerMaxHeight = 100; // 최대 기름 높이
-        let isAnimating = true;
+    // 물멍, 오일멍
+    let waterParticles = [];
+    let oilParticles = [];
+    let waterHeight = 0; // 현재 물 높이
+    let oilLayerHeight = 0; // 현재 기름 높이
+    const waterMaxHeight = 100; // 최대 물 높이
+    const oilLayerMaxHeight = 100; // 최대 기름 높이
+    let isAnimating = true;
 // 수조의 위치와 크기
-        const tankX = 100; // 수조의 X 위치
-        const tankOffsetTop = 20;
-        const tankY = tankOffsetTop; // 수조의 상단 위치
-        const tankWidth = 400; // 수조 너비
-        const tankHeight = 400; // 수조의 전체 높이
+    const tankX = 100; // 수조의 X 위치
+    const tankOffsetTop = 20;
+    const tankY = tankOffsetTop; // 수조의 상단 위치
+    const tankWidth = 400; // 수조 너비
+    const tankHeight = 400; // 수조의 전체 높이
 
-        class Particle {
-            constructor(x, y, speed, color) {
-                this.x = x;
-                this.y = y;
-                this.radius = 10;
-                this.speed = speed;
-                this.color = color;
-                this.isMerged = false;
-                this.isAtBottom = false; // 바닥에 도달했는지 여부
-                this.opacity = 1; // 초기 투명도
-            }
+    class Particle {
+      constructor(x, y, speed, color) {
+        this.x = x;
+        this.y = y;
+        this.radius = 10;
+        this.speed = speed;
+        this.color = color;
+        this.isMerged = false;
+        this.isAtBottom = false; // 바닥에 도달했는지 여부
+        this.opacity = 1; // 초기 투명도
+      }
 
-            update(bottomY) {
-                // 파티클이 바닥에 닿기 전까지 아래로 떨어짐
-                if (!this.isAtBottom && this.y < bottomY) {
-                    this.y += this.speed; // 중력 효과
-                    this.speed += 0.05; // 속도 증가
-                } else {
-                    this.y = bottomY; // 바닥에서 정지
-                    this.isAtBottom = true; // 바닥에 도달한 상태
-                }
-            }
-
-            draw(ctx) {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.closePath();
-            }
-
-            distanceTo(otherParticle) {
-                const dx = this.x - otherParticle.x;
-                const dy = this.y - otherParticle.y;
-                return Math.sqrt(dx * dx + dy * dy);
-            }
-
-            mergeWith(otherParticle) {
-                if (this.radius < 30 && otherParticle.radius > 0) {
-                    this.radius += 0.1;
-                    otherParticle.radius -= 0.1;
-
-                    // 다른 파티클의 반지름이 0보다 작지 않도록 제한
-                    if (otherParticle.radius < 0) {
-                        otherParticle.radius = 0;
-                    }
-                }
-            }
-            fadeOut() {
-                console.log('aaaa')
-                if (this.opacity > 0) {
-                    this.opacity -= 0.05; // 투명도 감소
-                    if (this.opacity < 0) this.opacity = 0; // 투명도 0으로 설정
-                }
-            }
+      update(bottomY) {
+        // 파티클이 바닥에 닿기 전까지 아래로 떨어짐
+        if (!this.isAtBottom && this.y < bottomY) {
+          this.y += this.speed; // 중력 효과
+          this.speed += 0.05; // 속도 증가
+        } else {
+          this.y = bottomY; // 바닥에서 정지
+          this.isAtBottom = true; // 바닥에 도달한 상태
         }
+      }
 
-        function createWaterParticle() {
-            const x = tankX + (tankWidth / 2) + (Math.random() - 0.5) * 20; // 중앙에서 생성
-            const y = tankY - 10; // 수조 위에서 떨어짐
-            const speed = Math.random() * 1 + 1; // 물방울 속도 설정
-            const particle = new Particle(x, y, speed, 'rgba(0, 100, 255, 0.5)'); // 물 색상
-            waterParticles.push(particle);
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      distanceTo(otherParticle) {
+        const dx = this.x - otherParticle.x;
+        const dy = this.y - otherParticle.y;
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      mergeWith(otherParticle) {
+        if (this.radius < 30 && otherParticle.radius > 0) {
+          this.radius += 0.1;
+          otherParticle.radius -= 0.1;
+
+          // 다른 파티클의 반지름이 0보다 작지 않도록 제한
+          if (otherParticle.radius < 0) {
+            otherParticle.radius = 0;
+          }
         }
+      }
 
-        function createOilParticle() {
-            const x = tankX + (tankWidth / 2) + (Math.random() - 0.5) * 20; // 중앙에서 생성
-            const y = tankY - 10; // 수조 위에서 떨어짐
-            const speed = Math.random() * 1 + 1; // 기름 방울 속도 설정
-            const particle = new Particle(x, y, speed, 'rgba(255, 99, 71, 0.4)'); // 기름 색상
-            oilParticles.push(particle);
+      fadeOut() {
+        console.log('aaaa')
+        if (this.opacity > 0) {
+          this.opacity -= 0.05; // 투명도 감소
+          if (this.opacity < 0) this.opacity = 0; // 투명도 0으로 설정
         }
-
-        function drawTank() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // 수조 그림자 그리기
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(tankX + 5, tankY + 5, tankWidth, tankHeight);
-
-            // 수조 그라데이션 그리기
-            const tankGradient = ctx.createLinearGradient(tankX, tankY, tankX, tankY + tankHeight);
-            tankGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-            tankGradient.addColorStop(1, 'rgba(100, 149, 237, 1)');
-
-            ctx.fillStyle = tankGradient;
-            ctx.fillRect(tankX, tankY, tankWidth, tankHeight);
-
-            // 물 그리기
-            ctx.fillStyle = 'rgba(0, 100, 255, 0.5)';
-            ctx.fillRect(tankX, tankY + tankHeight - waterHeight, tankWidth, waterHeight);
-
-            // 기름 층 그리기
-            ctx.fillStyle = 'rgba(255, 99, 71, 0.4)';
-            ctx.fillRect(tankX, tankY + tankHeight - waterHeight - oilLayerHeight, tankWidth, oilLayerHeight);
-        }
-
-        function animate() {
-            drawTank();
-
-            // 물 방울 애니메이션
-            waterParticles.forEach((particle, index) => {
-                const bottomY = tankY + tankHeight - waterHeight; // 물의 바닥 Y 위치
-                particle.update(bottomY);
-                particle.draw(ctx);
-
-                // 물방울이 물층에 도달하면 사라짐
-                if (particle.isAtBottom) {
-                    waterParticles.splice(index, 1); // 배열에서 제거
-                    waterHeight += 1; // 물 높이 증가
-                }
-            });
-
-            // 기름 방울 애니메이션
-            oilParticles.forEach((particle, index) => {
-                const bottomY = tankY + tankHeight - waterHeight - oilLayerHeight; // 기름의 바닥 Y 위치
-                particle.update(bottomY);
-                particle.draw(ctx);
-
-                // 기름방울이 기름층에 도달하면 사라짐
-                if (particle.isAtBottom) {
-                    oilParticles.splice(index, 1); // 배열에서 제거
-                    oilLayerHeight += 1; // 기름 높이 증가
-                }
-            });
-
-            // 파티클 간 거리 확인 및 병합 효과
-            for (let i = 0; i < waterParticles.length; i++) {
-                for (let j = i + 1; j < waterParticles.length; j++) {
-                    const distance = waterParticles[i].distanceTo(waterParticles[j]);
-                    if (distance < 20) {
-                        waterParticles[i].mergeWith(waterParticles[j]);
-                    }
-                }
-            }
-
-            for (let i = 0; i < oilParticles.length; i++) {
-                for (let j = i + 1; j < oilParticles.length; j++) {
-                    const distance = oilParticles[i].distanceTo(oilParticles[j]);
-                    if (distance < 20) {
-                        oilParticles[i].mergeWith(oilParticles[j]);
-                    }
-                }
-            }
-
-            // 새로운 물 및 기름 파티클 생성
-            if (waterParticles.length < 100 && Math.random() < 0.1) {
-                createWaterParticle();
-            }
-            if (oilParticles.length < 100 && Math.random() < 0.1) {
-                createOilParticle();
-            }
-
-            // 물과 기름의 각각 최대 높이에 도달했는지 확인
-            const isMaxHeightReached = (waterHeight + oilLayerHeight >= waterMaxHeight + oilLayerMaxHeight);
-
-            if (!isMaxHeightReached) {
-                console.log('채워지는 중')
-                requestAnimationFrame(animate);
-            } else {
-                console.log('최대 수위')
-                waterParticles = [];
-                oilParticles = [];
-                drawTank(); // 최종 상태 그리기
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-        const handleResize = ()=>{
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            canvas.style.width = `${window.innerWidth}px`;
-            canvas.style.height = `${window.innerHeight}px`;
-            ctx.scale(dpr, dpr)
-            centerX = canvas.width / 2 / 2;
-            centerY = canvas.height / 2 / 2;
-            animate();
-            console.log('canvasInfo', canvas.width, canvas.height, centerX, centerY)
-        }
-        handleResize();
-        window.addEventListener('resize', handleResize)
-
-
-
-        canvasAngle.init();
-
-        function getAngle( clientX, clientY, target) {
-            const { left, top, width, height } = target.getBoundingClientRect();
-            const centerX = left + width / 2;
-            const centerY = top + height / 2;
-            const dx = clientX - centerX;
-            const dy = clientY - centerY;
-            return Math.atan2(dy, dx) * (180 / Math.PI);
-        }
-
-        canvas.addEventListener('pointerdown', (e)=>{
-            isDragging = true;
-
-            // 원 그리기
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            ctx.strokeStyle = "black";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-// 할선 그리기
-            const angle = Math.PI / 3 * 1; // 45도 각도로 예시
-            const startX = centerX + radius * Math.cos(angle);
-            const startY = centerY + radius * Math.sin(angle);
-            const endX = centerX + radius * Math.cos(Math.PI + angle);
-            const endY = centerY + radius * Math.sin(Math.PI + angle);
-
-            ctx.beginPath();
-            ctx.moveTo(startX, startY);
-            ctx.lineTo(endX, endY);
-            ctx.strokeStyle = "red";
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        })
-
-        canvas.addEventListener('pointerover', (e)=>{
-            console.log('pointerOver')
-        })
-        canvas.addEventListener('pointerup', ()=>{
-            isDragging = false;
-        })
-        canvas.addEventListener('pointermove', (e)=>{
-            if (isDragging) {
-                const rect = canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-                // 마우스 위치와 원의 중심 사이의 거리 계산
-                const distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
-                const currentAngle = getAngle(e.clientX, e.clientY, canvas);
-                console.log('canvasMove', currentAngle, distance)
-            }
-        })
-
-
-
-
-
-
-
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', init)
+    function createWaterParticle() {
+      const x = tankX + (tankWidth / 2) + (Math.random() - 0.5) * 20; // 중앙에서 생성
+      const y = tankY - 10; // 수조 위에서 떨어짐
+      const speed = Math.random() * 1 + 1; // 물방울 속도 설정
+      const particle = new Particle(x, y, speed, 'rgba(0, 100, 255, 0.5)'); // 물 색상
+      waterParticles.push(particle);
+    }
+
+    function createOilParticle() {
+      const x = tankX + (tankWidth / 2) + (Math.random() - 0.5) * 20; // 중앙에서 생성
+      const y = tankY - 10; // 수조 위에서 떨어짐
+      const speed = Math.random() * 1 + 1; // 기름 방울 속도 설정
+      const particle = new Particle(x, y, speed, 'rgba(255, 99, 71, 0.4)'); // 기름 색상
+      oilParticles.push(particle);
+    }
+
+    function drawTank() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 수조 그림자 그리기
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillRect(tankX + 5, tankY + 5, tankWidth, tankHeight);
+
+      // 수조 그라데이션 그리기
+      const tankGradient = ctx.createLinearGradient(tankX, tankY, tankX, tankY + tankHeight);
+      tankGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+      tankGradient.addColorStop(1, 'rgba(100, 149, 237, 1)');
+
+      ctx.fillStyle = tankGradient;
+      ctx.fillRect(tankX, tankY, tankWidth, tankHeight);
+
+      // 물 그리기
+      ctx.fillStyle = 'rgba(0, 100, 255, 0.5)';
+      ctx.fillRect(tankX, tankY + tankHeight - waterHeight, tankWidth, waterHeight);
+
+      // 기름 층 그리기
+      ctx.fillStyle = 'rgba(255, 99, 71, 0.4)';
+      ctx.fillRect(tankX, tankY + tankHeight - waterHeight - oilLayerHeight, tankWidth, oilLayerHeight);
+    }
+
+    class bubbleParticle {
+      constructor(x, y, radius, vy) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.vy = vy
+        this.acc = 1.016
+      }
+
+      update() {
+        this.vy *= this.acc
+        this.y += this.vy
+      }
+
+      draw() {
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI / 180 * 360)
+        ctx.fillStyle = 'orange'
+        ctx.fill()
+        ctx.closePath()
+      }
+    }
+
+
+    const canvasWidth = innerWidth
+    const canvasHeight = innerHeight
+
+    const TOTAL = canvasWidth / 30
+
+    const randomNumBetween = (min, max) => {
+      return Math.random() * (max - min + 1) + min
+    }
+
+    let particles = []
+    for (let i = 0; i < TOTAL; i++) {
+      const x = randomNumBetween(0, canvasWidth)
+      const y = randomNumBetween(0, canvasHeight)
+      const radius = randomNumBetween(10, 50)
+      const vy = randomNumBetween(1, 5)
+      const myParticle = new bubbleParticle(x, y, radius, vy);
+      particles.push(myParticle)
+    }
+
+    function bubble() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update()
+        particle.draw()
+        if (particle.y - particle.radius > canvasHeight) {
+          particle.y = -particle.radius
+          particle.x = randomNumBetween(0, canvasWidth)
+          particle.radius = randomNumBetween(10, 50)
+          particle.vy = randomNumBetween(1, 5)
+        }
+      })
+    }
+
+    function animate() {
+      // drawTank();
+      bubble();
+
+      // 물 방울 애니메이션
+      waterParticles.forEach((particle, index) => {
+        const bottomY = tankY + tankHeight - waterHeight; // 물의 바닥 Y 위치
+        particle.update(bottomY);
+        particle.draw(ctx);
+
+        // 물방울이 물층에 도달하면 사라짐
+        if (particle.isAtBottom) {
+          waterParticles.splice(index, 1); // 배열에서 제거
+          waterHeight += 1; // 물 높이 증가
+        }
+      });
+
+      // 기름 방울 애니메이션
+      oilParticles.forEach((particle, index) => {
+        const bottomY = tankY + tankHeight - waterHeight - oilLayerHeight; // 기름의 바닥 Y 위치
+        particle.update(bottomY);
+        particle.draw(ctx);
+
+        // 기름방울이 기름층에 도달하면 사라짐
+        if (particle.isAtBottom) {
+          oilParticles.splice(index, 1); // 배열에서 제거
+          oilLayerHeight += 1; // 기름 높이 증가
+        }
+      });
+
+      // 파티클 간 거리 확인 및 병합 효과
+      for (let i = 0; i < waterParticles.length; i++) {
+        for (let j = i + 1; j < waterParticles.length; j++) {
+          const distance = waterParticles[i].distanceTo(waterParticles[j]);
+          if (distance < 20) {
+            waterParticles[i].mergeWith(waterParticles[j]);
+          }
+        }
+      }
+
+      for (let i = 0; i < oilParticles.length; i++) {
+        for (let j = i + 1; j < oilParticles.length; j++) {
+          const distance = oilParticles[i].distanceTo(oilParticles[j]);
+          if (distance < 20) {
+            oilParticles[i].mergeWith(oilParticles[j]);
+          }
+        }
+      }
+
+      // 새로운 물 및 기름 파티클 생성
+      if (waterParticles.length < 100 && Math.random() < 0.1) {
+        //createWaterParticle();
+      }
+      if (oilParticles.length < 100 && Math.random() < 0.1) {
+        //createOilParticle();
+      }
+
+      // 물과 기름의 각각 최대 높이에 도달했는지 확인
+      // const isMaxHeightReached = (waterHeight + oilLayerHeight >= waterMaxHeight + oilLayerMaxHeight);
+      //
+      // if (!isMaxHeightReached) {
+      //   console.log('채워지는 중')
+        requestAnimationFrame(animate);
+      // } else {
+      //   console.log('최대 수위')
+      //   waterParticles = [];
+      //   oilParticles = [];
+      //   drawTank(); // 최종 상태 그리기
+      // }
+    }
+
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr)
+      centerX = canvas.width / 2 / 2;
+      centerY = canvas.height / 2 / 2;
+      animate();
+      console.log('canvasInfo', canvas.width, canvas.height, centerX, centerY)
+    }
+    handleResize();
+    window.addEventListener('resize', handleResize)
+
+
+    canvasAngle.init();
+
+    function getAngle(clientX, clientY, target) {
+      const {left, top, width, height} = target.getBoundingClientRect();
+      const centerX = left + width / 2;
+      const centerY = top + height / 2;
+      const dx = clientX - centerX;
+      const dy = clientY - centerY;
+      return Math.atan2(dy, dx) * (180 / Math.PI);
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+
+      // 원 그리기
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 할선 그리기
+      const angle = Math.PI / 3 * 1; // 45도 각도로 예시
+      const startX = centerX + radius * Math.cos(angle);
+      const startY = centerY + radius * Math.sin(angle);
+      const endX = centerX + radius * Math.cos(Math.PI + angle);
+      const endY = centerY + radius * Math.sin(Math.PI + angle);
+
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    })
+
+    canvas.addEventListener('pointerover', (e) => {
+      console.log('pointerOver')
+    })
+    canvas.addEventListener('pointerup', () => {
+      isDragging = false;
+    })
+    canvas.addEventListener('pointermove', (e) => {
+      if (isDragging) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        // 마우스 위치와 원의 중심 사이의 거리 계산
+        const distance = Math.sqrt((mouseX - centerX) ** 2 + (mouseY - centerY) ** 2);
+        const currentAngle = getAngle(e.clientX, e.clientY, canvas);
+        console.log('canvasMove', currentAngle, distance)
+      }
+    })
+
+
+  }
+
+  document.addEventListener('DOMContentLoaded', init)
 </script>
 
 

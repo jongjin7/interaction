@@ -4,12 +4,15 @@ export default class Valve {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext('2d');
     this.radius = 100 * dpr;
-    this.drawFrame();
     window.addEventListener('resize', this.setCanvasSize.bind(this));
   }
 
   setCanvasSize() {
     this.drawFrame();
+  }
+
+  init() {
+    this.draw();
   }
 
   draw() {
@@ -43,7 +46,7 @@ export default class Valve {
     this.ctx.strokeStyle = '#9B1112';
     this.ctx.stroke();
     this.ctx.closePath();
-
+    //
     this.ctx.restore(); // 캔버스 상태 복원
   }
 
@@ -54,7 +57,7 @@ export default class Valve {
 
   update(rad) {
     this.radius = rad * 0.01;
-    console.log('isUpdate', this.radius);
+    console.log('isUpdate', this.radius, rad);
     this.drawFrame();
 
     // if (this.radius + rad <= Math.PI * 6 && this.radius + rad >= 0) {
