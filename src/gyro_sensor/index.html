@@ -65,7 +65,7 @@
 
         canvas {
             margin: 0;
-            filter: url('#gooey');
+            /*filter: url('#gooey');*/
         }
 
         video {
@@ -103,12 +103,22 @@
     </defs>
 </svg>
 <script type='module'>
+  import Tank from './assets/js/tank'
+  import Particle from './assets/js/particle'
   import CanvasAngle from './assets/js/canvas_angle.js';
 
   function init() {
-    const canvasAngle = new CanvasAngle();
+
     const canvas = document.querySelector('canvas');
     const ctx = canvas.getContext('2d');
+    ctx.globalCompositeOperation = 'source-over'
+    let canvasWidth = window.innerWidth
+    let canvasHeight = window.innerHeight
+    const tankX = 30; // 수조의 X 위치
+    const tankY = 30; // 수조의 상단 위치
+    const drawTank = new Tank(ctx,  tankX, tankY);
+    const canvasAngle = new CanvasAngle();
+
     let isDragging = false;
     let startAngle = 0;
     let rotation = 0;
@@ -126,69 +136,9 @@
     const oilLayerMaxHeight = 100; // 최대 기름 높이
     let isAnimating = true;
 // 수조의 위치와 크기
-    const tankX = 100; // 수조의 X 위치
-    const tankOffsetTop = 20;
-    const tankY = tankOffsetTop; // 수조의 상단 위치
+
     const tankWidth = 400; // 수조 너비
     const tankHeight = 400; // 수조의 전체 높이
-
-    class Particle {
-      constructor(x, y, speed, color) {
-        this.x = x;
-        this.y = y;
-        this.radius = 10;
-        this.speed = speed;
-        this.color = color;
-        this.isMerged = false;
-        this.isAtBottom = false; // 바닥에 도달했는지 여부
-        this.opacity = 1; // 초기 투명도
-      }
-
-      update(bottomY) {
-        // 파티클이 바닥에 닿기 전까지 아래로 떨어짐
-        if (!this.isAtBottom && this.y < bottomY) {
-          this.y += this.speed; // 중력 효과
-          this.speed += 0.05; // 속도 증가
-        } else {
-          this.y = bottomY; // 바닥에서 정지
-          this.isAtBottom = true; // 바닥에 도달한 상태
-        }
-      }
-
-      draw(ctx) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      distanceTo(otherParticle) {
-        const dx = this.x - otherParticle.x;
-        const dy = this.y - otherParticle.y;
-        return Math.sqrt(dx * dx + dy * dy);
-      }
-
-      mergeWith(otherParticle) {
-        if (this.radius < 30 && otherParticle.radius > 0) {
-          this.radius += 0.1;
-          otherParticle.radius -= 0.1;
-
-          // 다른 파티클의 반지름이 0보다 작지 않도록 제한
-          if (otherParticle.radius < 0) {
-            otherParticle.radius = 0;
-          }
-        }
-      }
-
-      fadeOut() {
-        console.log('aaaa')
-        if (this.opacity > 0) {
-          this.opacity -= 0.05; // 투명도 감소
-          if (this.opacity < 0) this.opacity = 0; // 투명도 0으로 설정
-        }
-      }
-    }
 
     function createWaterParticle() {
       const x = tankX + (tankWidth / 2) + (Math.random() - 0.5) * 20; // 중앙에서 생성
@@ -206,21 +156,7 @@
       oilParticles.push(particle);
     }
 
-    function drawTank() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 수조 그림자 그리기
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-      ctx.fillRect(tankX + 5, tankY + 5, tankWidth, tankHeight);
-
-      // 수조 그라데이션 그리기
-      const tankGradient = ctx.createLinearGradient(tankX, tankY, tankX, tankY + tankHeight);
-      tankGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-      tankGradient.addColorStop(1, 'rgba(100, 149, 237, 1)');
-
-      ctx.fillStyle = tankGradient;
-      ctx.fillRect(tankX, tankY, tankWidth, tankHeight);
-
+    function aaaTank() {
       // 물 그리기
       ctx.fillStyle = 'rgba(0, 100, 255, 0.5)';
       ctx.fillRect(tankX, tankY + tankHeight - waterHeight, tankWidth, waterHeight);
@@ -230,33 +166,6 @@
       ctx.fillRect(tankX, tankY + tankHeight - waterHeight - oilLayerHeight, tankWidth, oilLayerHeight);
     }
 
-    class bubbleParticle {
-      constructor(x, y, radius, vy) {
-        this.x = x
-        this.y = y
-        this.radius = radius
-        this.vy = vy
-        this.acc = 1.016
-      }
-
-      update() {
-        this.vy *= this.acc
-        this.y += this.vy
-      }
-
-      draw() {
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI / 180 * 360)
-        ctx.fillStyle = 'orange'
-        ctx.fill()
-        ctx.closePath()
-      }
-    }
-
-
-    const canvasWidth = innerWidth
-    const canvasHeight = innerHeight
-
     const TOTAL = canvasWidth / 30
 
     const randomNumBetween = (min, max) => {
@@ -264,17 +173,17 @@
     }
 
     let particles = []
-    for (let i = 0; i < TOTAL; i++) {
-      const x = randomNumBetween(0, canvasWidth)
-      const y = randomNumBetween(0, canvasHeight)
-      const radius = randomNumBetween(10, 50)
-      const vy = randomNumBetween(1, 5)
-      const myParticle = new bubbleParticle(x, y, radius, vy);
-      particles.push(myParticle)
-    }
+    // for (let i = 0; i < TOTAL; i++) {
+    //   const x = randomNumBetween(0, canvasWidth)
+    //   const y = randomNumBetween(0, canvasHeight)
+    //   const radius = randomNumBetween(10, 50)
+    //   const vy = randomNumBetween(1, 5)
+    //   const myParticle = new bubbleParticle(x, y, radius, vy);
+    //   particles.push(myParticle)
+    // }
 
     function bubble() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       particles.forEach(particle => {
         particle.update()
         particle.draw()
@@ -287,9 +196,11 @@
       })
     }
 
+    // 애니메이션
     function animate() {
-      // drawTank();
-      bubble();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawTank.draw();
+      //bubble();
 
       // 물 방울 애니메이션
       waterParticles.forEach((particle, index) => {
@@ -349,7 +260,7 @@
       //
       // if (!isMaxHeightReached) {
       //   console.log('채워지는 중')
-        requestAnimationFrame(animate);
+        //requestAnimationFrame(animate);
       // } else {
       //   console.log('최대 수위')
       //   waterParticles = [];
@@ -359,7 +270,13 @@
     }
 
 
+
+
+
+    //////////////////////////////////////////////////////////////////////
+
     const handleResize = () => {
+
       canvas.width = window.innerWidth * dpr;
       canvas.height = window.innerHeight * dpr;
       canvas.style.width = `${window.innerWidth}px`;
@@ -368,13 +285,13 @@
       centerX = canvas.width / 2 / 2;
       centerY = canvas.height / 2 / 2;
       animate();
-      console.log('canvasInfo', canvas.width, canvas.height, centerX, centerY)
+      console.log('canvasInfo ==>', window.innerWidth, centerX, centerY)
     }
     handleResize();
     window.addEventListener('resize', handleResize)
 
 
-    canvasAngle.init();
+
 
     function getAngle(clientX, clientY, target) {
       const {left, top, width, height} = target.getBoundingClientRect();
@@ -385,7 +302,7 @@
       return Math.atan2(dy, dx) * (180 / Math.PI);
     }
 
-    canvas.addEventListener('pointerdown', (e) => {
+   /* canvas.addEventListener('pointerdown', (e) => {
       isDragging = true;
 
       // 원 그리기
@@ -427,6 +344,7 @@
         console.log('canvasMove', currentAngle, distance)
       }
     })
+    */
 
 
   }
