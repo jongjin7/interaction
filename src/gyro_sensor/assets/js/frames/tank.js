@@ -59,8 +59,6 @@ export default class Tank {
       this.tankWidth,
       this.tankHeight, // 캔버스에 그릴 크기
     );
-
-    this.isLoadedImage = !this.isLoadedImage;
   }
 
   drawFrame() {
@@ -68,6 +66,7 @@ export default class Tank {
       this.img = new Image();
       this.img.src = './assets/video/bg.jpg';
       this.img.onload = this.drawImage.bind(this);
+      this.isLoadedImage = !this.isLoadedImage;
     } else {
       this.drawImage();
       this.drawWater();
@@ -77,8 +76,8 @@ export default class Tank {
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
     this.ctx.fillRect(50, 50, this.tankWidth, this.tankHeight);
 
-    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    this.ctx.fillRect(this.tankX, this.tankY, this.tankWidth, this.tankHeight);
+    // this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    // this.ctx.fillRect(this.tankX, this.tankY, this.tankWidth, this.tankHeight);
   }
 
   drawWater() {
@@ -86,11 +85,10 @@ export default class Tank {
 
     // 수조 그라데이션 그리기
     const tankGradient = this.ctx.createLinearGradient(0, 10, 0, this.tankHeight + this.tankY);
-    tankGradient.addColorStop(0, 'rgba(100, 149, 237, 0.1)');
-    tankGradient.addColorStop(0.3, 'rgba(100, 149, 237, 0.5)');
-    tankGradient.addColorStop(0.5, 'rgba(100, 149, 237, 0.9)');
+    tankGradient.addColorStop(0, 'rgba(100, 149, 237, 0.8)');
+    tankGradient.addColorStop(0.2, 'rgba(100, 149, 237, 0.6)');
+    tankGradient.addColorStop(1, 'rgba(100, 149, 237, 0.1)');
 
-    console.log('탱크에 물이 채워지는 장면입니다.1', this.waterHeight, this.tankHeight);
     if (this.waterHeight <= this.tankHeight) {
       this.waterHeight += 1;
     } else {
