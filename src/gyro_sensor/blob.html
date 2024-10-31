@@ -32,6 +32,12 @@
         .control{
             padding: 1vw 5vw;
         }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -86,8 +92,78 @@
         return Math.sqrt(dx * dx + dy * dy);
     }
 
+    // 색상 혼합 함수 (rgba 색상 값 기반)
+    function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0; // achromatic
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return [h * 360, s, l];
+    }
+
+    function hslToRgb(h, s, l) {
+        let r, g, b;
+
+        if (s === 0) {
+            r = g = b = l; // achromatic
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1 / 6) return p + (q - p) * 6 * t;
+                if (t < 1 / 2) return q;
+                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                return p;
+            };
+
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+
+        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+    }
+
+    function mixColors(color1, color2) {
+        console.log('aa', color1, color2)
+        const rgba1 = color1.match(/\d+/g).map(Number);
+        const rgba2 = color2.match(/\d+/g).map(Number);
+
+        // 색상을 평균내되 어둡고 투명하게 만듭니다.
+        const r = Math.floor(((rgba1[0] + rgba2[0]) / 2) * 0.7); // 색상을 어둡게
+        const g = Math.floor(((rgba1[1] + rgba2[1]) / 2) * 0.7); // 색상을 어둡게
+        const b = Math.floor(((rgba1[2] + rgba2[2]) / 2) * 0.7); // 색상을 어둡게
+
+        // 투명도를 랜덤으로 설정 (0.3에서 0.7 사이)
+        const a = (Math.random() * 0.4 + 0.3).toFixed(2); // 알파 값을 0.3 ~ 0.7로 랜덤화
+
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+
+
+
+
     let bubbles = [];
-    const bubbleCount = 20; // 방울 개수
+    const bubbleCount = 40; // 방울 개수
 
     function init() {
         // 초기 방울들 생성
@@ -96,12 +172,13 @@
                 Math.random() * canvas.width,
                 Math.random() * canvas.height,
                 15 + Math.random() * 10,
-                "rgba(255, 105, 180, 0.8)"
+                `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${Math.random().toFixed(2)})`
             )
         );
     }
 
     function animate() {
+        console.dir('현재 버블', bubbles.length)
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let i = 0; i < bubbles.length; i++) {
@@ -116,19 +193,22 @@
                 const radiusSum = bubbleA.radius + bubbleB.radius; // 두 방울의 반지름 합
 
                 if (distance < radiusSum) {
-                    // 점성 효과를 위해 두 방울이 서로 다가가도록 이동
-                    bubbleA.x += (bubbleB.x - bubbleA.x) * 0.05;
-                    bubbleA.y += (bubbleB.y - bubbleA.y) * 0.05;
+                    // 점성 효과를 위해 두 방울이 서로 빠르게 다가가도록 이동 (가속도 효과 추가)
+                    bubbleA.x += (bubbleB.x - bubbleA.x) * 0.1;
+                    bubbleA.y += (bubbleB.y - bubbleA.y) * 0.1;
 
                     // 충분히 가까워지면 방울 합치기
                     if (distance < radiusSum * 0.8) { // 더 가까워지면 합치기
                         const newX = (bubbleA.x + bubbleB.x) / 2;
                         const newY = (bubbleA.y + bubbleB.y) / 2;
                         const newRadius = Math.sqrt(bubbleA.radius ** 2 + bubbleB.radius ** 2); // 면적 기준으로 반지름 계산
+                        //const newColor = mixColors(bubbleA.color, bubbleB.color); // 두 색상 혼합
 
+                        // bubbleA의 위치와 속성 업데이트
                         bubbleA.x = newX;
                         bubbleA.y = newY;
                         bubbleA.radius = newRadius;
+                        //bubbleA.color = newColor;
 
                         // bubbleB를 제거하고 반복 계속
                         bubbles.splice(j, 1);
@@ -143,6 +223,8 @@
 
     init();
     animate();
+
+
 
 </script>
 
