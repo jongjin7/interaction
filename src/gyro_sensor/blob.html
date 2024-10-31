@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Gyro Sensor</title>
+    <style>
+        *, *:before, *:after {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        h2 {
+            margin: 0 0 20px;
+
+        }
+
+        canvas {
+            margin: 5vw 5vw 0;
+
+            width: 88vw; height: 80vh;
+            box-shadow: 0.5vw 0.5vw 1vw rgba(0,0,0, 0.3)
+        }
+        .control{
+            padding: 1vw 5vw;
+        }
+    </style>
+</head>
+<body>
+
+
+
+<canvas id="canvas"></canvas>
+<div class="control">
+    <label>볼 갯수: <input type="number" id="blobCount" value="10" min="1" max="100"></label>
+    <label>점성도: <input type="range" id="viscosity" min="0.1" max="2" step="0.1" value="1"></label>
+    <button onclick="start()">애니메이션 시작</button>
+</div>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Bubble {
+        constructor(x, y, radius, color) {
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.dy = Math.random() * 2 + 1; // 방울이 떨어지는 속도
+        }
+
+        update() {
+            // 방울을 아래로 이동
+            this.y += this.dy;
+            // 화면을 벗어나면 방울 위치를 리셋
+            if (this.y - this.radius > canvas.height) {
+                this.y = -this.radius;
+                this.x = Math.random() * canvas.width;
+            }
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+
+    // 두 점 사이의 거리 계산
+    function getDistance(x1, y1, x2, y2) {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    let bubbles = [];
+    const bubbleCount = 20; // 방울 개수
+
+    function init() {
+        // 초기 방울들 생성
+        bubbles = Array.from({ length: bubbleCount }, () =>
+            new Bubble(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                15 + Math.random() * 10,
+                "rgba(255, 105, 180, 0.8)"
+            )
+        );
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < bubbles.length; i++) {
+            const bubbleA = bubbles[i];
+            bubbleA.update(); // 방울 이동 업데이트
+            bubbleA.draw();   // 방울 그리기
+
+            // 인접한 방울들 확인하여 합치기
+            for (let j = i + 1; j < bubbles.length; j++) {
+                const bubbleB = bubbles[j];
+                const distance = getDistance(bubbleA.x, bubbleA.y, bubbleB.x, bubbleB.y);
+                const radiusSum = bubbleA.radius + bubbleB.radius; // 두 방울의 반지름 합
+
+                if (distance < radiusSum) {
+                    // 점성 효과를 위해 두 방울이 서로 다가가도록 이동
+                    bubbleA.x += (bubbleB.x - bubbleA.x) * 0.05;
+                    bubbleA.y += (bubbleB.y - bubbleA.y) * 0.05;
+
+                    // 충분히 가까워지면 방울 합치기
+                    if (distance < radiusSum * 0.8) { // 더 가까워지면 합치기
+                        const newX = (bubbleA.x + bubbleB.x) / 2;
+                        const newY = (bubbleA.y + bubbleB.y) / 2;
+                        const newRadius = Math.sqrt(bubbleA.radius ** 2 + bubbleB.radius ** 2); // 면적 기준으로 반지름 계산
+
+                        bubbleA.x = newX;
+                        bubbleA.y = newY;
+                        bubbleA.radius = newRadius;
+
+                        // bubbleB를 제거하고 반복 계속
+                        bubbles.splice(j, 1);
+                        j--;
+                    }
+                }
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+</script>
+
+
+</body>
+</html>
