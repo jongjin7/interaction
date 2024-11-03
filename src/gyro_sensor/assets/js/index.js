@@ -12,8 +12,6 @@ function init() {
   const waterTank = new Tank(ctx, tankX, tankY);
   const bubble = new FluidBlob(ctx);
 
-  waterTank.update();
-
   const isDragging = false;
   const startAngle = 0;
   const rotation = 0;
@@ -70,6 +68,7 @@ function init() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     waterTank.draw();
     // bubble();
+    waterTank.update();
 
     // 물 방울 애니메이션
     waterParticles.forEach((particle, index) => {

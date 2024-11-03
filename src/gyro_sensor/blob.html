@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Liquid Blob Animation</title>
     <style>
         body {
@@ -12,24 +12,31 @@
             font-family: Arial, sans-serif;
             background-color: #f0f0f0;
         }
+
         #controls {
             margin: 20px;
         }
+
         label {
             margin-right: 10px;
         }
 
-        canvas{
-            position: absolute; left:0; top:0;
-            width: 100%; height: 100%;
+        canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
         }
-        #canvas{
-            filter: url(#gooey);
+
+        #canvas {
+            z-index: 1;
+            /*filter: url(#gooey);*/
         }
-        .canvas-holder{
-            margin-top: 100px;
+
+        .canvas-holder {
             position: relative;
-            width: 600px;
+            width: 500px;
             height: 400px;
             outline: 4px solid pink;
         }
@@ -38,162 +45,287 @@
 <body>
 <h1>Liquid Blob Animation</h1>
 <div class="canvas-holder">
-    <canvas id="canvas" width="600" height="400" style="border:1px solid #ccc;"></canvas>
-    <canvas id="canvas-tank" width="600" height="400" style="border:1px solid green;"></canvas>
+    <canvas height="400" id="canvas" style="border:1px solid #ccc;" width="600"></canvas>
+    <canvas height="400" id="canvas-tank" style="border:1px solid green;" width="600"></canvas>
 </div>
 
 <div id="controls">
-    <label>
-        Distance:
-        <input type="range" id="distance" min="50" max="200" value="100">
-    </label>
-    <label>
-        Viscosity:
-        <input type="range" id="viscosity" min="0.1" max="1" step="0.1" value="0.5">
-    </label>
+    <label>Bubble Count:<input id="bntBubbleCount" max="200" min="2" type="range" value= '10'></label>
+    <span><button id="toggleRotation">Rotate Canvas</button>(<span class="value-text">0</span>)</span>
+    <button id="playAnimation">Play Animation</button>
 </div>
 
 <svg xmlns="http://www.w3.org/2000/svg">
     <defs>
         <filter id="blur">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
         </filter>
         <filter id="contrast">
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -6" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -6"/>
         </filter>
 
         <filter id="gooey">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -6" />
+            <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="12"/>
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -6"/>
         </filter>
     </defs>
 </svg>
 
 <script type="module">
-    import Tank from './assets/js/frames/tank';
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
+  import Tank from './assets/js/frames/tank';
 
-    const tankCanvas = document.getElementById("canvas-tank");
-    const tankCtx = tankCanvas.getContext("2d");
-    const tankX = 50; // 수조의 X 위치
-    const tankY = 50; // 수조의 상단 위치
-    const waterTank = new Tank(tankCtx, tankX, tankY);
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
 
-    waterTank.update();
-    let tankCenterX, tankCenterY;
-    const handleResize = () => {
-        const dpr = window.devicePixelRatio || 1;
-        tankCanvas.width = window.innerWidth * dpr;
-        tankCanvas.height = window.innerHeight * dpr;
-        tankCanvas.style.width = `${window.innerWidth}px`;
-        tankCanvas.style.height = `${window.innerHeight}px`;
-        tankCtx.scale(dpr, dpr);
-        tankCenterX = tankCanvas.width / 2 / 2;
-        tankCenterY = tankCanvas.height / 2 / 2;
-        console.log('tankCanvasInfo ==>', window.innerWidth, tankCenterX, tankCenterY);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
+  const tankCanvas = document.getElementById("canvas-tank");
+  const tankCtx = tankCanvas.getContext("2d");
+  const canvasWidth = 500;
+  const canvasHeight = 400;
+  const tankX = 0; // 수조의 X 위치
+  const tankY = 0; // 수조의 상단 위치
+  const waterTank = new Tank(tankCtx, tankX, tankY);
 
-    // 원의 기본 설정
-    const circle1 = { x: 200, y: 200, radius: 60, color: "rgba(255, 204, 0, 0.9)" };
-    const circle2 = { x: 300, y: 200, radius: 60, color: "rgba(255, 204, 0, 0.9)" };
-    const circle3 = { x: 300, y: 350, radius: 60, color: "rgba(255, 204, 0, 0.9)" };
+  waterTank.update();
+  let tankCenterX, tankCenterY;
+  const handleResize = () => {
+    const dpr = window.devicePixelRatio || 1;
+    tankCanvas.width = canvasWidth * dpr;
+    tankCanvas.height = canvasHeight * dpr;
+    tankCanvas.style.width = `${canvasWidth}px`;
+    tankCanvas.style.height = `${canvasHeight}px`;
+    tankCtx.scale(dpr, dpr);
+    tankCenterX = tankCanvas.width / 2;
+    tankCenterY = tankCanvas.height / 2;
+    console.log('tankCanvasInfo ==>', window.innerWidth, tankCenterX, tankCenterY);
+  };
+  handleResize();
+  window.addEventListener('resize', handleResize);
 
-    // 컨트롤러 초기 설정값
-    let distance = 140;
-    let viscosity = 0.5;
+  // 원의 기본 설정
+  const circle1 = {x: 200, y: 200, radius: 60, color: "rgba(255, 204, 0, 0.9)"};
+  const circle2 = {x: 300, y: 200, radius: 60, color: "rgba(255, 204, 0, 0.9)"};
 
-    // 컨트롤러 이벤트 리스너
-    document.getElementById("distance").addEventListener("input", (e) => {
-        distance = +e.target.value;
-        updateCircles();
-    });
-    document.getElementById("viscosity").addEventListener("input", (e) => {
-        viscosity = +e.target.value;
-        updateCircles();
-    });
+  // 컨트롤러 초기 설정값
+  let distance = 140;
 
-    // 원의 위치와 간격 조정 함수
-    function updateCircles() {
-        circle2.x = circle1.x + distance;
-        draw();
+  // 원의 위치와 간격 조정 함수
+  function updateCircles() {
+    circle2.x = circle1.x + distance;
+  }
+
+  // 거품
+  let rotationAngle = 0; // 캔버스 회전 각도
+  let isAnimating = false; // 애니메이션 상태
+  let isRotated = false;
+  let requestAnimationId = null;
+  let bubbleCount = 10;
+  let waterParticles = [];
+
+  // Bubble 클래스 정의
+  class Bubble {
+    constructor(x, y, radius, color) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+      this.color = color;
+      this.isAtBottom = false;
+
+      // 기름방울 크기에 따라 dy 속도를 설정하여, 큰 방울이 더 빠르게 하강하도록 함
+      this.dy = this.radius * 0.1; // 반지름에 비례한 속도
     }
 
-    // 두 원 간의 유체 연결 그리기
-    function drawConnection(c1, c2) {
-        const dx = c2.x - c1.x;
-        const dy = c2.y - c1.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < c1.radius + c2.radius) {
-            ctx.beginPath();
-            ctx.arc(circle3.x, circle3.y, circle3.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(200,100,255, 0.5)';
-            ctx.fill();
-            ctx.closePath();
+    // update 함수: 버블이 아래로 이동하도록 함
+    update() {
+      if (!this.isAtBottom) {
+        this.y += this.dy;
+        // 바닥에 도달하면 위치를 고정
+        if (this.y + this.radius >= canvas.height) {
+          this.y = canvas.height - this.radius;
+          this.isAtBottom = true;
         }
+      }
     }
 
-    // 애니메이션 그리기 함수
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // 구의 원형 그라데이션 만들기
-        const gradient1 = ctx.createRadialGradient(
-            circle1.x + circle1.radius * 0.3, // 내부 그라데이션 중심 X
-            circle1.x - circle1.radius * 0.3, // 내부 그라데이션 중심 Y
-            circle1.radius * 0.2,           // 내부 그라데이션 반지름
-            circle1.x,                // 외부 그라데이션 중심 X
-            circle1.y,                // 외부 그라데이션 중심 Y
-            circle1.radius                  // 외부 그라데이션 반지름
-        );
-
-        // 그라데이션 색상 설정
-        gradient1.addColorStop(0, '#ffffff'); // 중심은 밝은 색으로 시작
-        gradient1.addColorStop(0.5, '#00aaff'); // 중간은 구체 색상
-        gradient1.addColorStop(1, '#003366'); // 외곽은 어두운 색상
-
-
-        const gradient2 = ctx.createRadialGradient(
-            circle2.x - circle2.radius * 0.3 + distance * 0.2,       // distance 값에 따른 그라데이션 중심 X 이동
-            circle2.y - circle2.radius * 0.3,       // distance 값에 따른 그라데이션 중심 Y 이동
-            circle2.radius * 0.2,             // 내부 그라데이션 반지름
-            circle2.x,                        // 외부 그라데이션 중심 X
-            circle2.y,                        // 외부 그라데이션 중심 Y
-            circle2.radius                    // 외부 그라데이션 반지름
-        );
-
-        // 그라데이션 색상 설정
-        gradient2.addColorStop(0, '#ffffff'); // 중심은 밝은 색으로 시작
-        gradient2.addColorStop(0.5, '#00aaff'); // 중간은 구체 색상
-        gradient2.addColorStop(1, '#003366'); // 외곽은 어두운 색상
-
-
-
-
-        // 원 1과 2 그리기
-        ctx.beginPath();
-        ctx.arc(circle1.x, circle1.y, circle1.radius, 0, Math.PI * 2);
-        ctx.fillStyle = gradient1;
-        ctx.fill();
-        ctx.closePath();
-
-        ctx.beginPath();
-        ctx.arc(circle2.x, circle2.y, circle2.radius, 0, Math.PI * 2);
-        ctx.fillStyle = gradient2;
-        ctx.fill();
-        ctx.closePath();
-
-        // 유체 연결 그리기
-        drawConnection(circle1, circle2);
-
-        waterTank.draw();
+    // 버블을 그리는 함수
+    draw(ctx) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.closePath();
     }
 
-    // 초기화 및 업데이트 호출
-    updateCircles();
+    // 상단으로 위치 초기화 (필요시 사용)
+    resetPosition() {
+      this.y = 0;
+      this.isAtBottom = false;
+    }
+  }
+
+
+  // 초기화 함수
+  function init() {
+    waterParticles = Array.from({ length: bubbleCount }, () => {
+      const rad = Math.random() * 20;
+      return new Bubble(
+        Math.random() * canvas.width,
+        rad / 2, // 상단에서 시작하도록 설정
+        rad,
+        `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${Math.random().toFixed(2)})`
+      );
+    });
+
+    waterParticles.forEach(particle => {
+      particle.update();
+      particle.draw(ctx);
+    });
+
+    isAnimating = false; // 애니메이션 초기화
+  }
+
+  // 애니메이션 시작 함수
+  function startAnimation() {
+    isAnimating = true;
+    animate();
+  }
+
+  // 애니메이션 루프
+  function animate() {
+    if (!isAnimating) return;
+    //console.log('animate --> isAnimating')
+
+    const arrAnimatedEnd = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 물방울 그리기
+    waterParticles.forEach(particle => {
+      particle.update();
+      particle.draw(ctx);
+      arrAnimatedEnd.push(particle.isAtBottom);
+    });
+
+    // 애니메이션이 모두 끝났는지 확인
+    if (arrAnimatedEnd.every(item => item)) {
+      cancelAnimationFrame(requestAnimationId);
+      isAnimating = false;
+      playPause.removeAttribute('disabled')
+    } else {
+      requestAnimationId = requestAnimationFrame(animate);
+      playPause.setAttribute('disabled','disabled')
+    }
+  }
+
+  // 캔버스 회전 및 초기화
+  const playPause = document.getElementById("playAnimation");
+  function rotateCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log('rotateCanvas-->isAnimating', isAnimating)
+
+    rotationAngle = rotationAngle === 0 ? 180 : 0;
+    isRotated = !isRotated;
+    document.querySelector('.value-text').innerText = rotationAngle;
+
+    // 로테이션 시 버블의 위치와 방향 조정
+    // 애니메이션이 진행중인 상태인지 확인한다.
+    // 애니메이션이 정지된 상태에서 로테이션을 하면 로테이션이 일어나지 않는다.
+    // 애니메이션이 진행중인데, 로테이션이 발생하면 현재버블들은  아래로 떨어지던 버블들은 화면 상단으로 이동해야한다.
+    // 왜냐하면 기름과 물을 특성을 이용해 구현중이기 때문이다.(버블은 기름)
+    waterParticles.forEach(particle => {
+        // 초기값 리셋
+      // 버블이 떨어지고 있는 도중에 로테이션이 발생하면 particle.dy값을 저장해서 다시 이어서 시작하면 돼
+      particle.isAtBottom = false;
+      particle.dy = Math.random() * 2 + 1;
+      particle.y = particle.radius; // 항상 위쪽에 위치
+      particle.dy = Math.abs(particle.dy); // 아래로 이동하도록 설정
+      if (rotationAngle === 180) {
+        // 180도 회전 시 위로 이동하도록 설정
+
+      } else {
+        // 0도 회전 시 아래로 이동하도록 설정
+        //particle.y = canvas.height - particle.radius; // 항상 아래쪽에 위치
+        //particle.dy = -Math.abs(particle.dy); // 위로 이동하도록 설정
+      }
+
+    });
+    console.table(waterParticles)
+
+
+    if (!isAnimating) {
+      waterParticles.forEach(particle => {
+        particle.draw(ctx);
+      });
+    }
+  }
+
+  // 이벤트 리스너 설정
+  document.getElementById("bntBubbleCount").addEventListener("click", (e)=>{
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    bubbleCount = e.target.value;
+    init();
+  });
+  document.getElementById("toggleRotation").addEventListener("click", rotateCanvas);
+  playPause.addEventListener("click", (e) => {
+    const target = e.target;
+    if (!isAnimating) {
+      target.disabled = ''
+      startAnimation();
+    }else{
+      target.disabled = 'disabled'
+    }
+  });
+
+  // 애니메이션 그리기 함수-테스트
+  function draw1() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 구의 원형 그라데이션 만들기
+    const gradient1 = ctx.createRadialGradient(
+      circle1.x + circle1.radius * 0.3, // 내부 그라데이션 중심 X
+      circle1.x - circle1.radius * 0.3, // 내부 그라데이션 중심 Y
+      circle1.radius * 0.2,           // 내부 그라데이션 반지름
+      circle1.x,                // 외부 그라데이션 중심 X
+      circle1.y,                // 외부 그라데이션 중심 Y
+      circle1.radius                  // 외부 그라데이션 반지름
+    );
+
+    // 그라데이션 색상 설정
+    gradient1.addColorStop(0, '#ffffff'); // 중심은 밝은 색으로 시작
+    gradient1.addColorStop(0.5, '#00aaff'); // 중간은 구체 색상
+    gradient1.addColorStop(1, '#003366'); // 외곽은 어두운 색상
+
+
+    const gradient2 = ctx.createRadialGradient(
+      circle2.x - circle2.radius * 0.3 + distance * 0.2,       // distance 값에 따른 그라데이션 중심 X 이동
+      circle2.y - circle2.radius * 0.3,       // distance 값에 따른 그라데이션 중심 Y 이동
+      circle2.radius * 0.2,             // 내부 그라데이션 반지름
+      circle2.x,                        // 외부 그라데이션 중심 X
+      circle2.y,                        // 외부 그라데이션 중심 Y
+      circle2.radius                    // 외부 그라데이션 반지름
+    );
+
+    // 그라데이션 색상 설정
+    gradient2.addColorStop(0, '#ffffff'); // 중심은 밝은 색으로 시작
+    gradient2.addColorStop(0.5, '#00aaff'); // 중간은 구체 색상
+    gradient2.addColorStop(1, '#003366'); // 외곽은 어두운 색상
+
+
+    // 원 1과 2 그리기
+    ctx.beginPath();
+    ctx.arc(circle1.x, circle1.y, circle1.radius, 0, Math.PI * 2);
+    ctx.fillStyle = gradient1;
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.arc(circle2.x, circle2.y, circle2.radius, 0, Math.PI * 2);
+    ctx.fillStyle = gradient2;
+    ctx.fill();
+    ctx.closePath();
+  }
+
+  // 초기화 및 업데이트 호출
+  updateCircles();
+  init();
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 export default class Tank {
   constructor(ctx, tankX, tankY) {
-    this.ctx = ctx;
-    this.tankX = tankX;
+    this.ctx = ctx ?? 0;
+    this.tankX = tankX ?? 0;
     this.tankY = tankY;
     this.dpr = window.devicePixelRatio || 1;
     this.waterHeight = 0;
@@ -42,9 +42,9 @@ export default class Tank {
 
     // 여백을 두고 이미지 중앙에 맞추기
     const xOffset = window.innerWidth / 2 - drawWidth / 2;
-    const yOffset = 50;
+    const yOffset = 0;
     // console.log('offsetX=>', xOffset, window.innerWidth, this.tankWidth);
-    // console.log('crop', cropX, cropY);
+    // console.log('crop', cropX, cropY, this.img.width);
     // 이미지 그리기
     this.ctx.drawImage(
       this.img,
@@ -54,8 +54,8 @@ export default class Tank {
       // this.tankHeight * this.dpr, // 크롭할 크기
       this.img.width - cropX * this.dpr, // 크롭할 너비
       this.img.height - cropY * this.dpr, // 크롭할 높이
-      xOffset,
-      yOffset, // 캔버스에 그릴 위치
+      this.tankX, // 캔버스에 그릴 위치
+      this.tankY,
       this.tankWidth,
       this.tankHeight, // 캔버스에 그릴 크기
     );
@@ -73,8 +73,8 @@ export default class Tank {
     }
 
     // 기본 배경
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    this.ctx.fillRect(50, 50, this.tankWidth, this.tankHeight);
+    // this.ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    // this.ctx.fillRect(50, 50, this.tankWidth, this.tankHeight);
 
     // this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
     // this.ctx.fillRect(this.tankX, this.tankY, this.tankWidth, this.tankHeight);
