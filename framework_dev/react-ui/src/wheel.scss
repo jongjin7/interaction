@@ -47,6 +47,6 @@
     }
 
     & > div {
-        transform: rotate(calc((var(--rotate-angle) + 52 * var(--i)) * -1deg))
+        transform: rotate(calc((var(--rotate-angle) + 52 * var(--i)) * -1deg));
     }
 }

@@ -20,13 +20,13 @@ const NaverGreenDot = () => {
       return Math.atan2(dy, dx) * (180 / Math.PI);
     }
 
-    wheel.addEventListener('mousedown', (e) => {
+    wheel.addEventListener('pointerdown', (e) => {
       isDragging = true;
       startAngle = getAngle(e.clientX, e.clientY) - rotation;
       clearInterval(momentumInterval); // 관성 효과 멈추기
     });
 
-    document.addEventListener('mouseup', () => {
+    document.addEventListener('pointerup', () => {
       isDragging = false;
 
       // 관성 효과 시작 (속도가 남아 있을 때만)
@@ -50,7 +50,7 @@ const NaverGreenDot = () => {
       }
     });
 
-    document.addEventListener('mousemove', (e) => {
+    document.addEventListener('pointermove', (e) => {
       if (isDragging) {
         const currentAngle = getAngle(e.clientX, e.clientY);
         const angleDifference = currentAngle - startAngle;
