@@ -1,7 +1,6 @@
-import './App.scss';
-import { useEffect } from 'react';
-
-function App() {
+import React, { useEffect } from 'react';
+import '../wheel.scss';
+const NaverGreenDot = () => {
   useEffect(() => {
     const wheel = document.querySelector('.wheel');
     const items = document.querySelectorAll('.option');
@@ -92,33 +91,31 @@ function App() {
     }
   }, []);
   return (
-    <div className="App">
-      <div className="wheel">
-        <div className="center-circle"></div>
-        <div className="option" style={{ '--i': 0 }}>
-          <div>음악</div>
-        </div>
-        <div className="option" style={{ '--i': 1 }}>
-          <div>음성</div>
-        </div>
-        <div className="option" style={{ '--i': 2 }}>
-          <div>내 주변</div>
-        </div>
-        <div className="option" style={{ '--i': 3 }}>
-          <div>검색</div>
-        </div>
-        <div className="option" style={{ '--i': 4 }}>
-          <div>파파고 번역</div>
-        </div>
-        <div className="option" style={{ '--i': 5 }}>
-          <div>QR 코드</div>
-        </div>
-        <div className="option" style={{ '--i': 6 }}>
-          <div>렌즈</div>
-        </div>
+    <div className="wheel">
+      <div className="center-circle"></div>
+      <div className="option" style={{ '--i': 0 }}>
+        <div>음악</div>
+      </div>
+      <div className="option" style={{ '--i': 1 }}>
+        <div>음성</div>
+      </div>
+      <div className="option" style={{ '--i': 2 }}>
+        <div>내 주변</div>
+      </div>
+      <div className="option" style={{ '--i': 3 }}>
+        <div>검색</div>
+      </div>
+      <div className="option" style={{ '--i': 4 }}>
+        <div>파파고 번역</div>
+      </div>
+      <div className="option" style={{ '--i': 5 }}>
+        <div>QR 코드</div>
+      </div>
+      <div className="option" style={{ '--i': 6 }}>
+        <div>렌즈</div>
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default NaverGreenDot;
