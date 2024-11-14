@@ -1,7 +1,14 @@
+/** @jsxImportSource @emotion/react */
 import React, { useState } from 'react';
-import InputField from '@components/InputField';
+import InputField from '@components/common/InputField';
+import S from '@components/common/Button';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
+
+const addStyle = css`
+  border: 2px dotted red;
+  font-size: 32px;
+`;
 
 const SearchContainer = styled.fieldset`
   position: relative;
@@ -22,21 +29,6 @@ const SearchLabel = styled.label`
   display: block;
   font-size: 16px;
   margin-bottom: 8px;
-`;
-
-const Button = styled.button`
-  position: absolute;
-  right: 0;
-  top: 0;
-  border: 1px solid red;
-  height: 48px;
-  width: 48px;
-  padding: 8px;
-  cursor: pointer;
-  svg {
-    width: 100%;
-    height: 100%;
-  }
 `;
 
 const SuggestionsList = styled.ul`
@@ -68,10 +60,10 @@ const SuggestionItem = styled.li`
 const QuickSearch = () => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
 
   const fruits = ['Apple', 'Banana', 'Orange', 'Grapes', 'Peach', 'Pineapple', 'Strawberry', 'Watermelon', 'Mango'];
 
-  // 필터링된 제안 목록을 계산합니다.
   const handleInputChange = (e) => {
     const value = e.target.value;
     setQuery(value);
@@ -79,28 +71,44 @@ const QuickSearch = () => {
       const filteredSuggestions = fruits.filter((fruit) => fruit.toLowerCase().includes(value.toLowerCase()));
       setSuggestions(filteredSuggestions);
     } else {
-      setSuggestions([]);
+      setSuggestions(fruits);
     }
   };
 
-  // 사용자가 제안 항목을 클릭했을 때 입력 필드에 값을 넣습니다.
+  const handleFocus = () => {
+    setIsFocused(true);
+    setSuggestions(fruits); // 포커스 시 전체 목록 표시
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false); // 포커스 해제 시 목록 숨김
+  };
+
   const handleSuggestionClick = (suggestion) => {
     setQuery(suggestion);
-    setSuggestions([]);
+    setIsFocused(false);
   };
   return (
     <SearchContainer>
       <Title>Quick Search</Title>
       <SearchLabel htmlFor="search">Search for a fruit:</SearchLabel>
       <SearchField>
-        <InputField value={query} onChange={handleInputChange} id="search" placeholder="Start typing..." />
-        <Button type={'button'}>
+        <InputField
+          type="search"
+          value={query}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder="Search for a fruit..."
+          autoComplete="off"
+        />
+        <S.IconButton css={addStyle}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" />
           </svg>
-        </Button>
+        </S.IconButton>
       </SearchField>
-      {suggestions.length > 0 && (
+      {isFocused && suggestions.length > 0 && (
         <SuggestionsList>
           {suggestions.map((suggestion, index) => (
             <SuggestionItem key={index} onClick={() => handleSuggestionClick(suggestion)}>
