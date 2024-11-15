@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import InputField from '@components/common/InputField';
 import S from '@components/common/Button';
 import styled from '@emotion/styled';
@@ -22,9 +22,11 @@ const Title = styled.legend`
   text-align: center;
   font-size: 24px;
 `;
+
 const SearchField = styled.div`
   position: relative;
 `;
+
 const SearchLabel = styled.label`
   display: block;
   font-size: 16px;
@@ -48,25 +50,40 @@ const SuggestionsList = styled.ul`
 `;
 
 const SuggestionItem = styled.li`
+  padding: 2px;
+`;
+const SuggestionButton = styled.button`
+  width: 100%;
+  height: inherit;
   padding: 10px;
   font-size: 16px;
+  border: none;
   cursor: pointer;
+  background-color: ${(props) => (props.selected ? '#f0f0f0' : 'transparent')};
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #f0f011;
   }
 `;
 
+const fruits = ['Apple', 'Banana', 'Orange', 'Grapes', 'Peach', 'Pineapple', 'Strawberry', 'Watermelon', 'Mango'];
+
 const QuickSearch = () => {
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState(fruits);
   const [isFocused, setIsFocused] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 
-  const fruits = ['Apple', 'Banana', 'Orange', 'Grapes', 'Peach', 'Pineapple', 'Strawberry', 'Watermelon', 'Mango'];
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  // Ref to detect clicks outside the suggestion list
+  const suggestionsRef = useRef(null);
+  const inputRef = useRef(null);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setQuery(value);
+
     if (value) {
       const filteredSuggestions = fruits.filter((fruit) => fruit.toLowerCase().includes(value.toLowerCase()));
       setSuggestions(filteredSuggestions);
@@ -77,28 +94,71 @@ const QuickSearch = () => {
 
   const handleFocus = () => {
     setIsFocused(true);
-    setSuggestions(fruits); // 포커스 시 전체 목록 표시
   };
 
-  const handleBlur = () => {
-    setIsFocused(false); // 포커스 해제 시 목록 숨김
+  const handleBlur = (e) => {
+    // Delay the blur to check if the user clicked inside the suggestion list
+    setTimeout(() => {
+      // Check if the clicked target is inside the suggestions list or the input field itself
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(e.relatedTarget) &&
+        inputRef.current !== e.relatedTarget
+      ) {
+        setIsFocused(false); // Close the suggestion list if clicked outside
+      }
+    }, 100);
+  };
+
+  const handleKeyDown = (e) => {
+    if (!isFocused) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        // 아래 방향키: 인덱스를 하나 증가시킴
+        setSelectedIndex((prevIndex) => {
+          // 목록의 끝을 넘어가지 않도록 제한
+          return prevIndex < suggestions.length - 1 ? prevIndex + 1 : prevIndex;
+        });
+        break;
+      case 'ArrowUp':
+        // 위 방향키: 인덱스를 하나 감소시킴
+        setSelectedIndex((prevIndex) => {
+          // 인덱스가 0보다 작지 않도록 제한
+          return prevIndex > 0 ? prevIndex - 1 : prevIndex;
+        });
+        break;
+      case 'Enter':
+        // Enter 키: 현재 선택된 항목을 선택
+        if (selectedIndex !== -1) {
+          handleSuggestionClick(suggestions[selectedIndex]);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion);
-    setIsFocused(false);
+    setSelectedSuggestion(suggestion);
+    setQuery(suggestion); // Update input value with selected suggestion
+    setIsFocused(false); // Close suggestions list
+    setSelectedIndex(-1); // Reset selected index
   };
+
   return (
     <SearchContainer>
       <Title>Quick Search</Title>
       <SearchLabel htmlFor="search">Search for a fruit:</SearchLabel>
       <SearchField>
         <InputField
+          ref={inputRef}
           type="search"
           value={query}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           placeholder="Search for a fruit..."
           autoComplete="off"
         />
@@ -109,14 +169,18 @@ const QuickSearch = () => {
         </S.IconButton>
       </SearchField>
       {isFocused && suggestions.length > 0 && (
-        <SuggestionsList>
+        <SuggestionsList ref={suggestionsRef}>
           {suggestions.map((suggestion, index) => (
-            <SuggestionItem key={index} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion}
+            <SuggestionItem key={index}>
+              <SuggestionButton onClick={() => handleSuggestionClick(suggestion)} selected={index === selectedIndex}>
+                {suggestion}
+              </SuggestionButton>
             </SuggestionItem>
           ))}
         </SuggestionsList>
       )}
+
+      {selectedSuggestion && <div>You selected: {selectedSuggestion}</div>}
     </SearchContainer>
   );
 };

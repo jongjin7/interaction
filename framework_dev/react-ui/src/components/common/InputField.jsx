@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from '@emotion/styled';
 
 const TextInputField = styled.input`
@@ -18,8 +18,8 @@ const TextInputField = styled.input`
     outline: none;
   }
 `;
-const InputField = (props) => {
-  return <TextInputField {...props} />;
-};
+const InputField = forwardRef((props, ref) => {
+  return <TextInputField ref={ref} {...props} />;
+});
 
 export default InputField;
