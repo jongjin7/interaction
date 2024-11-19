@@ -1,0 +1,59 @@
+$prefix-tooltip: #{$prefix-component}Tooltip;
+.#{$prefix-tooltip}-root {
+    --#{$prefix}body-bg: #999;
+    --#{$prefix}emphasis-color: gray;
+    --#{$prefix}border-radius: 8px;
+    --#{$prefix}tooltip-zindex: #{$zindex-tooltip};
+    --#{$prefix}tooltip-max-width: #{$tooltip-max-width};
+    --#{$prefix}tooltip-padding-x: #{$tooltip-padding-x};
+    --#{$prefix}tooltip-padding-y: #{$tooltip-padding-y};
+    --#{$prefix}tooltip-color: #{$tooltip-color};
+    --#{$prefix}tooltip-bg: #{$tooltip-bg};
+    --#{$prefix}tooltip-border-radius: #{$tooltip-border-radius};
+    --#{$prefix}tooltip-opacity: #{$tooltip-opacity};
+    --#{$prefix}tooltip-arrow-width: #{$tooltip-arrow-width};
+    --#{$prefix}tooltip-arrow-height: #{$tooltip-arrow-height};
+
+    position: absolute; left:0; top: 0;
+    z-index: var(--#{$prefix}tooltip-zindex);
+    display: block;
+    width:0; height:0;
+    @include reset-text();
+    word-wrap: break-word;
+    opacity: 0;
+    border-radius: var(--#{$prefix}tooltip-border-radius);
+    font-size: 13px;
+    font-weight: 400;
+    color: white;
+    transition: opacity 0.15s;
+    will-change: transform, opacity;
+
+
+
+    &.#{$prefix-component}Style-show {
+        width:auto; height: auto;
+        opacity: var(--#{$prefix}tooltip-opacity);
+        .#{$prefix-tooltip}__inner {
+            display: block;
+        }
+    }
+
+    .#{$prefix-tooltip}__arrow {
+        position: absolute;
+        background: var(--#{$prefix}tooltip-bg);
+        width: 8px;
+        height: 8px;
+        transform: rotate(45deg);
+    }
+}
+
+// Wrapper for the tooltip content
+.#{$prefix-tooltip}__inner {
+    display: none;
+    max-width: var(--#{$prefix}tooltip-max-width);
+    padding: var(--#{$prefix}tooltip-padding-y) var(--#{$prefix}tooltip-padding-x);
+    color: var(--#{$prefix}tooltip-color);
+    //text-align: center;
+    background-color: var(--#{$prefix}tooltip-bg);
+    @include border-radius(var(--#{$prefix}tooltip-border-radius));
+}

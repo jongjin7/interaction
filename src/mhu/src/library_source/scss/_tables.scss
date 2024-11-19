@@ -1,0 +1,187 @@
+:root {
+    /* table */
+    --#{$prefix}table-text-color: #000;
+    --#{$prefix}table-head-line-color: #000;
+    --#{$prefix}table-body-line-color: #A9A8AA;
+
+    --#{$prefix}table-padding-x: 12px;
+    --#{$prefix}table-padding-y: 8px;
+
+    --#{$prefix}table-head-font-size: 16px;
+    --#{$prefix}table-head-font-weight: 700;
+
+    --#{$prefix}table-body-font-size: 16px;
+    --#{$prefix}table-body-font-weight: 500;
+
+    /* pagination */
+    --#{$prefix}pagination-margin-top: 28px;
+    --#{$prefix}pagination-icon-size: 20px;
+    --#{$prefix}pagination-icon-color: #7D7D80;
+    --#{$prefix}pagination-number-size : 28px;
+    --#{$prefix}pagination-number-padding: 10px;
+
+    --#{$prefix}pagination-gap: 12px;
+    --#{$prefix}pagination-font-size: 16px;
+    --#{$prefix}pagination-text-color: var(--color-default);
+    --#{$prefix}pagination-active-bg-color: var(--color-primary);
+    --#{$prefix}pagination-active-text-color: #fff;
+    --#{$prefix}pagination-active-radius: 8px;
+    --#{$prefix}pagination-active-font-weight: 400;
+
+    --#{$prefix}pagination-hover-bg-color: rgba(39, 39, 44, 0.15);
+
+}
+/* table */
+.mhuTableWrap-root {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    overflow: auto;
+    white-space: nowrap;
+}
+.mhuTable-root {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    color: var(--#{$prefix}table-text-color);
+    thead {
+        th {
+            font-size: var(--#{$prefix}table-head-font-size);
+            font-weight: var(--#{$prefix}table-head-font-weight);
+        }
+    }
+    tbody {
+        th, td {
+            border-bottom: 1px solid var(--#{$prefix}table-body-line-color);
+        }
+        th {
+            font-size: var(--#{$prefix}table-head-font-size);
+            font-weight: var(--#{$prefix}table-head-font-weight);
+        }
+        td {
+            font-size: var(--#{$prefix}table-body-font-size);
+            font-weight: var(--#{$prefix}table-body-font-weight);
+        }
+        tr:first-child {
+            th, td {
+                border-top: 1px solid var(--#{$prefix}table-head-line-color);
+            }
+        }
+        tr:last-child {
+            th, td {
+                border-bottom: 1px solid var(--#{$prefix}table-head-line-color);
+            }
+        }
+    }
+    td, th {
+        padding: var(--#{$prefix}table-padding-y) var(--#{$prefix}table-padding-x);
+        line-height: var(--#{$prefix}btn-height-sm);
+        .mhuFormControlCheck-root {
+            vertical-align: text-top;
+            margin-right: var(--#{$prefix}table-padding-x);
+        }
+        .mhuButton-root {
+            vertical-align: top;
+        }
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    @media (max-width: 991.98px){
+        &-lg {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+    @media (max-width: 767.98px) {
+        &-md {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    }
+}
+
+// pagination
+.mhuPagination-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--#{$prefix}pagination-gap);
+    margin-top: var(--#{$prefix}pagination-margin-top);
+
+    // icon
+    .mhuPagination__link {
+        display: block;
+        width: var(--#{$prefix}pagination-icon-size);
+        height: var(--#{$prefix}pagination-icon-size);
+        border-radius: var(--#{$prefix}pagination-active-radius);
+        &:hover, &:focus {
+            background-color: var(--#{$prefix}pagination-hover-bg-color);
+        }
+    }
+    .mhuPagination__link-prevEnd, .mhuPagination__link-nextEnd {
+        &:before {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 100%;
+            @include background-svg('<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">\
+        <path d="M12.6901 11.5267C12.9501 11.2667 12.9501 10.8467 12.6901 10.5867L10.1101 7.99999L12.6967 5.41332C12.9567 5.15332 12.9567 4.73332 12.6967 4.47332C12.4367 4.21332 12.0167 4.21332 11.7567 4.47332L8.69673 7.53332C8.43673 7.79332 8.43673 8.21332 8.69673 8.47332L11.7567 11.5333C12.0101 11.7867 12.4301 11.7867 12.6901 11.5267Z" fill="#7D7D80" />\
+        <path d="M8.29673 11.5267C8.55673 11.2667 8.55673 10.8467 8.29673 10.5867L5.71673 7.99999L8.3034 5.41332C8.5634 5.15332 8.5634 4.73332 8.3034 4.47332C8.0434 4.21332 7.6234 4.21332 7.3634 4.47332L4.3034 7.53332C4.0434 7.79332 4.0434 8.21332 4.3034 8.47332L7.3634 11.5333C7.61673 11.7867 8.03673 11.7867 8.29673 11.5267Z" fill="#7D7D80" />\
+        </svg>');
+            background-color: var(--#{$prefix}pagination-icon-color);
+        }
+    }
+    .mhuPagination__link-prev, .mhuPagination__link-next {
+        &:before {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 100%;
+            @include background-svg('<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">\
+        <path d="M10.9538 10.5837L8.36712 7.99706L10.9538 5.41039C11.2138 5.15039 11.2138 4.73039 10.9538 4.47039C10.6938 4.21039 10.2738 4.21039 10.0138 4.47039L6.95379 7.53039C6.69379 7.79039 6.69379 8.21039 6.95379 8.47039L10.0138 11.5304C10.2738 11.7904 10.6938 11.7904 10.9538 11.5304C11.2071 11.2704 11.2138 10.8437 10.9538 10.5837Z" fill="#7D7D80"/>\
+        </svg>');
+            background-color: var(--#{$prefix}pagination-icon-color);
+        }
+    }
+    .mhuPagination__link-nextEnd, .mhuPagination__link-next {
+        transform: rotate(180deg);
+    }
+
+    // 숫자
+    .mhuPagination__number-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        gap: var(--#{$prefix}pagination-gap);
+    }
+    .mhuPagination__number-list > li {
+        text-align: center;
+    }
+    .mhuPagination__number-list > li > a, .mhuPagination__number-list > li > strong {
+        display: block;
+        height: var(--#{$prefix}pagination-number-size);
+        padding: 0 var(--#{$prefix}pagination-number-padding);
+        line-height: var(--#{$prefix}pagination-number-size);
+        font-size: var(--#{$prefix}pagination-font-size);
+        color: var(--#{$prefix}pagination-text-color);
+        text-decoration: none;
+        border-radius: var(--#{$prefix}pagination-active-radius);
+        &:hover, &:focus {
+            background-color: var(--#{$prefix}pagination-hover-bg-color);
+        }
+    }
+    .mhuPagination__number-list > li > .mhuPagination__current {
+        display: block;
+        background-color: var(--#{$prefix}pagination-active-bg-color);
+        color: var(--#{$prefix}pagination-active-text-color);
+        font-weight: var(--#{$prefix}pagination-active-font-weight);
+        &:hover, &:focus {
+            background-color: var(--#{$prefix}pagination-active-bg-color);
+        }
+    }
+}

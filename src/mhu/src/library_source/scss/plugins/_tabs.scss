@@ -1,0 +1,86 @@
+$prefix-tab: mhuTab;
+$tab-nav: #{$prefix-tab}Nav;
+$tab-content: #{$prefix-tab}Content;
+
+.mhuTab-root {
+    width: 100%;
+}
+
+.#{$tab-nav}-root {
+    position: relative;
+    background-image: linear-gradient(to top,#ccc 0.5px, transparent 0.5px);
+}
+
+.#{$tab-nav}-list {
+    display: flex;
+    margin:0;
+    padding:0;
+    list-style:none;
+
+    &__item{
+
+    }
+
+    &__link, &__link--href {
+        display: block;
+        position: relative;
+        height: 100%;
+        padding: 15px;
+        text-align: center;
+        color: var(--color-default);
+        text-decoration: none;
+        transition: opacity 0.15s ease;
+    }
+
+    &__link:after, &__link--href:after{
+        display: block;
+        position: absolute; left:50%; bottom:0;
+        width:0;
+        height:4px;
+        background-color: var(--color-primary);
+        transform: translateX(-50%);
+        transition: width 0.3s ease;
+        content:'';
+    }
+
+    &__link.mhuState-active, &__link--href.mhuState-active {
+        opacity: 1 !important;
+        pointer-events: none;
+    }
+
+    &__link:hover,
+    &__link.mhuState-active,
+    &__link--href:hover,
+    &__link--href.mhuState-active{
+        color: var(--color-primary);
+    }
+
+    &__link.mhuState-active:after,
+    &__link--href.mhuState-active:after{
+        width:100%;
+    }
+}
+
+
+
+.#{$tab-content}-root {
+    position: relative;
+}
+.#{$tab-content}-panel {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    &__content{
+
+    }
+    &__content img{
+        max-width: 100%;
+    }
+
+    &.mhuState-active {
+        display: block;
+        z-index: 1;
+    }
+}
+

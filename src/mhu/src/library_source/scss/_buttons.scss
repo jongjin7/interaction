@@ -1,0 +1,253 @@
+:root {
+    // button
+    --#{$prefix}btn-height: 40px;
+    --#{$prefix}btn-font-size: 16px;
+    --#{$prefix}btn-font-weight: 500;
+    --#{$prefix}btn-padding: 0 16px;
+    --#{$prefix}btn-radius: 8px;
+
+    --#{$prefix}btn-height-sm: 32px;
+    --#{$prefix}btn-font-size-sm: 14px;
+    --#{$prefix}btn-padding-sm: 0 12px;
+
+    /*** button color 추가 가능 ***/
+    --#{$prefix}btn-primary: var(--color-primary);
+    --#{$prefix}btn-primary-text: #fff;
+    --#{$prefix}btn-primary-hover: var(--color-primary-dark);
+
+    --#{$prefix}btn-secondary: #fff;
+    --#{$prefix}btn-secondary-text: var(--color-black);
+    --#{$prefix}btn-secondary-hover: #F4F4F4;
+
+    --#{$prefix}btn-danger: #FF4F79;
+    --#{$prefix}btn-danger-text: #fff;
+    --#{$prefix}btn-danger-hover: #FF006B;
+
+    --#{$prefix}btn-text-hover: #F4F4F4;
+
+    --#{$prefix}btn-disabled-bg: #F4F4F4;
+    --#{$prefix}btn-disabled-text: #A9A8AA;
+
+    // button gap
+    --#{$prefix}btn-spacing-x-minus: -8px;
+    --#{$prefix}btn-spacing-x : 8px;
+    --#{$prefix}btn-spacing-y : 12px;
+
+    // icon button
+    --#{$prefix}btn-icon-size: 20px;
+}
+
+// color
+@mixin button-bg($bg, $text, $hover) {
+    background-color: $bg;
+    color: $text;
+    &:hover, &:active {
+        background-color: $hover;
+    }
+}
+@mixin button-outline-bg($color, $hover) {
+    border: 1px solid $color;
+    color: $color;
+    background-color: transparent;
+    &:hover {
+        background-color: $hover;
+    }
+}
+@mixin button-text($color) {
+    color: $color;
+    background-color: transparent;
+    &:hover {
+        background-color: var(--#{$prefix}btn-text-hover);
+    }
+}
+
+// default
+.mhuButton-root {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--#{$prefix}btn-height);
+    padding: var(--#{$prefix}btn-padding);
+    font-size: var(--#{$prefix}btn-font-size);
+    font-weight: var(--#{$prefix}btn-font-weight);
+    line-height: var(--#{$prefix}btn-height);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    vertical-align: middle;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--#{$prefix}btn-radius);
+    color: var(--#{$prefix}btn-primary-text);
+    background-color: var(--#{$prefix}btn-primary);
+    .mhuText-root {
+        font-size: var(--#{$prefix}btn-font-size);
+        font-weight: var(--#{$prefix}btn-font-weight);
+        line-height: var(--#{$prefix}btn-height);
+    }
+    &:hover {
+        background-color: var(--#{$prefix}btn-primary-hover);
+    }
+
+    &[class*=-outline] {
+        line-height: calc(var(--#{$prefix}btn-height) - 2px);
+    }
+
+    // size
+    &.mhuButton--size-sm {
+        height: var(--#{$prefix}btn-height-sm);
+        padding: var(--#{$prefix}btn-padding-sm);
+        font-size: var(--#{$prefix}btn-font-size-sm);
+        line-height: var(--#{$prefix}btn-height-sm);
+        .mhuText-root {
+            font-size: var(--#{$prefix}btn-font-size-sm);
+            line-height: var(--#{$prefix}btn-height-sm);
+        }
+    }
+
+    &:disabled,
+    &.disabled {
+        cursor: default;
+        color: var(--#{$prefix}btn-disabled-text);
+        background: var(--#{$prefix}btn-disabled-bg);
+        &:hover {
+            cursor: default;
+            color: var(--#{$prefix}btn-disabled-text);
+            background: var(--#{$prefix}btn-disabled-bg);
+        }
+    }
+    &[class*=-outline]:disabled,
+    &[class*=-outline].disabled {
+        border-color: var(--#{$prefix}btn-disabled-text);
+        &:hover {
+            border-color: var(--#{$prefix}btn-disabled-text);
+        }
+    }
+    &[class*=-text]:disabled,
+    &[class*=-text].disabled {
+        background-color: transparent;
+        &:hover {
+            background-color: transparent;
+        }
+    }
+}
+// color - 추가 가능
+.mhuButton--primary {
+    @include button-bg(var(--#{$prefix}btn-primary), var(--#{$prefix}btn-primary-text), var(--#{$prefix}btn-primary-hover));
+}
+.mhuButton--secondary {
+    @include button-bg(var(--#{$prefix}btn-secondary), var(--#{$prefix}btn-secondary-text), var(--#{$prefix}btn-secondary-hover));
+}
+.mhuButton--danger {
+    @include button-bg(var(--#{$prefix}btn-danger), var(--#{$prefix}btn-danger-text), var(--#{$prefix}btn-danger-hover));
+}
+.mhuButton--primary-outline {
+    @include button-outline-bg(var(--#{$prefix}btn-primary), var(--#{$prefix}btn-secondary-hover));
+}
+.mhuButton--primary-text {
+    @include button-text(var(--#{$prefix}btn-primary));
+}
+
+// icon + text
+.mhuButton-root .mhuIcon-root, .mhuButton-root .mhuIcon-root svg {
+    width: var(--#{$prefix}btn-icon-size);
+    height: var(--#{$prefix}btn-icon-size);
+}
+.mhuButton-root .mhuButton__icon > * {
+    vertical-align: middle;
+}
+.mhuButton-root .mhuButton__icon + .mhuButton__text,
+.mhuButton-root .mhuButton__text + .mhuButton__icon {
+    padding-left: 6px;
+}
+.mhuButton-root .mhuIcon-root + .mhuText-root,
+.mhuButton-root .mhuText-root + .mhuIcon-root {
+    padding-left: 6px;
+}
+
+.mhuButton-root .mhuButton__icon img,
+.mhuButton-root .mhuButton__icon svg,
+.mhuButton-root .mhuIcon-root img,
+.mhuButton-root .mhuIcon-root svg {
+    display: block;
+}
+
+// 버튼 양끝 정렬
+.mhuButton--between .mhuIcon-root:last-child {
+    margin-left: auto
+}
+
+// arrow effect
+.mhuButton-root:hover .mhuTrans-left {
+    transform: translateX(-4px);
+}
+.mhuButton-root:hover .mhuTrans-right {
+    transform: translateX(4px);
+}
+
+// group box
+.mhuButtonBox-root {
+    display: flex;
+    margin-right: var(--#{$prefix}btn-spacing-x-minus);
+    margin-left: var(--#{$prefix}btn-spacing-x-minus);
+}
+.mhuButtonBox-root .mhuButton-root {
+    margin-left: var(--#{$prefix}btn-spacing-x);
+    margin-right: var(--#{$prefix}btn-spacing-x);
+}
+.mhuButtonBox-root.mhuButtonBox--full {
+    flex-direction: column;
+    gap: var(--#{$prefix}btn-spacing-y);
+}
+.mhuButtonBox-root.mhuButtonBox--divide .mhuButton-root {
+    flex: 1;
+}
+
+// icon button
+.mhuIconButton-root {
+    &:after {
+        content: "";
+        display: block;
+        width: var(--#{$prefix}btn-icon-size);
+        height: var(--#{$prefix}btn-icon-size);
+    }
+}
+.mhuIconButton--search {
+    &:after {
+        @include background-svg('<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">\
+    <path d="M13.8137 12.5598H13.1553L12.922 12.3348C13.922 11.1681 14.4387 9.57643 14.1553 7.88477C13.7637 5.5681 11.8303 3.7181 9.49701 3.43477C5.97201 3.00143 3.00534 5.9681 3.43867 9.4931C3.72201 11.8264 5.57201 13.7598 7.88867 14.1514C9.58034 14.4348 11.172 13.9181 12.3387 12.9181L12.5637 13.1514V13.8098L16.1053 17.3514C16.447 17.6931 17.0053 17.6931 17.347 17.3514C17.6887 17.0098 17.6887 16.4514 17.347 16.1098L13.8137 12.5598ZM8.81367 12.5598C6.73867 12.5598 5.06367 10.8848 5.06367 8.80977C5.06367 6.73477 6.73867 5.05977 8.81367 5.05977C10.8887 5.05977 12.5637 6.73477 12.5637 8.80977C12.5637 10.8848 10.8887 12.5598 8.81367 12.5598Z" fill="#00C2FF"/>\
+    </svg>', var(--#{$prefix}btn-icon-size), var(--#{$prefix}btn-icon-size));
+        background-color: var(--color-primary);
+    }
+}
+
+
+// close
+.mhuButton-close {
+    --#{$prefix}btn-close-color: #000;
+    --#{$prefix}btn-close-opacity: 0.5;
+    --#{$prefix}btn-close-hover-opacity: 0.75;
+    --#{$prefix}btn-close-focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    --#{$prefix}btn-close-focus-opacity: 1;
+    --#{$prefix}btn-close-disabled-opacity: 0.25;
+    --#{$prefix}btn-close-white-filter: invert(1) grayscale(100%) brightness(200%);
+    box-sizing: content-box;
+    //width: 1em;
+    //height: 1em;
+    padding: 0.25em 0.25em;
+    color: var(--#{$prefix}btn-close-color);
+    border: 0;
+    border-radius: 0.375rem;
+    opacity: var(--#{$prefix}btn-close-opacity);
+    &:after {
+        content: "";
+        display: block;
+        width: var(--#{$prefix}btn-icon-size);
+        height: var(--#{$prefix}btn-icon-size);
+        @include background-svg('<svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M18.2997 6.20973C17.9097 5.81973 17.2797 5.81973 16.8897 6.20973L11.9997 11.0897L7.10973 6.19973C6.71973 5.80973 6.08973 5.80973 5.69973 6.19973C5.30973 6.58973 5.30973 7.21973 5.69973 7.60973L10.5897 12.4997L5.69973 17.3897C5.30973 17.7797 5.30973 18.4097 5.69973 18.7997C6.08973 19.1897 6.71973 19.1897 7.10973 18.7997L11.9997 13.9097L16.8897 18.7997C17.2797 19.1897 17.9097 19.1897 18.2997 18.7997C18.6897 18.4097 18.6897 17.7797 18.2997 17.3897L13.4097 12.4997L18.2997 7.60973C18.6797 7.22973 18.6797 6.58973 18.2997 6.20973Z" fill="#7D7D80"/> </svg>', var(--#{$prefix}btn-icon-size), var(--#{$prefix}btn-icon-size));
+        background-color: var(--#{$prefix}body-color);
+    }
+}
+
+
+
+

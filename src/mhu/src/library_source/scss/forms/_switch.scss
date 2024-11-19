@@ -1,0 +1,118 @@
+/* switch */
+:root {
+    // switch
+    --#{$prefix}switch-width: 40px;
+    --#{$prefix}switch-height: 24px;
+    --#{$prefix}switch-radius: 24px;
+    --#{$prefix}switch-label-gap: 8px;
+
+    --#{$prefix}switch-bg-color: #E9E9EA;
+    --#{$prefix}switch-default-btn-color: #A9A8AA;
+
+    --#{$prefix}switch-label-color: #A9A8AA;
+    --#{$prefix}switch-label-font-size: 16px;
+    --#{$prefix}switch-label-font-weight: 500;
+
+    --#{$prefix}switch-hover-btn-color: #939395;
+    --#{$prefix}switch-hover-label-color: #939395;
+    --#{$prefix}switch-hover-bg-color: #E9E9EA;
+
+    --#{$prefix}switch-hover-active-btn-color: var(--color-primary-dark);
+    --#{$prefix}switch-hover-active-label-color: var(--color-primary-dark);
+    --#{$prefix}switch-hover-active-bg-color: #E9E9EA;
+
+    --#{$prefix}switch-active-label-color: var(--color-primary);
+    --#{$prefix}switch-active-btn-color: var( --color-primary);
+    --#{$prefix}switch-active-bg-color: #E9E9EA;
+
+    --#{$prefix}switch-disabled-label-color: #A9A8AA;
+    --#{$prefix}switch-disabled-bg-color: #E9E9EA;
+    --#{$prefix}switch-disabled-btn-color: #F4F4F4;
+}
+
+.mhuFormControlSwitch-root {
+    display: inline-flex;
+    gap: var(--#{$prefix}switch-label-gap);
+    vertical-align: middle;
+    cursor: pointer;
+}
+.mhuFormControlSwitch[type="checkbox"] {
+    display: inline-flex;
+    appearance: none;
+    position: relative;
+    border-radius: var(--#{$prefix}switch-radius);
+    width: var(--#{$prefix}switch-width);
+    height: var(--#{$prefix}switch-height);
+    background-color: var(--#{$prefix}switch-bg-color);
+    cursor: pointer;
+
+    &:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: var(--#{$prefix}switch-height);
+        height: var(--#{$prefix}switch-height);
+        border-radius: 50%;
+        transform: scale(0.8);
+        background-color: var(--#{$prefix}switch-default-btn-color);
+        transition: left 0.15s;
+        box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.25);
+    }
+    &:hover {
+        background-color: var(--#{$prefix}switch-hover-bg-color);
+        &:before {
+            background-color: var(--#{$prefix}switch-hover-btn-color);
+        }
+        + .mhuFormControlSwitchLabel-root {
+            color: var(--#{$prefix}switch-hover-label-color);
+        }
+    }
+
+    &:checked {
+        background-color: var(--#{$prefix}switch-active-bg-color);
+        &:before {
+            background-color: var(--#{$prefix}switch-active-btn-color);
+            left: calc(var(--#{$prefix}switch-width) / 2 * 0.8);
+        }
+        + .mhuFormControlSwitchLabel-root {
+            color: var(--#{$prefix}switch-active-label-color);
+        }
+        &:hover {
+            background-color: var(--#{$prefix}switch-hover-active-bg-color);
+            &:before {
+                background-color: var(--#{$prefix}switch-hover-active-btn-color);
+            }
+            + .mhuFormControlSwitchLabel-root {
+                color: var(--#{$prefix}switch-hover-active-label-color);
+            }
+        }
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        background-color: var(--#{$prefix}switch-disabled-bg-color);
+        &:before {
+            background-color: var(--#{$prefix}switch-disabled-btn-color);
+        }
+        + .mhuFormControlSwitchLabel-root {
+            cursor: not-allowed;
+            color: var(--#{$prefix}switch-disabled-label-color);
+        }
+        &:hover {
+            &:before {
+                background-color: var(--#{$prefix}switch-disabled-btn-color);
+            }
+            + .mhuFormControlSwitchLabel-root {
+                cursor: not-allowed;
+                color: var(--#{$prefix}switch-disabled-label-color);
+            }
+        }
+    }
+
+}
+.mhuFormControlSwitchLabel-root {
+    vertical-align: top;
+    color: var(--#{$prefix}switch-label-color);
+    font-size: var(--#{$prefix}switch-label-font-size);
+    font-weight: var(--#{$prefix}switch-label-font-weight);
+}

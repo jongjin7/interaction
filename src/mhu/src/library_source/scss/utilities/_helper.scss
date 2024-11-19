@@ -1,0 +1,273 @@
+/* global style class */
+$prefix-help-style: mhuStyle;
+.#{$prefix-help-style}{
+    &-relative{
+        position: relative !important;
+    }
+    &-absolute{
+        position: absolute !important;
+    }
+    &-static{
+        position: static !important;
+    }
+    &-fixed{
+        position: fixed !important;
+    }
+    &-sticky{
+        position: sticky !important;
+    }
+
+    &-color-primary {
+        color: var(--color-primary) !important;
+    }
+
+    &-text-bold {
+        font-weight: var(--font-weight-bold) !important;
+    }
+
+    &-text-medium {
+        font-weight: var(--font-weight-medium) !important;
+    }
+
+    &-text-normal {
+        font-weight: var(--font-weight-default) !important;
+    }
+
+    &-text-light {
+        font-weight: 100 !important;
+    }
+
+    &-dflex {
+        display: flex !important;
+    }
+
+    &-dinline-flex{
+        display: inline-flex !important;
+    }
+
+    &-dblock {
+        display: block !important;
+    }
+
+    &-dnone {
+        display: none !important;
+    }
+
+    &-dinline-block {
+        display: inline-block !important;
+    }
+
+    &-align-center {
+        justify-content: center !important;
+    }
+
+    &-align-left {
+        justify-content: flex-start !important;
+    }
+
+    &-align-right {
+        justify-content: flex-end !important;
+    }
+
+    &-align-between {
+        justify-content: space-between !important;
+    }
+
+
+    &-valign-top {
+        align-items: flex-start !important;
+    }
+
+    &-valign-center {
+        align-items: center !important;
+    }
+
+    &-valign-bottom {
+        align-items: flex-end !important;
+    }
+
+    &-text-left {
+        text-align: left !important;
+    }
+
+    &-text-right {
+        text-align: right !important;
+    }
+
+    &-text-center {
+        text-align: center !important;
+    }
+
+    &-w25 {
+        width: 25% !important;
+    }
+
+    &-w50 {
+        width: 50% !important;
+    }
+
+    &-w75 {
+        width: 75% !important;
+    }
+
+    &-w100 {
+        width: 100%;
+    }
+
+    &-wmin {
+        max-width: var(--max-width-container) !important;
+    }
+
+    &-wmax {
+        max-width: var(--max-width-container) !important;
+    }
+
+    &-scroll {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    &-overflow-hidden {
+        overflow: hidden !important;
+    }
+
+    &-fade {
+        transition: opacity .15s linear !important;
+    }
+
+    &-fade:not(&-show) {
+        opacity: 0;
+    }
+
+    &-col-2 {
+        --row-column: 2;
+    }
+
+    &-col-3 {
+        --row-column: 3;
+    }
+
+    &-fadein {
+        opacity: 1 !important;
+    }
+
+    //margin
+    &-ml-auto{
+        margin-left: auto !important;
+    }
+    &-mr-auto{
+        margin-right: auto !important;
+    }
+    &-mt-auto{
+        margin-top: auto !important;
+    }
+    &-mb-auto{
+        margin-bottom: auto !important;
+    }
+
+    &-blind {
+        position: absolute !important;
+        overflow: hidden !important;
+        display: block !important;
+        width: 1px !important;
+        height: 1px !important;
+        font-size: 1px !important;
+        opacity: 0.01 !important;
+        text-align: center !important;
+    }
+
+    &-text-ellipsis {
+        display: -webkit-box;
+        -webkit-line-clamp: var(--text-line-clamp);
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        word-break: break-word;
+        white-space: initial;
+    }
+    &-text-clamp-2{
+        --text-line-clamp:2;
+    }
+    &-text-clamp-3{
+        --text-line-clamp:3;
+    }
+
+    &-word-break {
+        word-break: break-all !important;
+    }
+    &-word-keep {
+        word-break: keep-all !important;
+    }
+}
+
+
+/* text */
+.mhuLead-root {
+    margin: 0;
+}
+
+.mhuText--more:after,
+.mhuButton__text--more:after {
+    display: inline-block;
+    position: relative;
+    top: -2px;
+    //height: 100%;
+    margin-left: 4px;
+    content: '';
+    transition: transform 0.15s ease-in;
+    transform: translateX(0);
+    vertical-align: middle;
+}
+
+
+
+
+
+/* badge */
+.mhuBadge-root {
+    --badge-color: '';
+    display: inline-block;
+    padding: 0;
+    background-color: var(--badge-color);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.mhuBadge__text {
+    color: white;
+}
+
+/* utils */
+
+
+/* transform */
+.mhuTrans-left {
+    transition: transform 0.15s ease-in;
+    transform: translateX(0);
+    &:hover {
+        transform: translateX(-4px);
+    }
+}
+.mhuTrans-right {
+    transition: transform 0.15s ease-in;
+    transform: translateX(0);
+    &:hover {
+        transform: translateX(4px);
+    }
+}
+
+#content-skip {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#content-skip a:focus {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+}
+
+
+
