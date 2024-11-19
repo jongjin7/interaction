@@ -11,6 +11,12 @@ const MainSearchSection = styled.section`
   padding: 2px;
 `;
 
+const SearchBox = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+`;
+
 function MainSearch() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [position, setPosition] = useState(null);
@@ -33,10 +39,12 @@ function MainSearch() {
 
   return (
     <MainSearchSection>
-      <QuickSearch />
-      <S.Button ref={buttonRef} onClick={openModal}>
-        버튼
-      </S.Button>
+      <SearchBox>
+        <QuickSearch />
+        <S.Button ref={buttonRef} onClick={openModal}>
+          버튼
+        </S.Button>
+      </SearchBox>
       <Modal isOpen={isModalOpen} onClose={closeModal} position={position}>
         <h2>Modal Title</h2>
         <p>This is a modal content area.</p>
