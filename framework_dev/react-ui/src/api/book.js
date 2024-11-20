@@ -1,9 +1,11 @@
 // api.js
 const API_KEY = 'c5b65eb42d62119a052daaa1389c3483';
 
-export const fetchBooks = async (query) => {
+export const fetchBooks = async (payload) => {
   try {
-    const response = await fetch(`https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(query)}`, {
+    const { query, page = 0, size = 10 } = payload;
+    const url = `https://dapi.kakao.com/v3/search/book?query=${encodeURIComponent(query)}&page=${page}&size=${size}`;
+    const response = await fetch(url, {
       headers: {
         Authorization: `KakaoAK ${API_KEY}`,
       },

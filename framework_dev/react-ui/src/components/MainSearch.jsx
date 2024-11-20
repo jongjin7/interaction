@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import QuickSearch from '@components/QuickSearch';
 import Modal from '@components/Modal';
 import S from '@components/common/Button';
+import DetailSearch from './DetailSearch';
 
 const MainSearchSection = styled.section`
   display: flex;
@@ -17,8 +18,8 @@ const SearchBox = styled.div`
   gap: 8px;
 `;
 
-function MainSearch() {
-  const [isModalOpen, setModalOpen] = useState(false);
+function MainSearch({ onSearch }) {
+  const [isModalOpen, setModalOpen] = useState(true);
   const [position, setPosition] = useState(null);
   const buttonRef = useRef(null);
 
@@ -40,15 +41,14 @@ function MainSearch() {
   return (
     <MainSearchSection>
       <SearchBox>
-        <QuickSearch />
+        <QuickSearch onSearch={onSearch} />
         <S.Button ref={buttonRef} onClick={openModal}>
-          버튼
+          상세 검색
         </S.Button>
       </SearchBox>
-      <Modal isOpen={isModalOpen} onClose={closeModal} position={position}>
-        <h2>Modal Title</h2>
-        <p>This is a modal content area.</p>
-        <button onClick={closeModal}>Close Modal</button>
+      <Modal isOpen={isModalOpen} onClose={closeModal} position={position} onSubmit={onSearch}>
+        <h3>Modal Title</h3>
+        <DetailSearch />
       </Modal>
     </MainSearchSection>
   );

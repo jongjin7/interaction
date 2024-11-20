@@ -23,6 +23,11 @@ const searchLabel = css`
   margin-bottom: 8px;
 `;
 
+const searchButton = css`
+  height: 40px;
+  cursor: pointer;
+`;
+
 const SuggestionsList = css`
   position: absolute;
   top: 100%;
@@ -77,7 +82,7 @@ const DeleteButton = css`
 
 const MAX_HISTORY = 8;
 
-const SearchComponent = () => {
+const SearchComponent = ({ onSearch }) => {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -127,6 +132,7 @@ const SearchComponent = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && query) {
+      console.log('aaaa', query.length);
       // 검색 기록에 추가
       const updatedHistory = [query, ...searchHistory.filter((item) => item !== query)];
       if (updatedHistory.length > MAX_HISTORY) {
@@ -135,10 +141,21 @@ const SearchComponent = () => {
       setSearchHistory(updatedHistory);
       saveHistory(updatedHistory);
 
-      setSelectedSuggestion(query);
-      setSuggestions([]);
-      setQuery('');
+      sendQuery();
     }
+  };
+
+  const sendQuery = () => {
+    setSelectedSuggestion(query);
+    setSuggestions([]);
+    setQuery('');
+
+    // 부모 컴포넌트의 onSearch 핸들러 호출
+    onSearch(query);
+  };
+
+  const handleClickBtn = () => {
+    sendQuery();
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -164,6 +181,15 @@ const SearchComponent = () => {
     }
   };
 
+  const highlightMatch = (text, query) => {
+    if (!query) return [text];
+
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text
+      .split(regex)
+      .map((part, index) => (part.toLowerCase() === query.toLowerCase() ? <mark key={index}>{part}</mark> : part));
+  };
+
   return (
     <div css={SearchContainer}>
       <label css={searchLabel} htmlFor="search">
@@ -180,13 +206,16 @@ const SearchComponent = () => {
           placeholder="검색어를 입력하세요."
           autoComplete="off"
         />
+        <button onClick={handleClickBtn} css={searchButton}>
+          검색
+        </button>
       </div>
       {isFocused && suggestions.length > 0 && (
         <ul css={SuggestionsList} ref={suggestionsRef}>
           {suggestions.map((suggestion, index) => (
             <li key={index} css={SuggestionItem}>
               <button css={getSuggestionButtonStyle(false)} onClick={() => handleSuggestionClick(suggestion)}>
-                {suggestion}
+                {highlightMatch(suggestion, query)}
               </button>
               <button css={DeleteButton} onClick={() => handleSuggestionDeleteClick(suggestion)}>
                 X
@@ -195,7 +224,7 @@ const SearchComponent = () => {
           ))}
         </ul>
       )}
-      {selectedSuggestion && <div className="selected-suggestion">You selected: {selectedSuggestion}</div>}
+      {/*{selectedSuggestion && <div className="selected-suggestion">You selected: {selectedSuggestion}</div>}*/}
     </div>
   );
 };
