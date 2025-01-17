@@ -94,8 +94,30 @@ export async function fetchCategory() {
 // 앨범의 이미지들 읽어오기
 export async function fetchGalleryList(albumHashes) {
   // 하루 사용 크레딧 체크
-  // const credit = await fetchAPI({url: `https://api.imgur.com/3/credits`, author: 'client'})
-  // console.log('credit', credit)
+  // const credit = await fetchAPI({ url: `https://api.imgur.com/3/credits`, author: 'client' });
+  // console.log('credit', credit);
+  var formdata = new FormData();
+  formdata.append('refresh_token', 'b670517c02e0514ccfe765b7404b0f58e1204b1a');
+  formdata.append('client_id', '36ee0f30417b75f');
+  formdata.append('client_secret', 'e637b1247dfd3fc9faea4162c772ac09ad9faf5a');
+  formdata.append('grant_type', 'refresh_token');
+
+  var myHeaders = new Headers();
+  //myHeaders.append('Authorization', `Bearer ${IMG_ACCESS_TOKEN}`);
+  myHeaders.append('Authorization', `Client-ID ${IMG_CLIENT_ID}`);
+  var requestOptions = {
+    //method: 'POST',
+    headers: myHeaders,
+    //body: formdata,
+    redirect: 'follow',
+  };
+
+  fetch('https://api.imgur.com/3/album', requestOptions)
+    .then((response) => response.text())
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((error) => console.log('error', error));
 
   async function fetchMultipleAlbums(paramAlbumHashes) {
     const fetchPromises = paramAlbumHashes.map((hash) =>
