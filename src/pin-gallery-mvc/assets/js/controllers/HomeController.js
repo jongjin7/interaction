@@ -8,13 +8,15 @@ export default class HomeController {
   constructor(containerId) {
     this.model = new HomeModel();
     this.view = new HomeView(containerId);
+    this.listController = null;
   }
 
-  async initialize() {
+  async initialize(listController) {
     try {
       const categories = await this.model.fetchCategories();
       this.view.render(categories);
       this.view.bindEvents(this.getHandlers());
+      this.listController = listController;
     } catch (error) {
       console.error('Initialization failed:', error);
     }
@@ -159,8 +161,8 @@ export default class HomeController {
       this.resetStatePage();
       this.resetForm();
       iconSubmit.destroy();
-      // window.location.reload();
       this.view.setRandomImage();
+      this.listController.updateList();
     });
   }
 }

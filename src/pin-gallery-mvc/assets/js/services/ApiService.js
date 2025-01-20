@@ -1,16 +1,16 @@
 import { API_ALBUM_URL, API_BASE_URL, IMG_ACCESS_TOKEN, IMG_CLIENT_ID } from '@/config/api.config';
 
 class ApiService {
-  static createHeaders(author) {
+  static createHeaders(formdata) {
     const headers = new Headers();
-    if (author === 'access') headers.append('Authorization', `Bearer ${IMG_ACCESS_TOKEN}`);
-    else if (author === 'client') headers.append('Authorization', `Client-ID ${IMG_CLIENT_ID}`);
-    headers.append('Accept', 'application/json');
+    if (formdata instanceof FormData) headers.append('Accept', 'application/json');
+    else headers.append('Content-Type', 'application/json');
+
     return headers;
   }
 
   static async fetchFromAPI({ type, url, author, formData = null }) {
-    const headers = ApiService.createHeaders(author);
+    const headers = ApiService.createHeaders(formData);
 
     try {
       const response = await fetch(url, {
@@ -46,12 +46,11 @@ class ApiService {
     return ApiService.fetchFromAPI({ type, url, author, formData });
   }
 
-  static async addNewCategory(formData) {
+  static async addNewCategory(title) {
     return ApiService.clientFetchAPI({
       type: 'post',
       url: `${API_ALBUM_URL}`,
-      author: 'access',
-      formData,
+      formData: JSON.stringify({ title }),
     });
   }
 
@@ -71,17 +70,18 @@ class ApiService {
     const image = await ApiService.clientFetchAPI({
       type: 'post',
       url: `${API_BASE_URL}/image`,
-      author: 'access',
       formData,
     });
-    return ApiService.moveToAlbum(albumHash, image.data.id);
+    return image;
+    //return ApiService.moveToAlbum(albumHash, image.data.id);
   }
 
   static async fetchCategory() {
-    return ApiService.fetchGetAPI({ url: `${API_BASE_URL}/account/me/albums`, author: 'access' });
+    return ApiService.fetchGetAPI({ url: `${API_BASE_URL}/albums`, author: 'access' });
   }
 
   static async fetchGalleryList(albumHashes) {
+    console.log('albumHashes', albumHashes);
     async function fetchMultipleAlbums(paramAlbumHashes) {
       const fetchPromises = paramAlbumHashes.map((hash) =>
         ApiService.fetchGetAPI({ url: `${API_ALBUM_URL}/${hash}/images`, author: 'client' }),
@@ -101,7 +101,7 @@ class ApiService {
   static async deleteImageItem(imageHash) {
     return ApiService.clientFetchAPI({
       type: 'delete',
-      url: `${API_BASE_URL}/image/${imageHash}`,
+      url: `${API_BASE_URL}/images/${imageHash}`,
       author: 'access',
     });
   }

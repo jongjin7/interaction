@@ -9,7 +9,7 @@ export default class ListModel {
   async fetchCategoryData() {
     try {
       const categoryLabels = await ApiService.fetchCategory();
-      this.categoryData = categoryLabels.data;
+      this.categoryData = categoryLabels;
       return this.categoryData;
     } catch (error) {
       console.error('Failed to fetch category data:', error);
@@ -17,12 +17,11 @@ export default class ListModel {
     }
   }
 
-  async fetchGalleryData(categoryIds) {
+  async fetchGalleryData() {
     try {
-      const galleryAlbums = await ApiService.fetchGalleryList(categoryIds);
-      this.galleryPanelItems = galleryAlbums.map((item) => {
-        // if (item.data) console.log('item', item.data);
-        return item.data;
+      //const galleryAlbums = await ApiService.fetchCategory(categoryIds);
+      this.galleryPanelItems = this.categoryData.map((item) => {
+        return item.images;
       });
       return this.galleryPanelItems;
     } catch (error) {

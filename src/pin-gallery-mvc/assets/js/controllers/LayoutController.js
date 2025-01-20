@@ -44,9 +44,9 @@ export default class LayoutController {
 
     // Home과 List 페이지를 초기화합니다.
     this.homeController = new HomeController('#home');
-    await this.homeController.initialize(); // Home 페이지 컨트롤러 초기화
-
     this.listController = new ListController('#list');
+
+    await this.homeController.initialize(this.listController); // Home 페이지 컨트롤러 초기화
     await this.listController.initialize(); // List 페이지 컨트롤러 초기화
   }
 

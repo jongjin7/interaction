@@ -2,8 +2,6 @@ import ApiService from '../services/ApiService';
 import geoLocation from '../utils/geoLocation';
 
 export default class HomeModel {
-  categories;
-
   selectedAlbumCategory;
 
   uploadFile;
@@ -12,9 +10,7 @@ export default class HomeModel {
 
   async fetchCategories() {
     try {
-      const resData = await ApiService.fetchCategory();
-      this.categories = resData.data;
-      return this.categories;
+      return await ApiService.fetchCategory();
     } catch (error) {
       console.error('Failed to fetch categories:', error);
       throw error;
@@ -23,11 +19,7 @@ export default class HomeModel {
 
   async addCategory(title) {
     try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('description', `${title} 이름으로 만든 앨범입니다.`);
-      await ApiService.addNewCategory(formData);
-      return this.fetchCategories();
+      return await ApiService.addNewCategory(title);
     } catch (error) {
       console.error('Failed to add category:', error);
       throw error;
@@ -45,8 +37,8 @@ export default class HomeModel {
   async createFormData() {
     const geoInfo = await geoLocation.init();
     const formData = new FormData();
-    formData.append('image', this.uploadFile);
-    formData.append('type', 'image');
+    formData.append('file', this.uploadFile);
+    formData.append('albumId', this.selectedAlbumCategory);
     formData.append('title', geoInfo ? geoInfo.time : '제목 없음');
     formData.append('description', geoInfo ? geoInfo.message : '설명 없음');
     return formData;
@@ -55,7 +47,7 @@ export default class HomeModel {
   async sendFileForm() {
     try {
       const formData = await this.createFormData();
-      return await ApiService.sendImageFile(formData, this.selectedAlbumCategory);
+      return await ApiService.sendImageFile(formData);
     } catch (error) {
       console.error('Failed to submit image:', error);
       throw error;

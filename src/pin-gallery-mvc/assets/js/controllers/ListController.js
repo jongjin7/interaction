@@ -15,17 +15,28 @@ export default class ListController {
   }
 
   async initialize() {
+    const loadData = await this.loadDataHandler();
+    this.view.render(...loadData);
+    this.bindEvents();
+  }
+
+  async loadDataHandler() {
     try {
       const categoryData = await this.model.fetchCategoryData();
       const galleryData = await this.model.fetchGalleryData(categoryData.map((cat) => cat.id));
       const longestArrayItem = this.model.getLongestArrayItem();
       const randomArrayItem = this.model.getRandomArrayItem();
 
-      this.view.render(categoryData, galleryData, longestArrayItem, randomArrayItem);
-      this.bindEvents();
+      return [categoryData, galleryData, longestArrayItem, randomArrayItem];
     } catch (error) {
       console.error('Initialization failed:', error);
     }
+  }
+
+  async updateList() {
+    console.log('update!');
+    const loadData = await this.loadDataHandler();
+    this.view.render(...loadData);
   }
 
   bindEvents() {
@@ -126,7 +137,7 @@ export default class ListController {
         try {
           await ListModel.deleteImage(targetBtn.dataset.itemId);
           alert('선택한 이미지가 삭제되었습니다.');
-          await this.initialize(); // Reinitialize to refresh data
+          await this.updateList();
         } catch (error) {
           console.error('Failed to delete image:', error);
         }

@@ -38,8 +38,10 @@ export default class ListView {
     this.container.innerHTML = htmlData;
 
     // Append detail panel to root
-    this.detailPanel = DomParser(this.generateDetailPanel());
-    this.root.append(this.detailPanel);
+    if (!this.detailPanel) {
+      this.detailPanel = DomParser(this.generateDetailPanel());
+      this.root.append(this.detailPanel);
+    }
   }
 
   bindEvents() {
@@ -154,10 +156,8 @@ export default class ListView {
           ${listTemplate(item, index)}
         </div>
       `;
-
       return this.galleryPanelItems.map((item, index) => tabPanel(item, index)).join('');
     };
-
     const html = `
       <div id='el-tab-contents' class='tab-contents'>
         <div class='tab-panel' id='tab-panel-0'>
@@ -192,7 +192,7 @@ export default class ListView {
       <li class='list-item'>
         ${buttonDelete(item.id)}
         <a href='#' title='${item.title ?? new Date(item.datetime * 1000).toDateString()}' data-item-id='${item.id}'>
-          <img src='${changeImageSize(item.link)}' alt='${item.description}'>
+          <img src='${item.filePath}' alt='${item.description}'>
         </a>
       </li>
     `,

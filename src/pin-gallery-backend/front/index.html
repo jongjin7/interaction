@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .album {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .images {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image {
+            margin: 5px;
+            text-align: center;
+        }
+        .image img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+        }
+        video, canvas {
+            display: block;
+            margin: 10px auto;
+            max-width: 100%;
+            border:1px solid gray;
+            transform: scaleX(-1); /* 수평 반전 */
+            transform-origin: center; /* 기준점 설정 */
+        }
+        select, input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid gray;
+        }
+        h2{
+            margin: 0.5rem 0;
+        }
+        h4{
+            margin:0.25rem 0 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Album Manager</h1>
+
+    <h2>Create Album</h2>
+    <form id="album-form">
+        <input type="text" id="album-name" placeholder="Album Name" required />
+        <button type="submit">Create Album</button>
+    </form>
+
+    <h2>Upload Image</h2>
+    <form id="upload-image-form">
+        <select id="album-select" required>
+            <option value="">Select Album</option>
+        </select>
+        <input type="file" id="image-file" accept="image/*" required />
+
+        <div style="display:none;">
+            <video id="video" autoplay></video>
+            <canvas id="canvas"></canvas>
+            <button id="capture">Take Photo</button>
+        </div>
+
+        <div id="preview">
+            <h4>Preview:</h4>
+            <img id="photo-preview" alt="Your photo will appear here" style="max-width: 100%; display: none;">
+        </div>
+
+        <button type="submit">Upload Image</button>
+    </form>
+
+    <h2>Albums</h2>
+    <div id="albums-list"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
