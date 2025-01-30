@@ -97,42 +97,74 @@ function updateAlbumsUI(albums) {
 }
 
 // 이미지 업로드
-async function uploadImage(file, albumId) {
+async function uploadImage(file, albumId, uploadForm) {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('albumId', albumId);
   formData.append('description', '촬영장소');
+
   try {
     const response = await fetch(`${API_BASE_URL}/image`, {
       method: 'POST',
       body: formData,
     });
-    if (!response.ok) throw new Error('Failed to upload image');
+
+    if (!response.ok) {
+      const result = await response.json();
+
+      if (response.status === 409) {
+        alert('이미 업로드된 이미지입니다.');
+      } else if (response.status === 400) {
+        alert('유효하지 않은 요청입니다.');
+      } else {
+        throw new Error(result.message || '이미지 업로드 실패');
+      }
+      return;
+    }
+
     const result = await response.json();
     console.log('Image uploaded:', result);
     fetchAlbums(); // UI 업데이트
+    if (uploadForm) uploadForm.reset();
   } catch (error) {
     console.error('Error uploading image:', error);
+    alert('이미지 업로드 중 오류가 발생했습니다.');
   }
 }
 
 // 앨범 생성
 async function createAlbum(title) {
   try {
-    const formData = new FormData();
-    formData.append('title', title);
+    if (!title.trim()) {
+      alert('앨범 제목을 입력해주세요.');
+      return;
+    }
 
     const response = await fetch(`${API_BASE_URL}/albums`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title }),
     });
-    if (!response.ok) throw new Error('Failed to create album');
+
+    if (!response.ok) {
+      const result = await response.json();
+
+      if (response.status === 409) {
+        alert('이미 존재하는 앨범 제목입니다.');
+      } else if (response.status === 400) {
+        alert('유효하지 않은 앨범 제목입니다.');
+      } else {
+        throw new Error(result.message || '앨범 생성 실패');
+      }
+      return;
+    }
+
     const result = await response.json();
     console.log('Album created:', result);
     fetchAlbums(); // UI 업데이트
   } catch (error) {
     console.error('Error creating album:', error);
+    alert('앨범 생성 중 오류가 발생했습니다.');
   }
 }
 
@@ -165,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
   uploadForm.addEventListener('submit', (event) => {
     event.preventDefault();
     if (file && albumId) {
-      uploadImage(file, albumId);
+      uploadImage(file, albumId, uploadForm);
       photoPreview.src = '';
       photoPreview.style.display = 'none';
     } else {

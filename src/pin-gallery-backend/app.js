@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const https = require('https');
 const cors = require('cors'); // cors 모듈 추가
 const multer = require('multer');
@@ -24,7 +25,7 @@ app.use(cors(corsOptions)); // CORS 설정
 
 // JSON 파싱
 app.use(express.json());
-//app.use(express.urlencoded({ extended: true })); // URL-encoded 요청 처리
+// app.use(express.urlencoded({ extended: true })); // URL-encoded 요청 처리
 
 // 업로드 폴더 설정
 const uploadDir = path.join(__dirname, 'uploads');
@@ -56,16 +57,36 @@ const upload = multer({ storage });
 const albumsFilePath = path.join(__dirname, 'data/albums.json');
 const imagesFilePath = path.join(__dirname, 'data/images.json');
 
+// JSON 파일이 없으면 기본 빈 객체 생성
+const ensureFileExists = (filePath) => {
+  if (!fs.existsSync(filePath)) {
+    try {
+      fs.writeFileSync(filePath, JSON.stringify({}, null, 2), 'utf-8');
+      console.log(`Created new file: ${filePath}`);
+    } catch (error) {
+      console.error(`Error creating file ${filePath}: ${error.message}`);
+    }
+  }
+};
+
 // 데이터 로딩 함수 (JSON 파일에서 데이터를 불러옴)
 const loadData = () => {
+  ensureFileExists(albumsFilePath);
+  ensureFileExists(imagesFilePath);
+
   let albums = {};
   let images = {};
 
-  if (fs.existsSync(albumsFilePath)) {
+  try {
     albums = JSON.parse(fs.readFileSync(albumsFilePath, 'utf-8'));
+  } catch (error) {
+    console.error(`Error reading albums.json: ${error.message}`);
   }
-  if (fs.existsSync(imagesFilePath)) {
+
+  try {
     images = JSON.parse(fs.readFileSync(imagesFilePath, 'utf-8'));
+  } catch (error) {
+    console.error(`Error reading images.json: ${error.message}`);
   }
 
   return { albums, images };
@@ -83,14 +104,21 @@ const saveData = (albums, images) => {
 app.post('/albums', (req, res) => {
   try {
     const { title } = req.body;
+
+    // 제목이 없거나 빈 문자열이면 오류 반환
     if (!title || title.trim() === '') {
       return res.status(400).json({ message: 'Invalid title' });
     }
 
-    console.log('title', title);
-    const id = uuidv4();
-
     const { albums, images } = loadData();
+
+    // 제목이 동일한 앨범이 이미 존재하는지 확인
+    const albumExists = Object.values(albums).some((album) => album.title === title);
+    if (albumExists) {
+      return res.status(409).json({ message: 'Album already exists' });
+    }
+
+    const id = uuidv4();
     albums[id] = { id, title, images: [] };
 
     // 데이터 저장
@@ -103,45 +131,58 @@ app.post('/albums', (req, res) => {
 });
 
 // 이미지 업로드 엔드포인트
+// 파일의 해시값을 계산하는 함수 (SHA-256)
+const calculateFileHash = (filePath) => {
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('sha256');
+    const stream = fs.createReadStream(filePath);
+
+    stream.on('data', (data) => hash.update(data));
+    stream.on('end', () => resolve(hash.digest('hex')));
+    stream.on('error', (err) => reject(err));
+  });
+};
+
 app.post('/image', upload.single('file'), async (req, res) => {
   const { albumId, description } = req.body;
-  const file = req.file;
+  const { file } = req;
 
   if (!file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  const fileName = Buffer.from(file.originalname, 'latin1').toString('utf8');
-  const ext = path.extname(file.filename); // 확장자 추출
-  const baseName = path.basename(file.filename, ext); // 업로드된 파일명
-  const originalFileName = `${baseName}.webp`;
-  const thumbnailFileName = `thumb-${baseName}.webp`;
-
   const originalFilePath = path.join(uploadDir, file.filename);
-  const webpFilePath = path.join(uploadDir, originalFileName);
-  const thumbnailFilePath = path.join(thumbnailDir, thumbnailFileName);
 
   try {
-    // Sharp 인스턴스를 재사용하여 WebP 파일 생성
+    const { albums, images } = loadData();
+    // 📌 업로드된 파일의 해시값 계산
+    const fileHash = await calculateFileHash(originalFilePath);
+
+    // 📌 중복 검사 (이미 존재하는 해시값인지 확인)
+    const existingImage = Object.values(images).find((img) => img.hash === fileHash);
+    if (existingImage) {
+      // 기존 이미지 삭제 후 중복 메시지 반환
+      fs.unlinkSync(originalFilePath);
+      return res.status(409).json({ message: 'Duplicate image detected', existingImage });
+    }
+
+    // 📌 파일명 처리
+    const baseName = path.basename(file.filename, path.extname(file.filename)); // 확장자 제거
+    const originalFileName = `${baseName}.webp`;
+    const thumbnailFileName = `thumb-${baseName}.webp`;
+    const webpFilePath = path.join(uploadDir, originalFileName);
+    const thumbnailFilePath = path.join(thumbnailDir, thumbnailFileName);
+
+    // 📌 WebP 변환 및 썸네일 생성
     const sharpInstance = sharp(originalFilePath);
-
-    // WebP 변환 및 저장
     await sharpInstance.webp({ quality: 80 }).toFile(webpFilePath);
-
-    // 썸네일 생성 및 저장
-    await sharpInstance
-      .rotate()
-      .resize(900) // 썸네일 크기 조정
-      .webp({ quality: 50 })
-      .toFile(thumbnailFilePath);
+    await sharpInstance.resize(900).webp({ quality: 50 }).toFile(thumbnailFilePath);
 
     // 원본 파일 삭제
     fs.unlinkSync(originalFilePath);
 
-    // 데이터 로드 및 저장
-    const { albums, images } = loadData();
+    // 📌 데이터 저장
     const imageId = uuidv4();
-
     images[imageId] = {
       id: imageId,
       fileName: originalFileName,
@@ -149,6 +190,7 @@ app.post('/image', upload.single('file'), async (req, res) => {
       thumbnailPath: `/uploads/thumbnails/${thumbnailFileName}`,
       albumId,
       description,
+      hash: fileHash, // 해시값 저장
     };
 
     if (albums[albumId]) {
