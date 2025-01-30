@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = `${location.protocol}//${location.hostname}:${location.protocol === 'https:' ? 443 : 3002}`;
 
 function videoCapture() {
   const video = document.getElementById('video');
@@ -55,7 +55,7 @@ async function fetchAlbums() {
 
 // 앨범 UI 업데이트
 function updateAlbumsUI(albums) {
-  console.log('albums -->', albums);
+  console.log('albums -->', albums, API_BASE_URL);
   const albumsList = document.getElementById('albums-list');
   const albumSelect = document.getElementById('album-select');
 

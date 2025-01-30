@@ -369,16 +369,18 @@ app.delete('/albums/:albumId', (req, res) => {
 });
 
 // 서버 실행
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
 
 // SSL 인증서 파일 로드
-const options = {
-  key: fs.readFileSync('../../localhost-key.pem'), // 개인 키
-  cert: fs.readFileSync('../../localhost.pem'), // 인증서
-};
+// const options = {
+//   key: fs.readFileSync('../../localhost-key.pem'), // 개인 키
+//   cert: fs.readFileSync('../../localhost.pem'), // 인증서
+// };
 // HTTPS 서버 생성
 // https.createServer(options, app).listen(443, () => {
 //   console.log('HTTPS Server running on port 443');
 // });
+
+module.exports = app;
