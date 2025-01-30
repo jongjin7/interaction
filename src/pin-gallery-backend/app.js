@@ -1,4 +1,5 @@
 const express = require('express');
+const https = require('https');
 const cors = require('cors'); // cors 모듈 추가
 const multer = require('multer');
 const path = require('path');
@@ -129,7 +130,8 @@ app.post('/image', upload.single('file'), async (req, res) => {
 
     // 썸네일 생성 및 저장
     await sharpInstance
-      .resize(600) // 썸네일 크기 조정
+      .rotate()
+      .resize(900) // 썸네일 크기 조정
       .webp({ quality: 50 })
       .toFile(thumbnailFilePath);
 
@@ -328,3 +330,13 @@ app.delete('/albums/:albumId', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// SSL 인증서 파일 로드
+const options = {
+  key: fs.readFileSync('../../localhost-key.pem'), // 개인 키
+  cert: fs.readFileSync('../../localhost.pem'), // 인증서
+};
+// HTTPS 서버 생성
+// https.createServer(options, app).listen(443, () => {
+//   console.log('HTTPS Server running on port 443');
+// });
