@@ -1,7 +1,7 @@
 import ListModel from '../models/ListModel';
 import ListView from '../views/ListView';
 
-export default class ListController {
+export default class ListViewModel {
   prevTabIndex = 0;
 
   currentTabIndex = 0;
@@ -28,6 +28,7 @@ export default class ListController {
       return [categoryData, galleryData, longestArrayItem, randomArrayItem];
     } catch (error) {
       console.error('Initialization failed:', error);
+      return null;
     }
   }
 
