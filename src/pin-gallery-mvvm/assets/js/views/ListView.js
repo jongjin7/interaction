@@ -2,6 +2,7 @@ import { galleryDetail, galleryList } from '../../css/pages.css';
 import { buttonOutlineClass, buttonSizeSmall } from '../../css/tailwind.component';
 import { buttonDelete } from '../components/CommonTemplate';
 import DomParser from '../utils/dom';
+import NoneData from '../components/NoneData';
 
 export default class ListView {
   constructor(containerId) {
@@ -11,22 +12,21 @@ export default class ListView {
     this.tabPanelContainer = null;
     this.tabPanels = null;
     this.tabPanelPositions = [];
-    this.detailPanel = null; // Will be set in createContentHTML
+    this.detailPanel = null;
+    this.viewModel = null;
   }
 
   render(categoryData, galleryPanelItems, longestArrayItem, randomArrayItem) {
-    this.categoryData = Array.isArray(categoryData) ? categoryData : [];
-    this.galleryPanelItems = Array.isArray(galleryPanelItems) ? galleryPanelItems : [];
-    this.longestArrayItem = longestArrayItem || { array: [], index: 0 };
-    this.randomArrayItem = Array.isArray(randomArrayItem) ? randomArrayItem : [];
+    this.categoryData = categoryData;
+    this.galleryPanelItems = galleryPanelItems;
+    this.longestArrayItem = longestArrayItem;
+    this.randomArrayItem = randomArrayItem;
 
     this.createContentHTML();
-
     this.tabNavs = this.root.querySelectorAll('.tab-nav a');
     this.tabPanelContainer = this.root.querySelector('.tab-contents');
     this.tabPanels = this.root.querySelectorAll('.tab-panel');
     this.setOffsetTabPanels();
-
     this.bindEvents();
   }
 
@@ -45,20 +45,19 @@ export default class ListView {
   }
 
   bindEvents() {
-    if (this.eventHandlers) {
+    if (this.viewModel) {
       const {
         handleTabNavClick,
         handleItemClick,
         handleItemDeleteClick,
         handleToggleDeleteMode,
         handleScrollTabPanelContainer,
-      } = this.eventHandlers;
+      } = this.viewModel;
 
       // 탭 메뉴
       this.tabNavs.forEach((tabNav, idx) => {
         tabNav.addEventListener('click', (e) => handleTabNavClick(e, idx));
       });
-      // this.tabNavs[0].classList.add('bg-gray-700', 'text-white');
       this.tabNavs[0].click();
 
       // 상세보기
@@ -85,7 +84,25 @@ export default class ListView {
   }
 
   setEventHandlers(handlers) {
-    this.eventHandlers = handlers;
+    // 이벤트 핸들러를 뷰에 설정하는 메서드
+    this.handleTabNavClick = handlers.handleTabNavClick;
+    this.handleItemClick = handlers.handleItemClick;
+    this.handleItemDeleteClick = handlers.handleItemDeleteClick;
+    this.handleToggleDeleteMode = handlers.handleToggleDeleteMode;
+    this.handleScrollTabPanelContainer = handlers.handleScrollTabPanelContainer;
+
+    // 각 이벤트를 해당 DOM 요소에 바인딩
+    this.tabNavs.forEach((nav, idx) => {
+      nav.addEventListener('click', (e) => this.handleTabNavClick(e, idx));
+    });
+
+    this.container.querySelectorAll('.item').forEach((item) => {
+      item.addEventListener('click', (e) => this.handleItemClick(e));
+      item.querySelector('.btn-del').addEventListener('click', (e) => this.handleItemDeleteClick(e));
+    });
+
+    this.container.querySelector('.btn-del-sel').addEventListener('click', (e) => this.handleToggleDeleteMode(e));
+    this.tabPanelContainer.addEventListener('scroll', () => this.handleScrollTabPanelContainer());
   }
 
   setOffsetTabPanels() {
@@ -158,14 +175,16 @@ export default class ListView {
       `;
       return this.galleryPanelItems.map((item, index) => tabPanel(item, index)).join('');
     };
+
     const html = `
       <div id='el-tab-contents' class='tab-contents'>
         <div class='tab-panel' id='tab-panel-0'>
-          ${allContentPanel()}
+          ${this.categoryData.length > 0 ? allContentPanel() : NoneData()} 
         </div>
         ${contentPanel()}
       </div>
     `;
+
     return html;
   }
 

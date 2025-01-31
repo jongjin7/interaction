@@ -19,17 +19,33 @@ export default class ListViewModel {
   }
 
   async loadDataHandler() {
-    try {
-      const categoryData = await this.model.fetchCategoryData();
-      const galleryData = await this.model.fetchGalleryData(categoryData.map((cat) => cat.id));
-      const longestArrayItem = this.model.getLongestArrayItem();
-      const randomArrayItem = this.model.getRandomArrayItem();
+    const categoryData = await this.model.fetchCategoryData();
+    const galleryData = await this.model.fetchGalleryData(categoryData.map((cat) => cat.id));
+    const longestArrayItem = this.model.getLongestArrayItem();
+    const randomArrayItem = this.model.getRandomArrayItem();
+    // 데이터 가공
+    return [
+      this.processCategoryData(categoryData),
+      this.processGalleryPanelItems(galleryData),
+      this.processLongestArrayItem(longestArrayItem),
+      this.processRandomArrayItem(randomArrayItem),
+    ];
+  }
 
-      return [categoryData, galleryData, longestArrayItem, randomArrayItem];
-    } catch (error) {
-      console.error('Initialization failed:', error);
-      return null;
-    }
+  processCategoryData(data) {
+    return Array.isArray(data) ? data : [];
+  }
+
+  processGalleryPanelItems(items) {
+    return Array.isArray(items) ? items : [];
+  }
+
+  processLongestArrayItem(item) {
+    return item || { array: [], index: 0 };
+  }
+
+  processRandomArrayItem(item) {
+    return Array.isArray(item) ? item : [];
   }
 
   async updateList() {
