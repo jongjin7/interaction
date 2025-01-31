@@ -9,24 +9,29 @@ export default class ListModel {
   async fetchCategoryData() {
     try {
       const categoryLabels = await ApiService.fetchCategory();
-      this.categoryData = categoryLabels;
+      this.categoryData = Array.isArray(categoryLabels) ? categoryLabels : [];
       return this.categoryData;
     } catch (error) {
       console.error('Failed to fetch category data:', error);
-      throw error;
+      this.categoryData = [];
+      return [];
     }
   }
 
   async fetchGalleryData() {
     try {
-      //const galleryAlbums = await ApiService.fetchCategory(categoryIds);
-      this.galleryPanelItems = this.categoryData.map((item) => {
-        return item.images;
-      });
+      if (!this.categoryData.length) {
+        console.warn('No category data available.');
+        this.galleryPanelItems = [];
+        return [];
+      }
+
+      this.galleryPanelItems = this.categoryData.map((item) => item.images || []);
       return this.galleryPanelItems;
     } catch (error) {
       console.error('Failed to fetch gallery data:', error);
-      throw error;
+      this.galleryPanelItems = [];
+      return [];
     }
   }
 
@@ -39,10 +44,12 @@ export default class ListModel {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   findLongestArrayWithIndex(arr) {
-    if (!Array.isArray(arr) || arr.length === 0) {
-      throw new Error('Input must be a non-empty 2D array');
+    if (!Array.isArray(arr) || arr.length === 0 || !arr.every(Array.isArray)) {
+      return { array: [], index: -1 };
     }
+
     return arr.reduce(
       (result, current, oindex) => {
         if (current.length > result.array.length) {
@@ -50,21 +57,24 @@ export default class ListModel {
         }
         return result;
       },
-      { array: arr[0], index: 0 },
+      { array: arr[0] ?? [], index: 0 },
     );
   }
 
   getLongestArrayItem(returnType) {
-    const longestArrayData = this.findLongestArrayWithIndex(this.galleryPanelItems);
-    if (returnType === 'index') {
-      return longestArrayData.index;
+    if (!this.galleryPanelItems.length) {
+      console.warn('No gallery data available.');
+      return returnType === 'index' ? -1 : { array: [], index: -1 };
     }
-    return longestArrayData;
+
+    const longestArrayData = this.findLongestArrayWithIndex(this.galleryPanelItems);
+    return returnType === 'index' ? longestArrayData.index : longestArrayData;
   }
 
   getRandomItems(arr, numItems) {
-    if (!Array.isArray(arr)) {
-      throw new Error('Input must be an array');
+    if (!Array.isArray(arr) || arr.length === 0) {
+      console.warn('No valid data available for random selection.');
+      return [];
     }
     if (numItems > arr.length) {
       return arr;
@@ -77,6 +87,10 @@ export default class ListModel {
   }
 
   getRandomArrayItem(sliceLength = 8) {
+    if (!this.galleryPanelItems.length) {
+      console.warn('No gallery items available.');
+      return [];
+    }
     return this.getRandomItems(this.galleryPanelItems.flat(), sliceLength);
   }
 }

@@ -2,6 +2,7 @@ import { galleryDetail, galleryList } from '../../css/pages.css';
 import { buttonOutlineClass, buttonSizeSmall } from '../../css/tailwind.component';
 import { buttonDelete } from '../components/CommonTemplate';
 import DomParser from '../utils/dom';
+import NoneData from '../components/NoneData';
 
 export default class ListView {
   constructor(containerId) {
@@ -161,11 +162,12 @@ export default class ListView {
     const html = `
       <div id='el-tab-contents' class='tab-contents'>
         <div class='tab-panel' id='tab-panel-0'>
-          ${allContentPanel()}
+          ${this.categoryData.length > 0 ? allContentPanel() : NoneData()} 
         </div>
         ${contentPanel()}
       </div>
     `;
+
     return html;
   }
 
