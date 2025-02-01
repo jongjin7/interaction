@@ -10,7 +10,6 @@ const sharp = require('sharp'); // 저장시 이미지 사이즈 정의
 
 const app = express();
 
-const PORT = 3000;
 const SUC_EXTENSION = ['jpg', 'jpeg', 'png', 'gif'];
 const MB = 1 * 1024 * 1024;
 const QUALITY_DEGREE = 10;
