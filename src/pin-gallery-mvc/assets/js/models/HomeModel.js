@@ -21,7 +21,7 @@ export default class HomeModel {
     try {
       return await ApiService.addNewCategory(title);
     } catch (error) {
-      console.error('Failed to add category:', error);
+      //console.error('Failed to add category:', error.message);
       throw error;
     }
   }
@@ -49,7 +49,7 @@ export default class HomeModel {
       const formData = await this.createFormData();
       return await ApiService.sendImageFile(formData);
     } catch (error) {
-      console.error('Failed to submit image:', error);
+      console.error('Failed to submit image:', error.message);
       throw error;
     }
   }

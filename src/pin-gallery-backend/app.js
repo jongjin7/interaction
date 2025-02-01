@@ -115,7 +115,7 @@ app.post('/albums', (req, res) => {
     // 제목이 동일한 앨범이 이미 존재하는지 확인
     const albumExists = Object.values(albums).some((album) => album.title === title);
     if (albumExists) {
-      return res.status(409).json({ message: 'Album already exists' });
+      return res.status(409).json({ message: '등록된 앨범입니다.' });
     }
 
     const id = uuidv4();
@@ -163,7 +163,7 @@ app.post('/image', upload.single('file'), async (req, res) => {
     if (existingImage) {
       // 기존 이미지 삭제 후 중복 메시지 반환
       fs.unlinkSync(originalFilePath);
-      return res.status(409).json({ message: 'Duplicate image detected', existingImage });
+      return res.status(409).json({ message: '업로드된 이미지와 동일합니다.', existingImage });
     }
 
     // 📌 파일명 처리

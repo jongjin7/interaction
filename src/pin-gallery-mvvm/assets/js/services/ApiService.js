@@ -11,29 +11,51 @@ class ApiService {
 
   static async fetchFromAPI({ type, url, formData = null }) {
     const headers = ApiService.createHeaders(formData);
+    const method = type.toLowerCase(); // HTTP 메서드를 소문자로 변환
 
     try {
       const response = await fetch(url, {
-        method: type,
+        method,
         body: formData,
         headers,
         redirect: 'follow',
       });
-      if (!response.ok) throw new Error('Network response was not ok');
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+          if (response.status === 400) {
+            console.log(errorData.message || '유효하지 않은 요청입니다.');
+          } else {
+            console.log(errorData.message || '알 수 없는 오류가 발생했습니다.');
+          }
+        } catch (error) {
+          console.error('JSON 파싱 오류:', error);
+        }
+
+        throw new Error(`HTTP ${response.status}: ${errorData.message}`);
+      }
+
       return await response.json();
     } catch (error) {
       let action;
 
-      if (type === 'get') {
-        action = 'load';
-      } else if (type === 'post') {
-        action = 'upload';
-      } else if (type === 'delete') {
-        action = 'delete';
-      } else {
-        action = 'perform action';
+      switch (method) {
+        case 'get':
+          action = 'load';
+          break;
+        case 'post':
+          action = 'upload';
+          break;
+        case 'delete':
+          action = 'delete';
+          break;
+        default:
+          action = 'perform action';
       }
-      console.error(`Image ${action} failed: ${error}`);
+
+      console.error(`${action} failed => ${error.message || error}`);
       throw error;
     }
   }
@@ -72,6 +94,7 @@ class ApiService {
       url: `${API_BASE_URL}/image`,
       formData,
     });
+
     return image;
     // return ApiService.moveToAlbum(albumHash, image.data.id);
   }

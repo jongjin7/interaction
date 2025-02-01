@@ -83,7 +83,10 @@ export default class HomeController {
         this.generateAlbumCategory(result);
       }
     } catch (error) {
-      console.error('Error adding new category:', error);
+      //console.error('Error adding new category:', error.message);
+      if (error.message.includes('409')) {
+        alert(error);
+      }
     }
   }
 
@@ -117,6 +120,10 @@ export default class HomeController {
       }
     } catch (error) {
       console.error('Error during submission:', error);
+      if (error.message.includes('409')) {
+        alert(error);
+        location.reload();
+      }
     }
   }
 
