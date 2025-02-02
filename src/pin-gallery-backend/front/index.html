@@ -65,6 +65,15 @@
         h4{
             margin:0.25rem 0 0;
         }
+        .upload{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            button{
+               width:200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -92,10 +101,12 @@
 
         <div id="preview">
             <h4>Preview:</h4>
-            <img id="photo-preview" alt="Your photo will appear here" style="max-width: 100%; display: none;">
+            <div class="upload">
+                <img id="photo-preview" alt="Your photo will appear here" style="max-width: 300px; display: none;">
+                <button type="submit" >Upload Image</button>
+            </div>
         </div>
 
-        <button type="submit">Upload Image</button>
     </form>
 
     <h2>Albums</h2>

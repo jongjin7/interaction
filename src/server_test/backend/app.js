@@ -26,6 +26,7 @@ app.use(express.json());
 // 업로드 폴더 설정
 const uploadDir = path.join(__dirname, 'uploads');
 const thumbnailDir = path.join(uploadDir, 'thumbnails');
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
