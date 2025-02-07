@@ -31,10 +31,10 @@ app.use('/uploads', express.static(uploadDir));
 app.use('/', express.static('front'));
 
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 if (!fs.existsSync(thumbnailDir)) {
-  fs.mkdirSync(thumbnailDir);
+  fs.mkdirSync(thumbnailDir, { recursive: true });
 }
 
 // multer 설정
@@ -134,8 +134,9 @@ app.post('/albums', (req, res) => {
       return res.status(409).json({ message: '등록된 앨범입니다.' });
     }
 
-    const id = uuidv4();
-    albums[id] = { id, title, images: [] };
+    let id = uuidv4();
+    id = id.replace(/^.*?-.*?-.*?-/, 'ab-');
+    albums[id] = { id: id, title, images: [] };
 
     // 데이터 저장
     saveData(albums, images);
@@ -195,14 +196,23 @@ async function checkAndRemoveDuplicate(fileHash, originalFilePath, images, res) 
     if (existingImage) {
       // 기존 이미지가 있을 경우 삭제 후 중복 메시지 반환
       await fs.unlink(originalFilePath); // 비동기적으로 파일 삭제
-      return res.status(409).json({ message: '업로드된 이미지와 동일합니다.', existingImage });
+      if (!res.headersSent) {
+        // 이미 응답을 보냈는지 확인
+        return res.status(409).json({
+          message: '업로드된 이미지와 동일합니다.',
+          existingImage,
+        });
+      }
     }
 
     // 중복이 없으면 null 반환 (또는 다른 처리를 할 수 있음)
     return null;
   } catch (err) {
     console.error('파일 처리 오류:', err);
-    return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    if (!res.headersSent) {
+      // 이미 응답을 보냈는지 확인
+      return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
   }
 }
 
@@ -240,7 +250,8 @@ app.post('/image', upload.single('file'), async (req, res) => {
     fs.unlinkSync(originalFilePath);
 
     // 📌 데이터 저장
-    const imageId = uuidv4();
+    let imageId = uuidv4();
+    imageId = imageId.replace(/-[^-]+-[^-]+-[^-]+/, '');
     images[imageId] = {
       id: imageId,
       fileName: originalFileName,
@@ -249,6 +260,8 @@ app.post('/image', upload.single('file'), async (req, res) => {
       albumId,
       description,
       hash: fileHash, // 해시값 저장
+      uploadTime: new Date().toISOString(),
+      datetime: Date.now(), // 밀리초(ms) 단위로 업로드 시간 저장
     };
 
     if (albums[albumId]) {
@@ -259,13 +272,7 @@ app.post('/image', upload.single('file'), async (req, res) => {
 
     res.status(201).json({
       message: 'Image uploaded successfully',
-      data: {
-        id: imageId,
-        fileName: originalFileName,
-        description,
-        filePath: `${req.protocol}://${req.get('host')}/uploads/${originalFileName}`,
-        thumbnailPath: `${req.protocol}://${req.get('host')}/uploads/thumbnails/${thumbnailFileName}`,
-      },
+      data: images,
     });
   } catch (error) {
     console.error('Image processing failed:', error);
@@ -284,11 +291,11 @@ app.get('/albums', (req, res) => {
         .map((imageId) => {
           const image = images[imageId];
           if (image) {
+            // ❌ 제외할 속성: hash, filePath, albumId
+            const { hash, filePath, thumbnailPath, uploadTime, albumId: _, ...filteredImageData } = image;
             return {
-              id: image.id,
-              fileName: image.fileName,
+              ...filteredImageData,
               filePath: `${req.protocol}://${req.get('host')}${image.thumbnailPath}`, // 썸네일 URL로 반환
-              description: image.description,
             };
           }
           return null;
