@@ -177,17 +177,6 @@ export default class ListView {
       return '';
     }
 
-    function changeImageSize(url) {
-      const suffix = 'h';
-      return url.replace(/\/([^\/?#]+)(?=[^\/]*$)/, (match, filename) => {
-        const parts = filename.split('.');
-        const name = parts[0];
-        const extension = parts[1];
-        const newFileName = `${name}${suffix}.${extension}`;
-        return `/${newFileName}`;
-      });
-    }
-
     return list
       .map(
         (item) => `

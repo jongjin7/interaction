@@ -1,4 +1,4 @@
-import ApiService from '../services/ApiService';
+import ApiService from '../../../../../client-services/pin-gallery-service/ApiService';
 
 export default class ListModel {
   constructor() {

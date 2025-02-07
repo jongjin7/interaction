@@ -18,16 +18,6 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
   const { setCurrentDetailLink } = useUIStore();
   const listRef = useRef(null);
   const [isFocusin, setIsFocusin] = useState<boolean[]>(new Array(data.length).fill(false));
-  function changeImageSize(url: string) {
-    const suffix = 'h';
-    return url.replace(/\/([^/?#]+)(?=[^/]*$)/, (match, filename) => {
-      const parts = filename.split('.');
-      const name = parts[0];
-      const extension = parts[1];
-      const newFileName = `${name}${suffix}.${extension}`;
-      return `/${newFileName}`;
-    });
-  }
 
   const clickHandleDetail = (event: React.MouseEvent<HTMLAnchorElement>, value: string) => {
     setCurrentDetailLink(value);
@@ -113,13 +103,11 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
               <Link
                 className={!loadedImages[index] ? 'h-0' : ''}
                 href="#"
-                title={(item as any).title ?? new Date(item.datetime * 1000).toDateString()} // 타입 단언 사용
-                onClick={(event: React.MouseEvent<HTMLAnchorElement>) =>
-                  clickHandleDetail(event, changeImageSize(item.link))
-                } // onClick 핸들러의 타입 자동 추론
+                title={item.fileName}
+                onClick={(event: React.MouseEvent<HTMLAnchorElement>) => clickHandleDetail(event, item.filePath)} // onClick 핸들러의 타입 자동 추론
               >
                 <img
-                  src={changeImageSize(item.link)}
+                  src={item.filePath}
                   title={item.description ?? ''}
                   className={`transition ${!loadedImages[index] ? 'opacity-0' : 'opacity-1'}`}
                   alt=""

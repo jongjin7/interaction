@@ -1,4 +1,4 @@
-import { API_ALBUM_URL, API_BASE_URL } from '@/config/api.config';
+import { API_ALBUM_URL, API_BASE_URL } from '../../../../../client-services/pin-gallery-service/api.config';
 
 class ApiService {
   static createHeaders(formdata) {

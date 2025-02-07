@@ -1,4 +1,4 @@
-import { API_ALBUM_URL, API_BASE_URL, IMG_ACCESS_TOKEN, IMG_CLIENT_ID } from '@/config/api.config';
+import { API_ALBUM_URL, API_BASE_URL } from '../../../../../client-services/pin-gallery-service/api.config';
 import { AlbumImage, Category } from '@/app/_types/galleryType';
 // 공통 인터페이스 정의
 interface ApiRequestParams {

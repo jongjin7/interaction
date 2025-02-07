@@ -1,4 +1,4 @@
-import { API_ALBUM_URL, API_BASE_URL } from '@/config/api.config';
+import { API_ALBUM_URL, API_BASE_URL } from './api.config';
 
 class ApiService {
   static createHeaders(formdata) {
@@ -96,7 +96,6 @@ class ApiService {
     });
 
     return image;
-    // return ApiService.moveToAlbum(albumHash, image.data.id);
   }
 
   static async fetchCategory() {
