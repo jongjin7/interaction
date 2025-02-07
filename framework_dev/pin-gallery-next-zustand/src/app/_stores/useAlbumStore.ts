@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { largestArrayItem, randomArrayItem } from '@/app/_utils/RandomAndLongest';
-import ApiService from '@/app/_services/ApiService';
+import ApiService from '../../../../../client-services/pin-gallery-service/ApiService';
 import { Category, AlbumImage } from '@/app/_types/galleryType';
 
 interface LargestAlbum {
@@ -16,14 +16,15 @@ interface AlbumData {
 }
 
 const fetchAlbums = async (): Promise<AlbumData> => {
-  const fetchedCategories = await ApiService.fetchCategory();
-  const fetchAlbumImages = await ApiService.fetchGalleryList(fetchedCategories.map((album) => album.id));
+  const categoryLabels = await ApiService.fetchCategory();
+  const categoryData = Array.isArray(categoryLabels) ? categoryLabels : [];
+  const fetchAlbumImages = categoryData.map((album) => album.images);
 
   const randomImagesData = randomArrayItem(fetchAlbumImages);
-  const largestAlbumData = largestArrayItem(fetchAlbumImages, fetchedCategories);
+  const largestAlbumData = largestArrayItem(fetchAlbumImages, categoryData);
 
   return {
-    categories: fetchedCategories,
+    categories: categoryData,
     albumImages: fetchAlbumImages,
     randomImages: randomImagesData,
     largestAlbum: largestAlbumData,
