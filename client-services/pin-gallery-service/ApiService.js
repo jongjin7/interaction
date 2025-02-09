@@ -88,7 +88,7 @@ class ApiService {
     });
   }
 
-  static async sendImageFile(formData, albumHash) {
+  static async sendImageFile(formData) {
     const image = await ApiService.clientFetchAPI({
       type: 'post',
       url: `${API_BASE_URL}/image`,

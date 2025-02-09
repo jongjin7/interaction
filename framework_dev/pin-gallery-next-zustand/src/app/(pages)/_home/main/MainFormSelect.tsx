@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import ApiService from '@/app/_services/ApiService';
+import ApiService from '../../../../../../../client-services/pin-gallery-service/ApiService';
 import { inputFieldClass, selectClass, buttonSecondaryClass, buttonDisabledClass } from '@/styles/tailwind.component';
 import { Category } from '@/app/_types/galleryType';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
@@ -39,11 +39,8 @@ const MainFormSelect: React.FC<MainFormSelectProps> = ({ selectProps }) => {
 
   const handleAddCategory = async () => {
     if (customCategory.trim()) {
-      const formData = new FormData();
-      formData.append('title', customCategory);
-      formData.append('description', `${customCategory} 이름으로 만든 앨범입니다.`);
-      const res = await ApiService.addNewCategory(formData);
-      const newCategory = { id: res.data.id, title: customCategory, name: '' };
+      const res = await ApiService.addNewCategory(customCategory);
+      const newCategory = { id: res.album.id, title: customCategory };
       // 새로운 카테고리 추가
       queryClient.setQueryData(['albums'], (oldData) => {
         if (!oldData) return oldData;

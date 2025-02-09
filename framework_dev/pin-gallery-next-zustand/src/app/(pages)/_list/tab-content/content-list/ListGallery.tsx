@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
-import ApiService from '@/app/_services/ApiService';
+import ApiService from '../../../../../../../../client-services/pin-gallery-service/ApiService';
 import { AlbumImage } from '@/app/_types/galleryType';
 import SkeletonImage from '@/app/_components/skeleton/SkeletonImage';
 import DeleteButton from '@/app/_components/common/DeleteButton';

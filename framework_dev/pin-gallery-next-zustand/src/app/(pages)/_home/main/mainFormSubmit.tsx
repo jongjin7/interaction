@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
-import ApiService from '@/app/_services/ApiService';
+import ApiService from '../../../../../../../client-services/pin-gallery-service/ApiService';
 import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
 
 interface MainFormSubmitProps {
   submitProps: {
-    selectedCategory: string | undefined; // 선택된 카테고리, 없을 수도 있음
+    selectedCategory: string; // 선택된 카테고리, 없을 수도 있음
     disabledForm: boolean; // 폼이 비활성화된 상태인지 여부
     uploadFile: File | null; // 업로드할 파일, 없을 수도 있음
     setSubmitPlay: React.Dispatch<React.SetStateAction<boolean>>; // 제출 상태를 설정하는 함수
@@ -23,11 +23,11 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     const geoInfo = await ApiGeoLocation.init();
     const formData = new FormData();
     if (uploadFile) {
-      formData.append('image', uploadFile); // 'File | null' 타입을 'Blob'으로 처리
+      formData.append('file', uploadFile); // 'File | null' 타입을 'Blob'으로 처리
     }
-    formData.append('type', 'image');
-    formData.append('title', geoInfo?.time ?? '제목 없음');
-    formData.append('description', geoInfo?.message ?? (geoInfo?.error ? geoInfo?.error : '설명 없음'));
+    formData.append('albumId', selectedCategory);
+    formData.append('title', geoInfo ? geoInfo.time : '제목 없음');
+    formData.append('description', geoInfo ? geoInfo.message : '설명 없음');
     return formData;
   };
 
@@ -37,7 +37,7 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
       if (!selectedCategory) {
         throw new Error('Category must be selected');
       }
-      return await ApiService.sendImageFile(formData, selectedCategory);
+      return await ApiService.sendImageFile(formData);
     } catch (error) {
       console.error('Failed to submit image:', error);
       throw error;
