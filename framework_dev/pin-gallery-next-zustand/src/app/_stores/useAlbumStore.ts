@@ -36,6 +36,8 @@ const useAlbumStore = () => {
   const { data, isLoading, error } = useQuery<AlbumData, Error>({
     queryKey: ['albums'],
     queryFn: fetchAlbums,
+    staleTime: 1000 * 60 * 2, // 2분 동안 fresh 유지
+    cacheTime: 1000 * 60 * 3, // 3분 후 메모리에서 삭제
   });
 
   return {

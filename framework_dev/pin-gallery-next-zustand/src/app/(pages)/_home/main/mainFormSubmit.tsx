@@ -4,6 +4,7 @@ import ApiService from '../../../../../../../client-services/pin-gallery-service
 import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
+import useAlbumStore from '@/app/_stores/useAlbumStore';
 
 interface MainFormSubmitProps {
   submitProps: {
@@ -19,6 +20,8 @@ interface MainFormSubmitProps {
 const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const { categories, setAlbumImages } = useAlbumStore();
+
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
     const formData = new FormData();
@@ -44,6 +47,18 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     }
   };
 
+  const refreshData = async (target) => {
+    try {
+      console.log('aaaa', categories);
+      // const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
+      // console.log('resAlbumImages==>', resAlbumImages);
+      //setAlbumImages(resAlbumImages);
+      target.classList.remove('is-loading');
+    } catch (error) {
+      console.error('Failed to refresh data:', error);
+    }
+  };
+
   const handleSubmit = async () => {
     if (selectedCategory) {
       try {
@@ -54,9 +69,7 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
         if (result) {
           setIsUploading(false);
           setSubmitPlay(true);
-          setTimeout(() => {
-            homePanel?.classList.remove('is-loading');
-          }, 3000);
+          await refreshData(homePanel);
         }
       } catch (error) {
         console.error('폼 제출 실패:', error);
