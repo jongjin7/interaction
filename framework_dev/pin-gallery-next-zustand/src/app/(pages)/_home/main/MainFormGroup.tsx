@@ -39,7 +39,7 @@ const MainFormGroup: React.FC<MainFormGroupProps> = ({ formProps }) => {
           setIsUploading,
         }}
       />
-      <div className="copyright">Copyright © 2024 ttl2875. All rights reserved.</div>
+      <div className="copyright">Copyright © {new Date().getFullYear()} ttl2875. All rights reserved.</div>
     </div>
   );
 };
