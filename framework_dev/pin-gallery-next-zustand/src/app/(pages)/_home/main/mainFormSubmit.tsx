@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
-import ApiService from '../../../../../../../client-services/pin-gallery-service/ApiService';
 import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
+import ApiService from '@/../../../client-services/pin-gallery-service/ApiService';
 
 interface MainFormSubmitProps {
   submitProps: {
@@ -20,7 +20,7 @@ interface MainFormSubmitProps {
 const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const { categories, setAlbumImages } = useAlbumStore();
+  const { setAlbumImages } = useAlbumStore();
 
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
@@ -49,10 +49,10 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
 
   const refreshData = async (target) => {
     try {
-      console.log('aaaa', categories);
-      // const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
+      const resCategories = await ApiService.fetchCategory();
+      const resAlbumImages = resCategories.map((album) => album.images);
       // console.log('resAlbumImages==>', resAlbumImages);
-      //setAlbumImages(resAlbumImages);
+      setAlbumImages(resAlbumImages);
       target.classList.remove('is-loading');
     } catch (error) {
       console.error('Failed to refresh data:', error);

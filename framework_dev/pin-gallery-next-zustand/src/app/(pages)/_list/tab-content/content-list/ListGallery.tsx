@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
-import ApiService from '../../../../../../../../client-services/pin-gallery-service/ApiService';
 import { AlbumImage } from '@/app/_types/galleryType';
 import SkeletonImage from '@/app/_components/skeleton/SkeletonImage';
 import DeleteButton from '@/app/_components/common/DeleteButton';
 import NoneData from '@/app/_components/common/NoneData';
 import useUIStore from '@/app/_stores/useUIStore';
+import ApiService from '@/../../../../client-services/pin-gallery-service/ApiService';
 
 interface ListGalleryProps {
   data: AlbumImage[];
@@ -14,7 +14,7 @@ interface ListGalleryProps {
 }
 
 const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
-  const { categories, setAlbumImages } = useAlbumStore();
+  const { setAlbumImages } = useAlbumStore();
   const { setCurrentDetailLink } = useUIStore();
   const listRef = useRef(null);
   const [isFocusin, setIsFocusin] = useState<boolean[]>(new Array(data.length).fill(false));
@@ -25,8 +25,8 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
 
   const refreshData = async () => {
     try {
-      const resAlbumImages = await ApiService.fetchGalleryList(categories.map((album) => album.id));
-      console.log('refreshAlbumImages', resAlbumImages);
+      const resCategories = await ApiService.fetchCategory();
+      const resAlbumImages = resCategories.map((album) => album.images);
       setAlbumImages(resAlbumImages);
     } catch (error) {
       console.error('Failed to refresh data:', error);
