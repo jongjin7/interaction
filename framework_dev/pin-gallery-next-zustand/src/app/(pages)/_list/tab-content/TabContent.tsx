@@ -36,6 +36,14 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
     // 처음 로드될 때 한 번 실행
     updateTabPanelPositions();
 
+    // 🔥 DOM 변경 감지해서 updateTabPanelPositions 실행
+    const observer = new MutationObserver(updateTabPanelPositions);
+    if (tabPanelContainerRef.current) {
+      observer.observe(tabPanelContainerRef.current, { childList: true, subtree: true });
+    }
+
+    return () => observer.disconnect(); // 클린업
+
     // 리사이즈 이벤트 리스너 추가
     window.addEventListener('resize', updateTabPanelPositions);
 

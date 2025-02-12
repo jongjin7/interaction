@@ -39,7 +39,7 @@ const Tabs: React.FC<TabProps> = ({ tabControl }) => {
     <div className="tabs">
       <div ref={tabNavContainerRef} className="tab-nav text-gray-400">
         <Link
-          href="#all"
+          href="#tab-panel-0"
           className={getClassNames(0)}
           ref={(el) => {
             if (el) tabRefs.current[0] = el;
@@ -52,7 +52,7 @@ const Tabs: React.FC<TabProps> = ({ tabControl }) => {
           const tabIndex = index + 1;
           return (
             <Link
-              href={`#${category.id}`}
+              href={`#tab-panel-${tabIndex}`}
               key={category.id}
               className={getClassNames(tabIndex)}
               ref={(el) => {

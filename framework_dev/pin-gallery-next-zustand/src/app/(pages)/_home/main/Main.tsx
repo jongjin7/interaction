@@ -66,7 +66,7 @@ const Main: React.FC = () => {
           }}
         />
       </main>
-      {bgImage && <Image src={bgImage} width={400} height={400} className="bg-container" alt="" />}
+      {bgImage && <Image src={bgImage} width={500} height={700} quality={90} className="bg-container" alt="" />}
     </>
   );
 };

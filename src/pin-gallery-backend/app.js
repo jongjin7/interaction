@@ -241,7 +241,7 @@ app.post('/image', upload.single('file'), async (req, res) => {
     const fileHash = await calculateFileHash(originalFilePath);
 
     // 📌 중복 검사 (이미 존재하는 해시값인지 확인)
-    await checkAndRemoveDuplicate(fileHash, originalFilePath, images, res);
+    //await checkAndRemoveDuplicate(fileHash, originalFilePath, images, res);
 
     // 📌 WebP 변환 및 썸네일 생성
     await convertImage(originalFilePath, imageFilePath, thumbnailFilePath);

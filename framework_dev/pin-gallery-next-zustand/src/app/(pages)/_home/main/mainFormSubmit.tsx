@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
 import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
-import useAlbumStore from '@/app/_stores/useAlbumStore';
 import ApiService from '@/../../../client-services/pin-gallery-service/ApiService';
 
 interface MainFormSubmitProps {
@@ -20,7 +20,7 @@ interface MainFormSubmitProps {
 const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const { setAlbumImages } = useAlbumStore();
+  const queryClient = useQueryClient();
 
   const createFormData = async () => {
     const geoInfo = await ApiGeoLocation.init();
@@ -49,11 +49,10 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
 
   const refreshData = async (target) => {
     try {
-      const resCategories = await ApiService.fetchCategory();
-      const resAlbumImages = resCategories.map((album) => album.images);
-      // console.log('resAlbumImages==>', resAlbumImages);
-      setAlbumImages(resAlbumImages);
+      await queryClient.invalidateQueries(['albums']);
+      setIsUploading(false);
       target.classList.remove('is-loading');
+      setSubmitPlay(true);
     } catch (error) {
       console.error('Failed to refresh data:', error);
     }
@@ -67,8 +66,6 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
         setIsUploading(true); // 상태값을 변경하여 카메라 인풋과 버튼에 로딩 컴포넌트 활성
         const result = await sendFileForm();
         if (result) {
-          setIsUploading(false);
-          setSubmitPlay(true);
           await refreshData(homePanel);
         }
       } catch (error) {

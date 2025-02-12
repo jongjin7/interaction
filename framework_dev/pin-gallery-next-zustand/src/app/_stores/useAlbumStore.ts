@@ -20,14 +20,12 @@ const fetchAlbums = async (): Promise<AlbumData> => {
   const categoryData = Array.isArray(categoryLabels) ? categoryLabels : [];
   const fetchAlbumImages = categoryData.map((album) => album.images);
 
-  const randomImagesData = randomArrayItem(fetchAlbumImages);
-  const largestAlbumData = largestArrayItem(fetchAlbumImages, categoryData);
-
+  // ✅ 매번 새로운 값을 계산
   return {
     categories: categoryData,
     albumImages: fetchAlbumImages,
-    randomImages: randomImagesData,
-    largestAlbum: largestAlbumData,
+    randomImages: randomArrayItem(fetchAlbumImages),
+    largestAlbum: largestArrayItem(fetchAlbumImages, categoryData),
   };
 };
 
@@ -41,18 +39,9 @@ const useAlbumStore = () => {
     cacheTime: 1000 * 60 * 3, // 3분 후 메모리에서 삭제
   });
 
-  // 🔥 데이터 업데이트 함수 추가
-  const setAlbumImages = (newAlbumImages: AlbumImage[][]) => {
-    queryClient.setQueryData(['albums'], (prevData: AlbumData | undefined) => {
-      if (!prevData) return undefined;
-      return { ...prevData, albumImages: newAlbumImages };
-    });
-  };
-
   return {
     categories: data?.categories || [],
     albumImages: data?.albumImages || [],
-    setAlbumImages,
     randomImages: data?.randomImages || [],
     largestAlbum: data?.largestAlbum || { data: [], subTitle: '' },
     isLoading,

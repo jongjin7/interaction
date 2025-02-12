@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
-import useAlbumStore from '@/app/_stores/useAlbumStore';
 import { AlbumImage } from '@/app/_types/galleryType';
+import { useQueryClient } from '@tanstack/react-query';
 import SkeletonImage from '@/app/_components/skeleton/SkeletonImage';
 import DeleteButton from '@/app/_components/common/DeleteButton';
 import NoneData from '@/app/_components/common/NoneData';
@@ -14,7 +14,7 @@ interface ListGalleryProps {
 }
 
 const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
-  const { setAlbumImages } = useAlbumStore();
+  const queryClient = useQueryClient();
   const { setCurrentDetailLink } = useUIStore();
   const listRef = useRef(null);
   const [isFocusin, setIsFocusin] = useState<boolean[]>(new Array(data.length).fill(false));
@@ -25,9 +25,7 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
 
   const refreshData = async () => {
     try {
-      const resCategories = await ApiService.fetchCategory();
-      const resAlbumImages = resCategories.map((album) => album.images);
-      setAlbumImages(resAlbumImages);
+      await queryClient.invalidateQueries(['albums']);
     } catch (error) {
       console.error('Failed to refresh data:', error);
     }
