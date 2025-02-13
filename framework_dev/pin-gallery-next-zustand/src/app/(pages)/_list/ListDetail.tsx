@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { galleryDetail } from '@/styles/pages.css';
 import useUIStore from '@/app/_stores/useUIStore';
 import { AlbumImage } from '@/app/_types/galleryType';
@@ -8,12 +8,26 @@ interface ListDetailProps {
 }
 
 const ListDetail: React.FC<ListDetailProps> = ({ imageData }) => {
-  if (!imageData) return null;
   const { setCurrentDetailData } = useUIStore();
-  const { filePath, ratio } = imageData;
+  const [isClosing, setIsClosing] = useState(false);
+  let filePath, ratio;
+  useEffect(() => {
+    if (isClosing) {
+      setTimeout(() => {
+        setCurrentDetailData(null);
+        setIsClosing(false);
+      }, 50); // 짧은 딜레이로 React 내부 상태 정리
+    }
+  }, [isClosing, setCurrentDetailData]);
+  console.log('aaa');
+  if (imageData) {
+    filePath = imageData.filePath;
+    ratio = imageData.ratio;
+  }
+
   const isPortrait = ratio < 1; // 세로 사진 판별
   const clickCloseHandle = () => {
-    setCurrentDetailData(null);
+    setIsClosing(true); // UI에서 사라지는 애니메이션 적용 후 상태 변경
   };
 
   return (

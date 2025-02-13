@@ -55,15 +55,14 @@ export const useInitializeUIStore = () => {
   const setIsFirstUsed = useUIStore((state) => state.setIsFirstTimeUser);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const firstView = window.localStorage.getItem('isFirstTimeUser');
-      if (firstView === 'null' || firstView === null || firstView === 'true') {
-        setIsFirstUsed(true);
-      } else if (firstView === 'false') {
-        setIsFirstUsed(false);
-      }
+    const firstView = localStorage.getItem('isFirstTimeUser');
+
+    if (firstView === null || firstView === 'true') {
+      setIsFirstUsed(true);
+    } else if (firstView === 'false') {
+      setIsFirstUsed(false);
     }
-  }, []);
+  }, [setIsFirstUsed]); // ✅ 상태 업데이트 함수 의존성 추가
 };
 
 export default useUIStore;
