@@ -18,13 +18,19 @@ const findLargestArrayWithIndex = (arr: AlbumImage[][]) => {
 };
 
 // 랜덤하게 아이템을 선택하는 함수
-const getRandomItems = <T>(arr: T[]): T[] => {
+const getRandomItems = <T extends { datetime: number }>(arr: T[]): T[] => {
+  // 1단계: 랜덤하게 섞기
   const shuffledArray = arr.slice();
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    // 배열 요소 교환
+    const temp = shuffledArray[i];
+    shuffledArray[i] = shuffledArray[j];
+    shuffledArray[j] = temp;
   }
-  return shuffledArray;
+
+  // 2단계: datetime을 기준으로 내림차순 정렬
+  return shuffledArray.sort((a, b) => b.datetime - a.datetime);
 };
 
 // getLongestArrayItem

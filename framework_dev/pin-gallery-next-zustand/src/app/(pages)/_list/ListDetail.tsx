@@ -11,6 +11,7 @@ const ListDetail: React.FC<ListDetailProps> = ({ imageData }) => {
   const { setCurrentDetailData } = useUIStore();
   const [isClosing, setIsClosing] = useState(false);
   let filePath, ratio;
+
   useEffect(() => {
     if (isClosing) {
       setTimeout(() => {
@@ -19,7 +20,7 @@ const ListDetail: React.FC<ListDetailProps> = ({ imageData }) => {
       }, 50); // 짧은 딜레이로 React 내부 상태 정리
     }
   }, [isClosing, setCurrentDetailData]);
-  console.log('aaa');
+
   if (imageData) {
     filePath = imageData.filePath;
     ratio = imageData.ratio;

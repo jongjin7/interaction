@@ -3,10 +3,8 @@ import React, { useEffect } from 'react';
 import { AlbumImage } from '@/app/_types/galleryType';
 interface UIState {
   isFirstTimeUser: boolean;
-  // eslint-disable-next-line no-unused-vars
   setIsFirstTimeUser: (value: boolean) => void;
   TabPanelContainerRef: React.RefObject<HTMLDivElement> | null; // HTMLDivElement 참조를 저장
-  // eslint-disable-next-line no-unused-vars
   setTabPanelContainerRef: (current: HTMLDivElement | null) => void; // 참조를 설정하는 함수
   currentDetailData: AlbumImage;
   setCurrentDetailData: React.Dispatch<React.SetStateAction<object | null>>;

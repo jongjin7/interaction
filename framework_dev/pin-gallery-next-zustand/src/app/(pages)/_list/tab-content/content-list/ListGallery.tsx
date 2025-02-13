@@ -88,7 +88,8 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
       {data.length ? (
         <ul className="list" ref={listRef}>
           {data.map((item, index) => (
-            <li className="list-item" key={index} style={{ aspectRatio: item.ratio }}>
+            //date-time: debugging, temp
+            <li className="list-item" key={index} style={{ aspectRatio: item.ratio }} data-time={item.datetime}>
               {isToggleDel && (
                 <DeleteButton
                   clickHandleDelete={(event: React.MouseEvent<HTMLButtonElement>) =>
