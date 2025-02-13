@@ -182,6 +182,13 @@ async function convertImage(originalFilePath, imageFilePath, thumbnailFilePath) 
       .toFormat('webp', { quality: 80 })
       .toFile(thumbnailFilePath);
     //console.log(`리사이즈 이미지 정보: ${JSON.stringify(secondConversionInfo, null, 2)}`);
+
+    // 변환된 정보 반환
+    return {
+      original: firstConversionInfo,
+      thumbnail: secondConversionInfo,
+      metadata,
+    };
   } catch (err) {
     console.error('오류:', err);
   }
@@ -244,10 +251,23 @@ app.post('/image', upload.single('file'), async (req, res) => {
     //await checkAndRemoveDuplicate(fileHash, originalFilePath, images, res);
 
     // 📌 WebP 변환 및 썸네일 생성
-    await convertImage(originalFilePath, imageFilePath, thumbnailFilePath);
+    const metadata1 = await convertImage(originalFilePath, imageFilePath, thumbnailFilePath);
 
     // 원본 파일 삭제
     fs.unlinkSync(originalFilePath);
+
+    function getOrientation() {
+      const { width, height } = metadata1.original;
+      // 이미지가 세로인지 가로인지 판별
+      let orientation = 'square'; // 정사각형 기본값
+      // 가로/세로 비율 (소수점 둘째 자리까지)
+      if (width > height) {
+        orientation = 'landscape'; // 가로
+      } else if (height > width) {
+        orientation = 'portrait'; // 세로
+      }
+      return orientation;
+    }
 
     // 📌 데이터 저장
     let imageId = uuidv4();
@@ -262,7 +282,10 @@ app.post('/image', upload.single('file'), async (req, res) => {
       hash: fileHash, // 해시값 저장
       uploadTime: new Date().toISOString(),
       datetime: Date.now(), // 밀리초(ms) 단위로 업로드 시간 저장
+      orientation: getOrientation(),
+      ratio: parseFloat((metadata1.original.width / metadata1.original.height).toFixed(2)),
     };
+    console.log('aaa', metadata1.original);
 
     if (albums[albumId]) {
       albums[albumId].images.push(imageId);
