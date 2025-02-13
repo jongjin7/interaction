@@ -15,12 +15,12 @@ interface ListGalleryProps {
 
 const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
   const queryClient = useQueryClient();
-  const { setCurrentDetailLink } = useUIStore();
+  const { setCurrentDetailData } = useUIStore();
   const listRef = useRef(null);
   const [isFocusin, setIsFocusin] = useState<boolean[]>(new Array(data.length).fill(false));
 
-  const clickHandleDetail = (event: React.MouseEvent<HTMLAnchorElement>, value: string) => {
-    setCurrentDetailLink(value);
+  const clickHandleDetail = (event: React.MouseEvent<HTMLAnchorElement>, value: object) => {
+    setCurrentDetailData(value);
   };
 
   const refreshData = async () => {
@@ -88,7 +88,7 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
       {data.length ? (
         <ul className="list" ref={listRef}>
           {data.map((item, index) => (
-            <li className="list-item" key={index} style={{ gridRowEnd: `span ${itemHeight[index]}` }}>
+            <li className="list-item" key={index} style={{ aspectRatio: item.ratio }}>
               {isToggleDel && (
                 <DeleteButton
                   clickHandleDelete={(event: React.MouseEvent<HTMLButtonElement>) =>
@@ -101,12 +101,11 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
               <Link
                 className={!loadedImages[index] ? 'h-0' : ''}
                 href="#"
-                title={item.fileName}
-                onClick={(event: React.MouseEvent<HTMLAnchorElement>) => clickHandleDetail(event, item.filePath)} // onClick 핸들러의 타입 자동 추론
+                title={item.description}
+                onClick={(event: React.MouseEvent<HTMLAnchorElement>) => clickHandleDetail(event, item)} // onClick 핸들러의 타입 자동 추론
               >
                 <img
                   src={item.filePath}
-                  title={item.description ?? ''}
                   className={`transition ${!loadedImages[index] ? 'opacity-0' : 'opacity-1'}`}
                   alt=""
                   onLoad={(e) => onLoadThumb(e, index)}

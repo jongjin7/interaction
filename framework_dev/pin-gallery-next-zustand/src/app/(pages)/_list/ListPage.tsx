@@ -7,7 +7,7 @@ import Tabs from './tab-nav/Tabs';
 import TabContent from './tab-content/TabContent';
 
 const ListPage: React.FC = () => {
-  const { currentDetailLink } = useUIStore();
+  const { currentDetailData } = useUIStore();
 
   const pageRef = useRef<HTMLDivElement | null>(null);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
@@ -20,7 +20,7 @@ const ListPage: React.FC = () => {
       if (parentElement) {
         const pageFrame = parentElement;
 
-        if (currentDetailLink) {
+        if (currentDetailData) {
           pageFrame.classList.add(showDetailClass);
         } else {
           pageFrame.classList.remove(showDetailClass);
@@ -31,7 +31,7 @@ const ListPage: React.FC = () => {
     } else {
       console.warn('pageRef.current is null.');
     }
-  }, [currentDetailLink]);
+  }, [currentDetailData]);
 
   return (
     <>
@@ -39,7 +39,7 @@ const ListPage: React.FC = () => {
         <Tabs tabControl={{ currentTabIndex, setCurrentTabIndex }} />
         <TabContent tabControl={{ currentTabIndex, setCurrentTabIndex }} />
       </div>
-      <ListDetail imageSrc={currentDetailLink} />
+      <ListDetail imageData={currentDetailData} />
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import React, { useEffect } from 'react';
-
+import { AlbumImage } from '@/app/_types/galleryType';
 interface UIState {
   isFirstTimeUser: boolean;
   // eslint-disable-next-line no-unused-vars
@@ -8,8 +8,8 @@ interface UIState {
   TabPanelContainerRef: React.RefObject<HTMLDivElement> | null; // HTMLDivElement 참조를 저장
   // eslint-disable-next-line no-unused-vars
   setTabPanelContainerRef: (current: HTMLDivElement | null) => void; // 참조를 설정하는 함수
-  currentDetailLink: string | null;
-  setCurrentDetailLink: React.Dispatch<React.SetStateAction<string | null>>;
+  currentDetailData: AlbumImage;
+  setCurrentDetailData: React.Dispatch<React.SetStateAction<object | null>>;
   resetGalleryPanel: () => void;
 }
 
@@ -26,8 +26,8 @@ const useUIStore = create<UIState>((set) => {
     setTabPanelContainerRef: (ref: HTMLDivElement | null) => {
       set({ TabPanelContainerRef: ref });
     },
-    currentDetailLink: null,
-    setCurrentDetailLink: (link) => set({ currentDetailLink: link }),
+    currentDetailData: null,
+    setCurrentDetailData: (value) => set({ currentDetailData: value }),
     resetGalleryPanel: () => {
       const { TabPanelContainerRef, currentDetailLink, setCurrentDetailLink } = useUIStore.getState();
       if (TabPanelContainerRef) {
