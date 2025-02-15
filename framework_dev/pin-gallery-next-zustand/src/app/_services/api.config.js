@@ -14,7 +14,7 @@ if (typeof window !== 'undefined') {
   if (isDev) {
     API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${port}`;
   } else {
-    API_BASE_URL = `http//ljworks.synology.me:${port}`;
+    API_BASE_URL = `http://ljworks.synology.me:24020`;
   }
   API_ALBUM_URL = `${API_BASE_URL}/albums`;
 }
