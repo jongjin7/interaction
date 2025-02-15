@@ -6,10 +6,11 @@ const withVanillaExtract = createVanillaExtractPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export',
-  // images: {
-  //   unoptimized: true,
-  // },
+  // 배포 위치를 설정하면 이미지 최적화기능을 사용할 수 없도록 같이 설정한다.
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
   trailingSlash: true,
   reactStrictMode: false,
   webpack: (config) => {

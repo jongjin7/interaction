@@ -6,7 +6,7 @@
     "dev": "next dev -p 3011",
     "devHttps": "local-ssl-proxy --source 3012 --target 3011",
     "build": "next build",
-    "start": "next start -p 4011",
+    "start": "npx serve@latest out -p 4011",
     "lint": "next lint",
     "test": "jest"
   },

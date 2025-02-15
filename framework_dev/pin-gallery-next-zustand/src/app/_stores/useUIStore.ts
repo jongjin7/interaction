@@ -35,16 +35,16 @@ const useUIStore = create<UIState>((set) => {
     resetGalleryPanel: () => {
       const { TabPanelContainerRef, currentDetailData, setCurrentDetailData } = useUIStore.getState();
 
-      if (TabPanelContainerRef && TabPanelContainerRef.current) {
-        TabPanelContainerRef.current.scrollTo(0, 0); // TabPanelContainerRef의 스크롤 리셋
+      if (TabPanelContainerRef) {
+        TabPanelContainerRef.scrollTo(0, 0); // TabPanelContainerRef의 스크롤 리셋
 
-        const firstChild = TabPanelContainerRef.current.children[0];
+        const firstChild = TabPanelContainerRef.children[0];
         if (firstChild instanceof HTMLElement) {
           firstChild.scrollTo(0, 0); // 첫 번째 자식 요소의 스크롤 리셋
         }
 
         // .is-removable 클래스가 있는 요소를 찾아서, 그 안에 있는 버튼 클릭
-        const removableElement = TabPanelContainerRef.current.querySelector('.is-removable');
+        const removableElement = TabPanelContainerRef.querySelector('.is-removable');
         if (removableElement) {
           const deleteButton = removableElement.querySelector('.btn-del-sel');
           if (deleteButton) {
