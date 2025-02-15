@@ -10,7 +10,8 @@ interface ListDetailProps {
 const ListDetail: React.FC<ListDetailProps> = ({ imageData }) => {
   const { setCurrentDetailData } = useUIStore();
   const [isClosing, setIsClosing] = useState(false);
-  let filePath, ratio;
+  let filePath;
+  let ratio;
 
   useEffect(() => {
     if (isClosing) {

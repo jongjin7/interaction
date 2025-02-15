@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
 import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
-import ApiService from '@/../../../client-services/pin-gallery-service/ApiService';
+import ApiGeoLocation from '@client-services/pin-gallery-service/ApiGeoLocation';
+import ApiService from '@client-services/pin-gallery-service/ApiService';
 
 interface MainFormSubmitProps {
   submitProps: {

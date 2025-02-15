@@ -1,5 +1,5 @@
-import { API_ALBUM_URL, API_BASE_URL } from '../../../../../client-services/pin-gallery-service/api.config';
-import { AlbumImage, Category } from '@/app/_types/galleryType';
+import { API_ALBUM_URL, API_BASE_URL } from '../api.config';
+import { AlbumImage, Category } from 'framework_dev/pin-gallery-next-zustand/src/app/_types/galleryType';
 // 공통 인터페이스 정의
 interface ApiRequestParams {
   type: 'get' | 'post' | 'delete';

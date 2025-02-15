@@ -24,7 +24,6 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
 
   useEffect(() => {
     setTabPanelContainerRef(tabPanelContainerRef.current); // 컨테이너 요소 담기
-
     const updateTabPanelPositions = () => {
       const container = tabPanelContainerRef.current;
       if (container) {
@@ -42,16 +41,15 @@ const TabContent: React.FC<TabContentProps> = ({ tabControl }) => {
       observer.observe(tabPanelContainerRef.current, { childList: true, subtree: true });
     }
 
-    return () => observer.disconnect(); // 클린업
-
     // 리사이즈 이벤트 리스너 추가
     window.addEventListener('resize', updateTabPanelPositions);
 
-    // 클린업 함수: 컴포넌트가 언마운트될 때 리스너 제거
+    // 클린업 함수: 컴포넌트가 언마운트될 때 리스너 제거 및 MutationObserver 해제
     return () => {
-      window.removeEventListener('resize', updateTabPanelPositions);
+      observer.disconnect(); // MutationObserver 클린업
+      window.removeEventListener('resize', updateTabPanelPositions); // 리사이즈 이벤트 리스너 클린업
     };
-  }, [isLoading]);
+  }, [isLoading]); // 의존성 배열: isLoading이 변경될 때마다 실행
 
   useEffect(() => {
     const handleScrollTabPanelContainer = () => {

@@ -6,7 +6,7 @@ import SkeletonImage from '@/app/_components/skeleton/SkeletonImage';
 import DeleteButton from '@/app/_components/common/DeleteButton';
 import NoneData from '@/app/_components/common/NoneData';
 import useUIStore from '@/app/_stores/useUIStore';
-import ApiService from '@/../../../../client-services/pin-gallery-service/ApiService';
+import ApiService from '@client-services/pin-gallery-service/ApiService';
 
 interface ListGalleryProps {
   data: AlbumImage[];
@@ -64,7 +64,7 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
 
   // Skeleton
   const [loadedImages, setLoadedImages] = useState<boolean[]>(new Array(data.length).fill(false));
-  const [itemHeight, setItemHeight] = useState<number[]>(new Array(data.length).fill(0));
+  const [, setItemHeight] = useState<number[]>(new Array(data.length).fill(0));
   const onLoadThumb = (event, index: number) => {
     // console.log(`이미지가 로딩되었습니다. Index: ${index}`);
     setLoadedImages((prev) => {
@@ -88,7 +88,7 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
       {data.length ? (
         <ul className="list" ref={listRef}>
           {data.map((item, index) => (
-            //date-time: debugging, temp
+            // date-time: debugging, temp
             <li className="list-item" key={index} style={{ aspectRatio: item.ratio }} data-time={item.datetime}>
               {isToggleDel && (
                 <DeleteButton

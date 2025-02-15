@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import ApiService from '../../../../../../../client-services/pin-gallery-service/ApiService';
 import { inputFieldClass, selectClass, buttonSecondaryClass, buttonDisabledClass } from '@/styles/tailwind.component';
 import { Category } from '@/app/_types/galleryType';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
+import ApiService from '@client-services/pin-gallery-service/ApiService';
 
 interface MainFormSelectProps {
   selectProps: {

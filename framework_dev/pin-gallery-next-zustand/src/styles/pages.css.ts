@@ -410,7 +410,6 @@ export const galleryDetail = style({
       backgroundColor: '#efefef',
       width: '100%',
       height: '100%',
-      //objectFit: 'cover',
     },
     '.btn-close': {
       position: 'absolute',

@@ -24,7 +24,7 @@ const Main: React.FC = () => {
 
       return newImage !== prevBgImage ? newImage : prevBgImage;
     });
-  }, []); // ✅ 의존성 배열을 빈 배열로 설정하여 불필요한 재생성 방지
+  }, []); // 의존성 배열을 빈 배열로 설정하여 불필요한 재생성 방지
 
   useEffect(() => {
     setRandomImage();

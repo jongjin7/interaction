@@ -16,12 +16,14 @@ export default function RootPage() {
   return (
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<Loading name="app-loading" />}>
-        <PageFrame id="home" className={pageTypeMain}>
-          <Home />
-        </PageFrame>
-        <PageFrame id="list" className={pageTypeList}>
-          <List />
-        </PageFrame>
+        <div id="app">
+          <PageFrame id="home" className={pageTypeMain}>
+            <Home />
+          </PageFrame>
+          <PageFrame id="list" className={pageTypeList}>
+            <List />
+          </PageFrame>
+        </div>
       </Suspense>
     </QueryClientProvider>
   );
