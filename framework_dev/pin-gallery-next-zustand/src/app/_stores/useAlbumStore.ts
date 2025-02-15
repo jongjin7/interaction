@@ -1,7 +1,7 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { largestArrayItem, randomArrayItem } from '@/app/_utils/RandomAndLongest';
 import { Category, AlbumImage } from '@/app/_types/galleryType';
-import ApiService from '@/../../../client-services/pin-gallery-service/ApiService';
+import ApiService from '@client-services/pin-gallery-service/ApiService';
 
 interface LargestAlbum {
   data: AlbumImage[];
@@ -31,7 +31,6 @@ const fetchAlbums = async (): Promise<AlbumData> => {
 
 // React Query로 fetch하는 로직을 정의한 훅
 const useAlbumStore = () => {
-  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery<AlbumData, Error>({
     queryKey: ['albums'],
     queryFn: fetchAlbums,

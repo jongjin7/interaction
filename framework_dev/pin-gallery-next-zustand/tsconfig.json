@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@client-services/*": ["../client-services/*"] // 프로젝트 바깥 경로를 alias로 설정
+      "@client-services/*": ["../../client-services/*"] // 프로젝트 바깥 경로를 alias로 설정
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
