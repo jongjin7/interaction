@@ -5,7 +5,7 @@ import MainFormGroup from './MainFormGroup';
 
 const randomImages: string[] = (() => {
   const arrayLength = 10;
-  return Array.from({ length: arrayLength }, (_, i) => `/images/@random_${i}.jpg`);
+  return Array.from({ length: arrayLength }, (_, i) => `/images/@random_${i}.webp`);
 })();
 
 const Main: React.FC = () => {

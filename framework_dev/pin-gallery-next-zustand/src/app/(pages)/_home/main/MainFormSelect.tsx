@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { inputFieldClass, selectClass, buttonSecondaryClass, buttonDisabledClass } from '@/styles/tailwind.component';
 import { Category } from '@/app/_types/galleryType';
 import useAlbumStore from '@/app/_stores/useAlbumStore';
-import ApiService from '@/app/_services/ApiService';
+import ApiService from '@client-services/pin-gallery-service/ApiService';
 
 interface MainFormSelectProps {
   selectProps: {

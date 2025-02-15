@@ -136,7 +136,7 @@ app.post('/albums', (req, res) => {
 
     let id = uuidv4();
     id = id.replace(/^.*?-.*?-.*?-/, 'ab-');
-    albums[id] = { id: id, title, images: [] };
+    albums[id] = { id, title, images: [] };
 
     // 데이터 저장
     saveData(albums, images);
@@ -169,19 +169,19 @@ async function convertImage(originalFilePath, imageFilePath, thumbnailFilePath) 
       .withMetadata() // 원본 이미지의 메타데이터 포함
       .toFormat('webp', { quality: 80 })
       .toFile(imageFilePath);
-    //console.log(`원본 이미지 정보: ${JSON.stringify(firstConversionInfo, null, 2)}`);
+    // console.log(`원본 이미지 정보: ${JSON.stringify(firstConversionInfo, null, 2)}`);
 
     // 두 번째 변환: 리사이즈 후 webp로 변환
     const metadata = await sharp(originalFilePath).metadata();
-    //console.log('메타데이터:', metadata);
+    // console.log('메타데이터:', metadata);
 
     const secondConversionInfo = await sharp(originalFilePath)
       .resize(1000)
       .rotate()
-      //.withMetadata()
+      // .withMetadata()
       .toFormat('webp', { quality: 80 })
       .toFile(thumbnailFilePath);
-    //console.log(`리사이즈 이미지 정보: ${JSON.stringify(secondConversionInfo, null, 2)}`);
+    // console.log(`리사이즈 이미지 정보: ${JSON.stringify(secondConversionInfo, null, 2)}`);
 
     // 변환된 정보 반환
     return {
@@ -248,7 +248,7 @@ app.post('/image', upload.single('file'), async (req, res) => {
     const fileHash = await calculateFileHash(originalFilePath);
 
     // 📌 중복 검사 (이미 존재하는 해시값인지 확인)
-    //await checkAndRemoveDuplicate(fileHash, originalFilePath, images, res);
+    // await checkAndRemoveDuplicate(fileHash, originalFilePath, images, res);
 
     // 📌 WebP 변환 및 썸네일 생성
     const metadata1 = await convertImage(originalFilePath, imageFilePath, thumbnailFilePath);
@@ -422,8 +422,8 @@ app.delete('/albums/:albumId', (req, res) => {
 
 // SSL 인증서 파일 로드
 // const options = {
-//   key: fs.readFileSync('../../localhost-key.pem'), // 개인 키
-//   cert: fs.readFileSync('../../localhost.pem'), // 인증서
+//   key: fs.readFileSync('./ljservice-key.pem'), // 개인 키
+//   cert: fs.readFileSync('./ljservice.pem'), // 인증서
 // };
 // HTTPS 서버 생성
 // https.createServer(options, app).listen(443, () => {
