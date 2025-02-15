@@ -11,7 +11,11 @@ if (typeof window !== 'undefined') {
   const isDev = /^(localhost|127|192)/.test(window.location.hostname);
   // eslint-disable-next-line no-nested-ternary
   const port = isDev ? (window.location.protocol === 'https:' ? 443 : 3002) : 24020;
-  API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${port}`;
+  if (isDev) {
+    API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${port}`;
+  } else {
+    API_BASE_URL = `http//ljworks.synology.me:${port}`;
+  }
   API_ALBUM_URL = `${API_BASE_URL}/albums`;
 }
 
