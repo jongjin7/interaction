@@ -1,3 +1,23 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src", "../../client-services"],
+        "extensions": [".ts", ".tsx", ".js", ".jsx"]
+      },
+      "alias": {
+        "map": [
+          ["@client-services", "../../client-services"]
+        ],
+        "extensions": [".ts", ".tsx", ".js", ".jsx"]
+      }
+    }
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": "off"
+  }
 }
+
+
+
