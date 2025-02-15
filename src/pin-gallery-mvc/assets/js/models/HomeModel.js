@@ -21,7 +21,7 @@ export default class HomeModel {
     try {
       return await ApiService.addNewCategory(title);
     } catch (error) {
-      //console.error('Failed to add category:', error.message);
+      // console.error('Failed to add category:', error.message);
       throw error;
     }
   }

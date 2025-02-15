@@ -1,4 +1,7 @@
-import { API_ALBUM_URL, API_BASE_URL } from '../api.config';
+import {
+  API_ALBUM_URL,
+  API_BASE_URL,
+} from '../../../framework_dev/pin-gallery-next-zustand/src/app/_services/api.config';
 import { AlbumImage, Category } from 'framework_dev/pin-gallery-next-zustand/src/app/_types/galleryType';
 // 공통 인터페이스 정의
 interface ApiRequestParams {
