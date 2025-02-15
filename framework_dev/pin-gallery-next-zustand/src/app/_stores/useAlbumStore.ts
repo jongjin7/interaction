@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { largestArrayItem, randomArrayItem } from '@/app/_utils/RandomAndLongest';
 import { Category, AlbumImage } from '@/app/_types/galleryType';
-import ApiService from '@client-services/pin-gallery-service/ApiService';
+import ApiService from '@/app/_services/ApiService';
 
 interface LargestAlbum {
   data: AlbumImage[];

@@ -6,7 +6,7 @@ import SkeletonImage from '@/app/_components/skeleton/SkeletonImage';
 import DeleteButton from '@/app/_components/common/DeleteButton';
 import NoneData from '@/app/_components/common/NoneData';
 import useUIStore from '@/app/_stores/useUIStore';
-import ApiService from '@client-services/pin-gallery-service/ApiService';
+import ApiService from '@/app/_services/ApiService';
 
 interface ListGalleryProps {
   data: AlbumImage[];

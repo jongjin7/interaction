@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { buttonDisabledClass, buttonPrimaryClass, buttonSizeLarge } from '@/styles/tailwind.component';
 import IconCloud from '@/app/_components/icons/cloud.svg';
 import Loading from '@/app/_components/loading/Loading';
-import ApiGeoLocation from '@client-services/pin-gallery-service/ApiGeoLocation';
-import ApiService from '@client-services/pin-gallery-service/ApiService';
+import ApiGeoLocation from '@/app/_services/ApiGeoLocation';
+import ApiService from '@/app/_services/ApiService';
 
 interface MainFormSubmitProps {
   submitProps: {
