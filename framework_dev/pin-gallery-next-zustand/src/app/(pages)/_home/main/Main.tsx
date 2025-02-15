@@ -18,20 +18,20 @@ const Main: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   const setRandomImage = useCallback(() => {
-    const randomIndex = Math.floor(Math.random() * randomImages.length);
-    const newImage = randomImages[randomIndex];
-    // 상태가 변경된 경우에만 업데이트
-    if (newImage !== bgImage) {
-      setBgImage(newImage);
-    }
-  }, [bgImage]);
+    setBgImage((prevBgImage) => {
+      const randomIndex = Math.floor(Math.random() * randomImages.length);
+      const newImage = randomImages[randomIndex];
+
+      return newImage !== prevBgImage ? newImage : prevBgImage;
+    });
+  }, []); // ✅ 의존성 배열을 빈 배열로 설정하여 불필요한 재생성 방지
 
   useEffect(() => {
     setRandomImage();
-  }, []);
+  }, [setRandomImage]);
 
   const completedSubmit = () => {
-    setSelectedCategory('');
+    setSelectedCategory(undefined);
     setSubmitPlay(false);
     setRandomImage();
     setShotPlay(true);
