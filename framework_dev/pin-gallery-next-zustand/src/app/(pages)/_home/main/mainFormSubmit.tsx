@@ -19,7 +19,7 @@ interface MainFormSubmitProps {
 
 const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
   const { selectedCategory, disabledForm, uploadFile, isUploading, setIsUploading, setSubmitPlay } = submitProps;
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(disabledForm);
   const queryClient = useQueryClient();
 
   const createFormData = async () => {
@@ -47,50 +47,65 @@ const MainFormSubmit: React.FC<MainFormSubmitProps> = ({ submitProps }) => {
     }
   };
 
-  const refreshData = async (target) => {
+  const refreshData = async () => {
     try {
       await queryClient.invalidateQueries(['albums']);
       setIsUploading(false);
-      target.classList.remove('is-loading');
       setSubmitPlay(true);
+      console.log('등록완료2');
+      // setTimeout(() => {}, 1000);
     } catch (error) {
       console.error('Failed to refresh data:', error);
     }
   };
 
   const handleSubmit = async () => {
-    if (selectedCategory) {
-      try {
-        const homePanel = document.querySelector<HTMLElement>('#home');
-        homePanel?.classList.add('is-loading');
-        setIsUploading(true); // 상태값을 변경하여 카메라 인풋과 버튼에 로딩 컴포넌트 활성
-        const result = await sendFileForm();
-        if (result) {
-          await refreshData(homePanel);
-        }
-      } catch (error) {
-        console.error('폼 제출 실패:', error);
-      }
-    } else {
-      // eslint-disable-next-line no-alert
+    // 카테고리 선택 여부 검사
+    if (!selectedCategory || selectedCategory.trim() === '') {
       alert('카테고리를 선택하세요.');
+      return;
+    }
+
+    try {
+      const homePanel = document.querySelector<HTMLElement>('#home');
+
+      if (!homePanel) {
+        console.warn('⚠️ [handleSubmit] #home 요소를 찾을 수 없습니다.');
+      } else {
+        homePanel.classList.add('is-loading'); // 로딩 UI 적용
+      }
+
+      setIsUploading(true); // 업로드 상태 활성화
+
+      const result = await sendFileForm(); // 파일 업로드 API 호출
+
+      if (result) {
+        await refreshData(); // 성공 시 데이터 갱신
+      } else {
+        console.error('⚠️ [handleSubmit] 파일 업로드 실패 또는 응답이 없음.');
+        setIsUploading(false); // 실패 시 로딩 해제
+      }
+      homePanel?.classList.remove('is-loading'); // 로딩 UI 제거
+    } catch (error) {
+      console.error('❌ [handleSubmit] 폼 제출 실패:', error);
+      setIsUploading(false); // 오류 발생 시 로딩 해제
     }
   };
 
   useEffect(() => {
-    setIsDisabled(() => {
-      return (selectedCategory?.length ?? 0) < 1 || selectedCategory === 'user_add';
-    });
+    const isDisabledState = !selectedCategory || selectedCategory.length < 1 || selectedCategory === 'user_add';
+    setIsDisabled(isDisabledState);
+    console.log('📌 [useEffect] isDisabled updated:', isDisabledState);
   }, [selectedCategory]);
 
   return (
     <button
       type="button"
       className={`${buttonPrimaryClass} ${buttonSizeLarge} py-3 w-full justify-center 
-        ${disabledForm || isDisabled ? buttonDisabledClass : ''}
+        ${isDisabled ? buttonDisabledClass : ''}
       `}
       onClick={handleSubmit}
-      disabled={disabledForm || isDisabled}
+      disabled={isDisabled}
     >
       <div className="icon-box">
         <IconCloud />

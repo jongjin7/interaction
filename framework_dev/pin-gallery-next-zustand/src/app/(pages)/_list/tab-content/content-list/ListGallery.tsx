@@ -18,8 +18,7 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
   const { setCurrentDetailData } = useUIStore();
   const listRef = useRef(null);
   const [isFocusin, setIsFocusin] = useState<boolean[]>(new Array(data.length).fill(false));
-
-  const clickHandleDetail = (event: React.MouseEvent<HTMLAnchorElement>, value: object) => {
+  const clickHandleDetail = (event: React.MouseEvent<HTMLAnchorElement>, value) => {
     setCurrentDetailData(value);
   };
 
@@ -64,8 +63,8 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
 
   // Skeleton
   const [loadedImages, setLoadedImages] = useState<boolean[]>(new Array(data.length).fill(false));
-  const [, setItemHeight] = useState<number[]>(new Array(data.length).fill(0));
-  const onLoadThumb = (event, index: number) => {
+  const [itemHeight, setItemHeight] = useState<number[]>(new Array(data.length).fill(0));
+  const onLoadThumb = (item, index: number) => {
     // console.log(`이미지가 로딩되었습니다. Index: ${index}`);
     setLoadedImages((prev) => {
       const newLoadedImages = [...prev];
@@ -73,11 +72,9 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
       return newLoadedImages;
     });
     setTimeout(() => {
-      const boundingBox = event.target.getBoundingClientRect();
-
       setItemHeight((prev) => {
         const newImages = [...prev];
-        newImages[index] = Math.floor((boundingBox.height / boundingBox.width) * 10);
+        newImages[index] = Math.floor(10 / item.ratio);
         return newImages;
       });
     }, 100);
@@ -89,7 +86,13 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
         <ul className="list" ref={listRef}>
           {data.map((item, index) => (
             // date-time: debugging, temp
-            <li className="list-item" key={index} style={{ aspectRatio: item.ratio }} data-time={item.datetime}>
+            <li
+              className="list-item"
+              key={index}
+              style={{ gridRowEnd: `span ${itemHeight[index]}` }}
+              data-time={item.datetime}
+              data-ratio={item.ratio}
+            >
               {isToggleDel && (
                 <DeleteButton
                   clickHandleDelete={(event: React.MouseEvent<HTMLButtonElement>) =>
@@ -109,7 +112,7 @@ const ListGallery: React.FC<ListGalleryProps> = ({ data, isToggleDel }) => {
                   src={item.filePath}
                   className={`transition ${!loadedImages[index] ? 'opacity-0' : 'opacity-1'}`}
                   alt=""
-                  onLoad={(e) => onLoadThumb(e, index)}
+                  onLoad={() => onLoadThumb(item, index)}
                 />
               </Link>
             </li>
